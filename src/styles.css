@@ -1,0 +1,478 @@
+:root {
+  --bg: #1a1410;
+  --bg-soft: #261d17;
+  --panel: #2d231b;
+  --panel-2: #382a20;
+  --line: #4a3a2e;
+  --ink: #f4e8d6;
+  --ink-soft: #c8b89a;
+  --ink-mute: #8a7860;
+  --accent: #d96b35;
+  --accent-soft: #b85a2a;
+  --gold: #d9b66b;
+  --indigo: #4a6c7f;
+  --green: #7a8a5a;
+  --danger: #c84a3a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(ellipse at top, #2a1f17 0%, var(--bg) 70%) fixed;
+  color: var(--ink);
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", "Georgia",
+    serif;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.app {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 18px 18px 60px;
+  min-height: 100%;
+}
+
+/* ── Top bar ──────────────────────────────────── */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.topbar-left,
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  text-shadow: 0 0 14px rgba(217, 107, 53, 0.25);
+}
+
+.badge {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.badge.subtle {
+  color: var(--gold);
+  border-color: rgba(217, 182, 107, 0.4);
+}
+
+/* ── Buttons ──────────────────────────────────── */
+
+.primary {
+  background: linear-gradient(180deg, var(--accent) 0%, var(--accent-soft) 100%);
+  color: #fff8ec;
+  border: 1px solid #6e3418;
+  padding: 9px 18px;
+  border-radius: 6px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  box-shadow: 0 2px 0 #4d2310;
+  transition: transform 0.05s ease;
+}
+
+.primary:hover {
+  filter: brightness(1.07);
+}
+
+.primary:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 #4d2310;
+}
+
+.ghost {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  padding: 7px 14px;
+  border-radius: 6px;
+  letter-spacing: 0.04em;
+}
+
+.ghost:hover {
+  background: var(--panel);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* ── Status bar ──────────────────────────────── */
+
+.statusbar {
+  display: flex;
+  gap: 18px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.statusbar-group {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.statusbar-group.town .stat {
+  color: var(--ink-soft);
+}
+
+.stat {
+  display: inline-flex;
+  gap: 6px;
+  align-items: baseline;
+}
+
+.stat.subtle {
+  color: var(--ink-mute);
+}
+
+.stat-key {
+  color: var(--gold);
+  font-size: 12px;
+}
+
+.stat-val {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Title ───────────────────────────────────── */
+
+.title {
+  margin-top: 8vh;
+  text-align: center;
+  padding: 40px 24px;
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
+  border-radius: 12px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.5);
+}
+
+.title-main {
+  font-size: 56px;
+  margin: 0 0 6px;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 22px rgba(217, 107, 53, 0.4);
+}
+
+.title-sub {
+  color: var(--gold);
+  letter-spacing: 0.2em;
+  margin: 0 0 28px;
+}
+
+.title-flavor {
+  color: var(--ink-soft);
+  margin: 0 0 28px;
+}
+
+.title-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+/* ── Dialog ──────────────────────────────────── */
+
+.dialog {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  border-radius: 10px;
+  padding: 22px 26px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
+  margin-top: 24px;
+}
+
+.dialog-speaker {
+  color: var(--gold);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  border-bottom: 1px dashed var(--line);
+  padding-bottom: 6px;
+}
+
+.dialog-text {
+  flex: 1;
+  font-size: 17px;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.dialog-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dialog-progress {
+  color: var(--ink-mute);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Map / cards ─────────────────────────────── */
+
+.mapview,
+.jobview,
+.resultview,
+.status-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.area-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 16px 20px;
+}
+
+.area-name {
+  margin: 0 0 6px;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+}
+
+.area-desc {
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+.area-flavor {
+  margin: 10px 0 0;
+  color: var(--ink-mute);
+  font-style: italic;
+}
+
+.card-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 640px) {
+  .card-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px 18px;
+}
+
+.card h3 {
+  margin: 0 0 10px;
+  color: var(--gold);
+  font-size: 15px;
+  letter-spacing: 0.08em;
+}
+
+.muted {
+  color: var(--ink-mute);
+  margin: 0;
+}
+
+/* ── NPC list ────────────────────────────────── */
+
+.npc-list,
+.move-list,
+.choice-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.npc-button {
+  width: 100%;
+  text-align: left;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: var(--ink);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: border-color 0.1s ease, background 0.1s ease;
+}
+
+.npc-button:hover {
+  border-color: var(--accent);
+  background: #3d2c20;
+}
+
+.npc-name {
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.npc-hint {
+  color: var(--ink-mute);
+  font-size: 12px;
+}
+
+.move-list .ghost {
+  width: 100%;
+  text-align: left;
+}
+
+/* ── Job choice cards ────────────────────────── */
+
+.choice-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.choice-card h3 {
+  margin: 0;
+  color: var(--gold);
+  letter-spacing: 0.06em;
+}
+
+.choice-card p {
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+.choice-effects {
+  color: var(--ink) !important;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  background: var(--bg-soft);
+  border: 1px dashed var(--line);
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.choice-card .primary {
+  align-self: flex-end;
+}
+
+/* ── Log ─────────────────────────────────────── */
+
+.log {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--ink-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rumor-tags {
+  margin: 10px 0 0;
+  color: var(--gold);
+  font-family: ui-monospace, "SF Mono", monospace;
+  letter-spacing: 0.05em;
+}
+
+/* ── Status panel ────────────────────────────── */
+
+.status-panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 18px 20px;
+}
+
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 640px) {
+  .status-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.status-grid ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--ink-soft);
+}
+
+.status-panel h2 {
+  margin: 0 0 14px;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+}
+
+.status-panel h3 {
+  color: var(--gold);
+  margin: 0 0 8px;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+}
+
+.status-actions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+}
