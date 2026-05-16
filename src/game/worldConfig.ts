@@ -54,16 +54,6 @@ export const NPC_SPAWNS: Record<WorldNPC, Vec> = {
   child: { x: 820, y: 1090 },
 };
 
-/** Multiply-tint applied to the white figure texture. */
-export const NPC_TINTS: Record<WorldNPC, number> = {
-  landlord: 0xc7a373,
-  fishmonger: 0x74aecb,
-  child: 0x8fc873,
-  newsman: 0xd58fb8,
-};
-
-export const PLAYER_TINT = 0xff9d4d;
-
 /** Door to the long-house room — sits in the 長屋前 area. */
 export const ROOM_DOOR: Rect = { x: 1000, y: 558, w: 124, h: 138 };
 

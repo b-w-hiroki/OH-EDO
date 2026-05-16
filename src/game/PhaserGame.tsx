@@ -20,6 +20,7 @@ export function PhaserGame() {
       width: GAME_WIDTH,
       height: GAME_HEIGHT,
       backgroundColor: "#16110d",
+      pixelArt: true,
       physics: {
         default: "arcade",
         arcade: { gravity: { x: 0, y: 0 }, debug: false },

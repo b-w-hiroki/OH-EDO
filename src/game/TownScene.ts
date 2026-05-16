@@ -8,9 +8,7 @@ import {
   AREA_LABEL,
   DECORATIONS,
   NPC_SPAWNS,
-  NPC_TINTS,
   PLAYER_SPAWN,
-  PLAYER_TINT,
   ROOM_DOOR,
   WELL_OBSTACLE,
   WORLD_HEIGHT,
@@ -19,6 +17,7 @@ import {
   type Vec,
   type WorldNPC,
 } from "./worldConfig";
+import { CHAR_SCALE, CHAR_TEX_H, buildCharacterTextures } from "./characters";
 
 const PLAYER_SPEED = 196;
 const INTERACT_RANGE = 84;
@@ -47,6 +46,7 @@ function rectContainsExpanded(
 
 export class TownScene extends Phaser.Scene {
   private player!: Phaser.Physics.Arcade.Sprite;
+  private playerShadow!: Phaser.GameObjects.Ellipse;
   private keys: KeyMap | null = null;
   private npcEntities: NPCEntity[] = [];
   private promptText!: Phaser.GameObjects.Text;
@@ -56,6 +56,8 @@ export class TownScene extends Phaser.Scene {
   private roomUnlocked = false;
   private nearbyNPC: WorldNPC | null = null;
   private nearDoor = false;
+  private walkTimer = 0;
+  private walkFrame = 0;
 
   private readonly doorCenter: Vec = {
     x: ROOM_DOOR.x + ROOM_DOOR.w / 2,
@@ -100,16 +102,7 @@ export class TownScene extends Phaser.Scene {
   // ── Setup ─────────────────────────────────────────────
 
   private makeTextures(): void {
-    if (this.textures.exists("figure")) return;
-    const g = this.make.graphics({ x: 0, y: 0 });
-    g.fillStyle(0xffffff, 1);
-    g.fillRoundedRect(6, 16, 18, 22, 5); // body
-    g.fillCircle(15, 11, 9); // head
-    g.lineStyle(3, 0x241a12, 1);
-    g.strokeRoundedRect(6, 16, 18, 22, 5);
-    g.strokeCircle(15, 11, 9);
-    g.generateTexture("figure", 30, 40);
-    g.destroy();
+    buildCharacterTextures(this);
   }
 
   private drawGround(): void {
@@ -139,16 +132,17 @@ export class TownScene extends Phaser.Scene {
   }
 
   private createPlayer(): void {
+    this.playerShadow = this.add
+      .ellipse(PLAYER_SPAWN.x, PLAYER_SPAWN.y + 28, 36, 13, 0x000000, 0.32);
     this.player = this.physics.add.sprite(
       PLAYER_SPAWN.x,
       PLAYER_SPAWN.y,
-      "figure"
+      "char-player"
     );
-    this.player.setTint(PLAYER_TINT);
     this.player.setCollideWorldBounds(true);
     const body = this.player.body as Phaser.Physics.Arcade.Body;
-    body.setSize(20, 14);
-    body.setOffset(5, 24);
+    body.setSize(20, 12);
+    body.setOffset(17, 57);
     this.currentArea = this.areaAt(this.player.y);
   }
 
@@ -205,11 +199,27 @@ export class TownScene extends Phaser.Scene {
   private createNPCs(): void {
     (Object.keys(NPC_SPAWNS) as WorldNPC[]).forEach((id) => {
       const pos = NPC_SPAWNS[id];
-      const image = this.add.image(pos.x, pos.y, "figure");
-      image.setTint(NPC_TINTS[id]);
-      image.setDepth(pos.y);
+      const scale = CHAR_SCALE[id];
+      const halfH = (CHAR_TEX_H * scale) / 2;
+
       this.add
-        .text(pos.x, pos.y - 32, NPCS[id].name, {
+        .ellipse(pos.x, pos.y + halfH - 8, 34 * scale, 12 * scale, 0x000000, 0.3)
+        .setDepth(pos.y - 1);
+
+      const image = this.add.image(pos.x, pos.y, `char-${id}`);
+      image.setScale(scale);
+      image.setDepth(pos.y);
+      this.tweens.add({
+        targets: image,
+        scaleY: scale * 1.035,
+        duration: 1300,
+        yoyo: true,
+        repeat: -1,
+        ease: "Sine.easeInOut",
+      });
+
+      this.add
+        .text(pos.x, pos.y - halfH - 6, NPCS[id].name, {
           fontFamily: "sans-serif",
           fontSize: "14px",
           color: "#f4e8d6",
@@ -250,23 +260,34 @@ export class TownScene extends Phaser.Scene {
 
   // ── Per-frame ─────────────────────────────────────────
 
-  update(): void {
+  update(_time: number, delta: number): void {
     if (!this.player || !this.keys) return;
 
     if (!this.inputEnabled) {
       this.player.setVelocity(0, 0);
       this.promptText.setVisible(false);
+      if (this.walkFrame !== 0) {
+        this.walkFrame = 0;
+        this.player.setTexture("char-player");
+      }
+      this.syncPlayerDepth();
       return;
     }
 
-    this.handleMovement();
+    this.handleMovement(delta);
     this.handleAreaDetection();
     this.handleProximity();
     this.handleAction();
-    this.player.setDepth(this.player.y);
+    this.syncPlayerDepth();
   }
 
-  private handleMovement(): void {
+  private syncPlayerDepth(): void {
+    this.player.setDepth(this.player.y);
+    this.playerShadow.setPosition(this.player.x, this.player.y + 28);
+    this.playerShadow.setDepth(this.player.y - 1);
+  }
+
+  private handleMovement(delta: number): void {
     const k = this.keys!;
     let vx = 0;
     let vy = 0;
@@ -279,6 +300,22 @@ export class TownScene extends Phaser.Scene {
     this.player.setVelocity(v.x, v.y);
     if (vx < 0) this.player.setFlipX(true);
     else if (vx > 0) this.player.setFlipX(false);
+
+    // Two-frame walk cycle.
+    if (vx !== 0 || vy !== 0) {
+      this.walkTimer += delta;
+      if (this.walkTimer > 150) {
+        this.walkTimer = 0;
+        this.walkFrame = this.walkFrame === 0 ? 1 : 0;
+        this.player.setTexture(
+          this.walkFrame === 1 ? "char-player-b" : "char-player"
+        );
+      }
+    } else if (this.walkFrame !== 0) {
+      this.walkFrame = 0;
+      this.walkTimer = 0;
+      this.player.setTexture("char-player");
+    }
   }
 
   private handleAreaDetection(): void {
