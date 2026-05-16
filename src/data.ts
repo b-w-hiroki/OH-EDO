@@ -61,8 +61,6 @@ export const AREAS: Record<AreaDef["id"], AreaDef> = {
     name: "長屋前",
     description:
       "古びた板壁が並ぶ長屋の前。物干しが揺れて、味噌の匂いと魚の生臭さが入り混じる。",
-    npcs: ["landlord"],
-    exits: ["well", "market", "room"],
     flavor: [
       "どこかの部屋から、ぐずる赤ん坊の声が漏れている。",
       "朝の井戸端会議が、ここまで風に乗って届く。",
@@ -73,8 +71,6 @@ export const AREAS: Record<AreaDef["id"], AreaDef> = {
     name: "井戸端",
     description:
       "桶の音と女衆の笑い声が響く井戸端。洗いものの石鹸の匂いと、噂話の匂いが同じくらい濃い。",
-    npcs: ["child"],
-    exits: ["nagaya", "market"],
     flavor: [
       "誰かの旦那が昨夜どこで飲んでいたか、もう町中にバレているらしい。",
       "井戸の縁に座った猫が、欠伸を一つしてまた寝た。",
@@ -85,8 +81,6 @@ export const AREAS: Record<AreaDef["id"], AreaDef> = {
     name: "商店通り",
     description:
       "魚屋、八百屋、瓦版屋。声と荷車と威勢のいい啖呵がぶつかり合う、江戸らしい一角。",
-    npcs: ["fishmonger", "newsman"],
-    exits: ["nagaya", "well"],
     flavor: [
       "瓦版屋が「号外」と叫ぶたび、犬が一緒に走り出す。",
       "魚屋の前で値切る婆さんと、笑って受け流す若い衆。",
@@ -97,8 +91,6 @@ export const AREAS: Record<AreaDef["id"], AreaDef> = {
     name: "長屋の部屋",
     description:
       "畳二枚ほどの薄暗い部屋。荷物と呼べる荷物もないが、屋根があるというのは存外ありがたい。",
-    npcs: [],
-    exits: ["nagaya"],
     flavor: [
       "壁の節穴から、隣の暮らしの音がそのまま聞こえてくる。",
       "天井板の隅に、前の住人が書いた落書きが残っている。",

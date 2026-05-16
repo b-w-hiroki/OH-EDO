@@ -10,9 +10,6 @@
   --accent: #d96b35;
   --accent-soft: #b85a2a;
   --gold: #d9b66b;
-  --indigo: #4a6c7f;
-  --green: #7a8a5a;
-  --danger: #c84a3a;
 }
 
 * {
@@ -27,8 +24,7 @@ body,
 
 body {
   margin: 0;
-  background:
-    radial-gradient(ellipse at top, #2a1f17 0%, var(--bg) 70%) fixed;
+  background: radial-gradient(ellipse at top, #2a1f17 0%, var(--bg) 70%) fixed;
   color: var(--ink);
   font-family: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", "Georgia",
     serif;
@@ -48,9 +44,9 @@ button:disabled {
 }
 
 .app {
-  max-width: 880px;
+  max-width: 920px;
   margin: 0 auto;
-  padding: 18px 18px 60px;
+  padding: 16px 16px 48px;
   min-height: 100%;
 }
 
@@ -60,7 +56,7 @@ button:disabled {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   gap: 12px;
   flex-wrap: wrap;
 }
@@ -133,7 +129,7 @@ button:disabled {
   color: var(--gold);
 }
 
-/* ── Status bar ──────────────────────────────── */
+/* ── Status bar (HUD) ─────────────────────────── */
 
 .statusbar {
   display: flex;
@@ -141,8 +137,8 @@ button:disabled {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 10px 14px;
-  margin-bottom: 14px;
+  padding: 9px 14px;
+  margin-bottom: 10px;
   flex-wrap: wrap;
   justify-content: space-between;
 }
@@ -180,12 +176,11 @@ button:disabled {
 /* ── Title ───────────────────────────────────── */
 
 .title {
-  margin-top: 8vh;
+  margin-top: 7vh;
   text-align: center;
   padding: 40px 24px;
   border: 1px solid var(--line);
-  background:
-    linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
+  background: linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
   border-radius: 12px;
   box-shadow: 0 14px 40px rgba(0, 0, 0, 0.5);
 }
@@ -200,7 +195,7 @@ button:disabled {
 
 .title-sub {
   color: var(--gold);
-  letter-spacing: 0.2em;
+  letter-spacing: 0.16em;
   margin: 0 0 28px;
 }
 
@@ -215,20 +210,72 @@ button:disabled {
   justify-content: center;
 }
 
+/* ── Stage: Phaser canvas + overlays ──────────── */
+
+.stage {
+  position: relative;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+}
+
+.phaser-container {
+  width: 100%;
+  aspect-ratio: 832 / 552;
+  background: #16110d;
+  display: block;
+}
+
+.phaser-container canvas {
+  display: block;
+}
+
+.controls-hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 6px 12px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--ink-soft);
+  background: linear-gradient(0deg, rgba(20, 14, 10, 0.85), transparent);
+  pointer-events: none;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(14, 10, 7, 0.74);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  overflow-y: auto;
+  z-index: 10;
+}
+
 /* ── Dialog ──────────────────────────────────── */
+
+.solo-dialog {
+  margin-top: 6vh;
+}
 
 .dialog {
   background: var(--panel);
   border: 1px solid var(--line);
   border-left: 4px solid var(--accent);
   border-radius: 10px;
-  padding: 22px 26px;
-  min-height: 200px;
+  padding: 20px 24px;
+  width: min(620px, 100%);
+  min-height: 188px;
   display: flex;
   flex-direction: column;
   gap: 14px;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
-  margin-top: 24px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
 }
 
 .dialog-speaker {
@@ -258,22 +305,52 @@ button:disabled {
   font-variant-numeric: tabular-nums;
 }
 
-/* ── Map / cards ─────────────────────────────── */
+/* ── Generic panels / job / result ───────────── */
 
-.mapview,
 .jobview,
 .resultview,
-.status-panel {
+.panel {
+  width: min(640px, 100%);
   display: flex;
   flex-direction: column;
-  gap: 14px;
-}
-
-.area-card {
+  gap: 12px;
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 10px;
-  padding: 16px 20px;
+  padding: 18px 20px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
+}
+
+.panel h2 {
+  margin: 0;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+}
+
+.panel h3 {
+  color: var(--gold);
+  margin: 4px 0 6px;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+}
+
+.panel-desc {
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+.panel-actions,
+.status-actions {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.area-card {
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px 18px;
 }
 
 .area-name {
@@ -287,36 +364,41 @@ button:disabled {
   color: var(--ink-soft);
 }
 
-.area-flavor {
-  margin: 10px 0 0;
-  color: var(--ink-mute);
-  font-style: italic;
-}
-
 .card-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: 12px;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 560px) {
   .card-row {
     grid-template-columns: 1fr;
   }
 }
 
 .card {
-  background: var(--panel);
+  background: var(--panel-2);
   border: 1px solid var(--line);
   border-radius: 10px;
-  padding: 14px 18px;
+  padding: 12px 16px;
 }
 
 .card h3 {
-  margin: 0 0 10px;
+  margin: 0 0 8px;
   color: var(--gold);
-  font-size: 15px;
+  font-size: 14px;
   letter-spacing: 0.08em;
+}
+
+.card ul,
+.status-grid ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  color: var(--ink-soft);
 }
 
 .muted {
@@ -324,10 +406,8 @@ button:disabled {
   margin: 0;
 }
 
-/* ── NPC list ────────────────────────────────── */
+/* ── Job choices ─────────────────────────────── */
 
-.npc-list,
-.move-list,
 .choice-list {
   list-style: none;
   padding: 0;
@@ -337,50 +417,14 @@ button:disabled {
   gap: 8px;
 }
 
-.npc-button {
-  width: 100%;
-  text-align: left;
+.choice-card {
   background: var(--panel-2);
   border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 10px 14px;
-  color: var(--ink);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: border-color 0.1s ease, background 0.1s ease;
-}
-
-.npc-button:hover {
-  border-color: var(--accent);
-  background: #3d2c20;
-}
-
-.npc-name {
-  font-weight: 600;
-  letter-spacing: 0.06em;
-}
-
-.npc-hint {
-  color: var(--ink-mute);
-  font-size: 12px;
-}
-
-.move-list .ghost {
-  width: 100%;
-  text-align: left;
-}
-
-/* ── Job choice cards ────────────────────────── */
-
-.choice-card {
-  background: var(--panel);
-  border: 1px solid var(--line);
   border-radius: 10px;
-  padding: 14px 18px;
+  padding: 12px 16px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .choice-card h3 {
@@ -400,7 +444,7 @@ button:disabled {
   font-variant-numeric: tabular-nums;
   background: var(--bg-soft);
   border: 1px dashed var(--line);
-  padding: 6px 10px;
+  padding: 5px 9px;
   border-radius: 6px;
 }
 
@@ -408,7 +452,19 @@ button:disabled {
   align-self: flex-end;
 }
 
-/* ── Log ─────────────────────────────────────── */
+/* ── Status panel grid ───────────────────────── */
+
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+@media (max-width: 560px) {
+  .status-grid {
+    grid-template-columns: 1fr;
+  }
+}
 
 .log {
   margin: 0;
@@ -420,59 +476,41 @@ button:disabled {
 }
 
 .rumor-tags {
-  margin: 10px 0 0;
+  margin: 6px 0 0;
   color: var(--gold);
   font-family: ui-monospace, "SF Mono", monospace;
   letter-spacing: 0.05em;
 }
 
-/* ── Status panel ────────────────────────────── */
+/* ── Log strip (always visible in town) ──────── */
 
-.status-panel {
+.logstrip {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-top: 10px;
+  padding: 8px 14px;
   background: var(--panel);
   border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 18px 20px;
+  border-radius: 8px;
+  flex-wrap: wrap;
 }
 
-.status-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-@media (max-width: 640px) {
-  .status-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.status-grid ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  color: var(--ink-soft);
-}
-
-.status-panel h2 {
-  margin: 0 0 14px;
-  color: var(--accent);
-  letter-spacing: 0.1em;
-}
-
-.status-panel h3 {
+.logstrip-label {
   color: var(--gold);
-  margin: 0 0 8px;
-  font-size: 14px;
-  letter-spacing: 0.06em;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
 }
 
-.status-actions {
-  margin-top: 16px;
-  display: flex;
-  justify-content: flex-end;
+.logstrip-text {
+  color: var(--ink-soft);
+  flex: 1;
+  min-width: 180px;
+}
+
+.logstrip-rumors {
+  color: var(--gold);
+  font-family: ui-monospace, "SF Mono", monospace;
+  font-size: 13px;
 }

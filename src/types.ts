@@ -1,10 +1,10 @@
 export type Screen =
   | "title"
   | "dialog"
-  | "map"
+  | "town"
   | "job"
   | "result"
-  | "night"
+  | "room"
   | "status";
 
 export type TimeOfDay = "morning" | "noon" | "evening" | "night";
@@ -86,8 +86,6 @@ export interface ActiveDialog {
   kind: DialogKind;
   lines: DialogLine[];
   index: number;
-  /** Returned-to-screen after the dialog finishes (before any onComplete-driven transition). */
-  returnTo: Screen;
 }
 
 export interface JobChoice {
@@ -123,9 +121,6 @@ export interface AreaDef {
   id: AreaId;
   name: string;
   description: string;
-  npcs: NPCId[];
-  /** Areas accessible from here. */
-  exits: AreaId[];
   /** Day-flavored 小話. Index by day - 1 (clamped). */
   flavor: string[];
 }

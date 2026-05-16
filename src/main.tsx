@@ -1,10 +1,7 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./styles.css";
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+// StrictMode is intentionally omitted: its dev-only double mount/unmount
+// conflicts with the Phaser canvas lifecycle.
+ReactDOM.createRoot(document.getElementById("root")!).render(<App />);

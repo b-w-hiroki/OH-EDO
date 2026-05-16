@@ -1,12 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type {
-  AreaId,
   DialogKind,
   DialogLine,
   GameState,
   JobChoice,
   NPCId,
-  Screen,
+  AreaId,
 } from "./types";
 import {
   ALREADY_MET_LINES,
@@ -19,26 +18,27 @@ import {
   LANDLORD_INTRO_LINES,
   NEWSMAN_INTRO_LINES,
   NIGHT_LINES,
-  NPCS,
   OPENING_LINES,
   RUMOR_REPLIES,
   pickDominantRumor,
 } from "./data";
 import { DialogBox } from "./components/DialogBox";
 import { StatusBar } from "./components/StatusBar";
-import { MapView } from "./components/MapView";
 import { JobView } from "./components/JobView";
 import { ResultView } from "./components/ResultView";
+import { PhaserGame } from "./game/PhaserGame";
+import { EventBus } from "./game/EventBus";
 
-const STORAGE_KEY = "oh-edo-mvp-save-v1";
+const STORAGE_KEY = "oh-edo-mvp-save-v2";
 
 function loadInitial(): GameState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return INITIAL_STATE;
     const parsed = JSON.parse(raw) as GameState;
-    // Drop transient dialog state on load.
-    return { ...parsed, dialog: null };
+    // Drop transient dialog/overlay state on load.
+    const screen = parsed.flags.intro_done ? "town" : "title";
+    return { ...parsed, dialog: null, screen };
   } catch {
     return INITIAL_STATE;
   }
@@ -68,34 +68,26 @@ function shouldTriggerKumitori(s: GameState): boolean {
 
 function shouldTriggerLandlordIntro(s: GameState): boolean {
   return (
-    s.flags.intro_done &&
-    !s.flags.met_landlord &&
-    s.currentArea === "nagaya"
+    s.flags.intro_done && !s.flags.met_landlord && s.currentArea === "nagaya"
   );
 }
 
 function startDialogInState(
   s: GameState,
   kind: DialogKind,
-  lines: DialogLine[],
-  fallbackReturn: Screen = "map"
+  lines: DialogLine[]
 ): GameState {
   if (lines.length === 0) return s;
-  const returnTo = s.screen === "dialog" ? fallbackReturn : s.screen;
-  return {
-    ...s,
-    screen: "dialog",
-    dialog: { kind, lines, index: 0, returnTo },
-  };
+  return { ...s, screen: "dialog", dialog: { kind, lines, index: 0 } };
 }
 
 function applyDialogComplete(s: GameState, kind: DialogKind): GameState {
-  const closeToMap: GameState = { ...s, dialog: null, screen: "map" };
+  const closeToTown: GameState = { ...s, dialog: null, screen: "town" };
 
   switch (kind) {
     case "opening":
       return {
-        ...closeToMap,
+        ...closeToTown,
         flags: { ...s.flags, intro_done: true },
         currentArea: "nagaya",
         log: appendLog(s.log, s.day, "見知らぬ町、大江戸の路地に立った。"),
@@ -103,25 +95,21 @@ function applyDialogComplete(s: GameState, kind: DialogKind): GameState {
 
     case "landlord_intro":
       return {
-        ...closeToMap,
+        ...closeToTown,
         flags: { ...s.flags, met_landlord: true, room_unlocked: true },
         log: appendLog(s.log, s.day, "長屋に仮の居場所ができた。"),
       };
 
     case "fishmonger_intro":
       return {
-        ...closeToMap,
-        flags: {
-          ...s.flags,
-          met_fishmonger: true,
-          rumor_heard_kumitori: true,
-        },
+        ...closeToTown,
+        flags: { ...s.flags, met_fishmonger: true, rumor_heard_kumitori: true },
         log: appendLog(s.log, s.day, "長屋の汲み取りが遅れているらしい。"),
       };
 
     case "child_intro":
       return {
-        ...closeToMap,
+        ...closeToTown,
         flags: { ...s.flags, met_child: true },
         player: { ...s.player, network: s.player.network + 1 },
         log: appendLog(s.log, s.day, "子どもに顔を覚えられた。（人脈 +1）"),
@@ -129,7 +117,7 @@ function applyDialogComplete(s: GameState, kind: DialogKind): GameState {
 
     case "newsman_intro":
       return {
-        ...closeToMap,
+        ...closeToTown,
         flags: { ...s.flags, met_newsman: true },
         player: { ...s.player, iki: s.player.iki + 1 },
         log: appendLog(s.log, s.day, "瓦版屋に売り出されかけた。（粋 +1）"),
@@ -148,7 +136,7 @@ function applyDialogComplete(s: GameState, kind: DialogKind): GameState {
       return {
         ...s,
         dialog: null,
-        screen: "map",
+        screen: "town",
         flags: { ...s.flags, day1_ended: true, day2_started: true },
         day: 2,
         time: "morning",
@@ -161,7 +149,7 @@ function applyDialogComplete(s: GameState, kind: DialogKind): GameState {
     case "rumor_child":
     case "rumor_newsman":
     case "already_met":
-      return closeToMap;
+      return closeToTown;
   }
 }
 
@@ -235,24 +223,19 @@ function applyJobChoice(s: GameState, choice: JobChoice): GameState {
       network: s.player.network + delta.network,
       skill: s.player.skill + delta.skill,
     },
-    town: {
-      ...s.town,
-      hygiene: s.town.hygiene + delta.hygiene,
-    },
+    town: { ...s.town, hygiene: s.town.hygiene + delta.hygiene },
     flags: { ...s.flags, kumitori_job_done: true },
     activeRumors: Array.from(new Set([...s.activeRumors, ...choice.rumorTags])),
     log: appendLog(s.log, s.day, choice.resultText),
-    lastJobResult: {
-      choiceId: choice.id,
-      resultText: choice.resultText,
-      delta,
-    },
+    lastJobResult: { choiceId: choice.id, resultText: choice.resultText, delta },
   };
 }
 
 function App() {
   const [state, setState] = useState<GameState>(loadInitial);
+  const [sceneReady, setSceneReady] = useState(false);
 
+  // Persist.
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -261,9 +244,9 @@ function App() {
     }
   }, [state]);
 
-  // Auto-triggers when we are on the map screen without an active dialog.
+  // Auto-triggers when standing on the town with no dialog open.
   useEffect(() => {
-    if (state.screen !== "map" || state.dialog) return;
+    if (state.screen !== "town" || state.dialog) return;
     if (shouldTriggerLandlordIntro(state)) {
       setState((s) =>
         startDialogInState(s, "landlord_intro", LANDLORD_INTRO_LINES)
@@ -277,67 +260,116 @@ function App() {
     }
   }, [state]);
 
+  // ── React → Phaser bridge ───────────────────────────
+  useEffect(() => {
+    EventBus.emit("screen-changed", state.screen);
+  }, [state.screen]);
+
+  useEffect(() => {
+    EventBus.emit("game-flags", { roomUnlocked: state.flags.room_unlocked });
+  }, [state.flags.room_unlocked]);
+
+  useEffect(() => {
+    if (sceneReady && state.day >= 2) EventBus.emit("warp", "nagaya");
+  }, [state.day, sceneReady]);
+
+  // On scene ready, re-sync everything Phaser may have missed.
+  useEffect(() => {
+    if (!sceneReady) return;
+    EventBus.emit("screen-changed", state.screen);
+    EventBus.emit("game-flags", { roomUnlocked: state.flags.room_unlocked });
+    EventBus.emit("warp", state.currentArea);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sceneReady]);
+
+  // ── Phaser → React bridge ───────────────────────────
+  useEffect(() => {
+    const onNpc = (npc: NPCId) => {
+      setState((s) => {
+        if (s.screen !== "town") return s;
+        const picked = pickNPCDialog(s, npc);
+        if (!picked) return s;
+        return startDialogInState(s, picked.kind, picked.lines);
+      });
+    };
+    const onArea = (area: AreaId) => {
+      setState((s) =>
+        s.screen === "town" && s.currentArea !== area
+          ? { ...s, currentArea: area }
+          : s
+      );
+    };
+    const onEnterRoom = () => {
+      setState((s) =>
+        s.screen === "town"
+          ? { ...s, screen: "room", currentArea: "room" }
+          : s
+      );
+    };
+    const onSceneReady = () => setSceneReady(true);
+
+    EventBus.on("npc-interact", onNpc);
+    EventBus.on("area-entered", onArea);
+    EventBus.on("enter-room", onEnterRoom);
+    EventBus.on("scene-ready", onSceneReady);
+    return () => {
+      EventBus.off("npc-interact", onNpc);
+      EventBus.off("area-entered", onArea);
+      EventBus.off("enter-room", onEnterRoom);
+      EventBus.off("scene-ready", onSceneReady);
+    };
+  }, []);
+
+  // ── Actions ─────────────────────────────────────────
   const startGame = useCallback(() => {
-    setState((s) => startDialogInState(s, "opening", OPENING_LINES, "title"));
+    setState((s) => startDialogInState(s, "opening", OPENING_LINES));
   }, []);
 
   const advanceDialog = useCallback(() => {
     setState((s) => {
       if (!s.dialog) return s;
-      const nextIndex = s.dialog.index + 1;
-      if (nextIndex < s.dialog.lines.length) {
-        return { ...s, dialog: { ...s.dialog, index: nextIndex } };
+      const next = s.dialog.index + 1;
+      if (next < s.dialog.lines.length) {
+        return { ...s, dialog: { ...s.dialog, index: next } };
       }
       return applyDialogComplete(s, s.dialog.kind);
     });
   }, []);
 
-  const moveTo = useCallback((area: AreaId) => {
-    setState((s) => {
-      if (s.screen !== "map") return s;
-      if (area === "room" && !s.flags.room_unlocked) return s;
-      return { ...s, currentArea: area };
-    });
-  }, []);
-
-  const talkTo = useCallback((npc: NPCId) => {
-    setState((s) => {
-      if (s.screen !== "map") return s;
-      const picked = pickNPCDialog(s, npc);
-      if (!picked) return s;
-      return startDialogInState(s, picked.kind, picked.lines);
-    });
-  }, []);
-
   const chooseJob = useCallback((choice: JobChoice) => {
-    setState((s) => {
-      if (s.screen !== "job") return s;
-      return applyJobChoice(s, choice);
-    });
+    setState((s) => (s.screen === "job" ? applyJobChoice(s, choice) : s));
   }, []);
 
   const goToNight = useCallback(() => {
-    setState((s) => startDialogInState(s, "night", NIGHT_LINES, "result"));
+    setState((s) => startDialogInState(s, "night", NIGHT_LINES));
+  }, []);
+
+  const closeRoom = useCallback(() => {
+    setState((s) =>
+      s.screen === "room"
+        ? { ...s, screen: "town", currentArea: "nagaya" }
+        : s
+    );
   }, []);
 
   const openStatus = useCallback(() => {
-    setState((s) => (s.screen === "map" ? { ...s, screen: "status" } : s));
+    setState((s) => (s.screen === "town" ? { ...s, screen: "status" } : s));
   }, []);
 
   const closeStatus = useCallback(() => {
-    setState((s) => (s.screen === "status" ? { ...s, screen: "map" } : s));
+    setState((s) => (s.screen === "status" ? { ...s, screen: "town" } : s));
   }, []);
 
   const resetGame = useCallback(() => {
     if (!window.confirm("旅をやり直しますか？セーブも消えるよ。")) return;
     localStorage.removeItem(STORAGE_KEY);
-    setState(INITIAL_STATE);
+    window.location.reload();
   }, []);
 
-  const currentArea = useMemo(
-    () => AREAS[state.currentArea],
-    [state.currentArea]
-  );
+  // ── Render ──────────────────────────────────────────
+  const inWorld = state.flags.intro_done && state.screen !== "title";
+  const inOpening = state.screen === "dialog" && !state.flags.intro_done;
+  const lastLog = state.log[state.log.length - 1];
 
   return (
     <div className="app">
@@ -347,14 +379,14 @@ function App() {
           <span className="badge">
             Day {state.day}・{timeLabel(state.time)}
           </span>
-          {state.screen !== "title" && (
-            <span className="badge subtle">{currentArea.name}</span>
+          {inWorld && (
+            <span className="badge subtle">{AREAS[state.currentArea].name}</span>
           )}
         </div>
         <div className="topbar-right">
-          {state.screen === "map" && (
+          {state.screen === "town" && (
             <button className="ghost" onClick={openStatus}>
-              ステータス
+              覚え書き
             </button>
           )}
           {state.screen !== "title" && (
@@ -365,53 +397,89 @@ function App() {
         </div>
       </header>
 
-      {state.screen !== "title" && state.screen !== "dialog" && (
-        <StatusBar player={state.player} town={state.town} />
-      )}
+      {inWorld && <StatusBar player={state.player} town={state.town} />}
 
       <main className="main">
         {state.screen === "title" && (
           <TitleView onStart={startGame} hasSave={hasSave(state)} />
         )}
 
-        {state.screen === "dialog" && state.dialog && (
-          <DialogBox
-            line={state.dialog.lines[state.dialog.index]}
-            index={state.dialog.index}
-            total={state.dialog.lines.length}
-            onNext={advanceDialog}
-          />
+        {inOpening && state.dialog && (
+          <section className="solo-dialog">
+            <DialogBox
+              line={state.dialog.lines[state.dialog.index]}
+              index={state.dialog.index}
+              total={state.dialog.lines.length}
+              onNext={advanceDialog}
+            />
+          </section>
         )}
 
-        {state.screen === "map" && (
-          <MapView
-            state={state}
-            area={currentArea}
-            onMove={moveTo}
-            onTalk={talkTo}
-            npcLookup={NPCS}
-          />
+        {inWorld && (
+          <div className="stage">
+            <PhaserGame />
+
+            {state.screen === "town" && (
+              <p className="controls-hint">
+                矢印 / WASD で移動・スペースで話しかける
+              </p>
+            )}
+
+            {state.screen === "dialog" && state.dialog && (
+              <div className="overlay">
+                <DialogBox
+                  line={state.dialog.lines[state.dialog.index]}
+                  index={state.dialog.index}
+                  total={state.dialog.lines.length}
+                  onNext={advanceDialog}
+                />
+              </div>
+            )}
+
+            {state.screen === "job" && (
+              <div className="overlay">
+                <JobView choices={JOB_CHOICES} onChoose={chooseJob} />
+              </div>
+            )}
+
+            {state.screen === "result" && state.lastJobResult && (
+              <div className="overlay">
+                <ResultView
+                  result={state.lastJobResult}
+                  player={state.player}
+                  town={state.town}
+                  activeRumors={state.activeRumors}
+                  onNext={goToNight}
+                />
+              </div>
+            )}
+
+            {state.screen === "room" && (
+              <div className="overlay">
+                <RoomView day={state.day} onClose={closeRoom} />
+              </div>
+            )}
+
+            {state.screen === "status" && (
+              <div className="overlay">
+                <StatusPanel state={state} onClose={closeStatus} />
+              </div>
+            )}
+          </div>
         )}
 
-        {state.screen === "job" && (
-          <JobView choices={JOB_CHOICES} onChoose={chooseJob} />
-        )}
-
-        {state.screen === "result" && state.lastJobResult && (
-          <ResultView
-            result={state.lastJobResult}
-            player={state.player}
-            town={state.town}
-            activeRumors={state.activeRumors}
-            onNext={goToNight}
-          />
-        )}
-
-        {state.screen === "status" && (
-          <StatusPanel
-            state={state}
-            onClose={closeStatus}
-          />
+        {inWorld && (
+          <div className="logstrip">
+            <span className="logstrip-label">町の声</span>
+            <span className="logstrip-text">
+              {lastLog ?? "まだ語ることはない。"}
+            </span>
+            {state.activeRumors.length > 0 && (
+              <span className="logstrip-rumors">
+                {state.activeRumors.map((r) => `#${r}`).join(" ")}
+              </span>
+            )}
+          </div>
         )}
       </main>
     </div>
@@ -445,14 +513,33 @@ function TitleView({
   return (
     <section className="title">
       <h1 className="title-main">OH！EDO！</h1>
-      <p className="title-sub">江戸ライフ成り上がり ── MVP プロトタイプ</p>
+      <p className="title-sub">江戸ライフ成り上がり ── 歩けるプロト</p>
       <p className="title-flavor">
-        流れ着いたのは、騒がしくも妙に居心地のいい大江戸の長屋。<br />
-        町は、あんたのことを少しずつ覚えていく。
+        流れ着いたのは、騒がしくも妙に居心地のいい大江戸の長屋。
+        <br />
+        町を歩き、声をかけ──町は、あんたのことを少しずつ覚えていく。
       </p>
       <div className="title-actions">
         <button className="primary" onClick={onStart}>
           {hasSave ? "続きから（保存済み）" : "はじめる"}
+        </button>
+      </div>
+    </section>
+  );
+}
+
+function RoomView({ day, onClose }: { day: number; onClose: () => void }) {
+  const room = AREAS.room;
+  const flavor = room.flavor[Math.min(day - 1, room.flavor.length - 1)];
+  return (
+    <section className="panel">
+      <h2>{room.name}</h2>
+      <p className="panel-desc">{room.description}</p>
+      <p className="muted">― {flavor}</p>
+      <p>ひと息ついた。狭くても、戻る場所があるというのは悪くない。</p>
+      <div className="panel-actions">
+        <button className="primary" onClick={onClose}>
+          町へ出る
         </button>
       </div>
     </section>
@@ -467,7 +554,7 @@ function StatusPanel({
   onClose: () => void;
 }) {
   return (
-    <section className="status-panel">
+    <section className="panel">
       <h2>覚え書き</h2>
       <div className="status-grid">
         <div>
@@ -509,13 +596,13 @@ function StatusPanel({
         <p className="muted">まだ何も書き残せていない。</p>
       ) : (
         <ol className="log">
-          {state.log.map((entry, i) => (
+          {[...state.log].slice(-8).reverse().map((entry, i) => (
             <li key={i}>{entry}</li>
           ))}
         </ol>
       )}
 
-      <div className="status-actions">
+      <div className="panel-actions">
         <button className="primary" onClick={onClose}>
           町へ戻る
         </button>
