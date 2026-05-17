@@ -176,6 +176,7 @@ button:disabled {
 
 .primary {
   position: relative;
+  display: inline-block;
   background: linear-gradient(180deg, #e07a3c 0%, var(--kaki) 48%, var(--kaki-deep) 100%);
   color: #fff5e2;
   border: 1px solid #5c2a13;
@@ -498,6 +499,16 @@ button:disabled {
     inset 0 0 0 5px var(--washi-line),
     0 14px 32px rgba(0, 0, 0, 0.6);
   animation: riseIn 0.2s ease-out;
+  cursor: pointer;
+  user-select: none;
+}
+
+.dialog:hover .dialog-next {
+  filter: brightness(1.08);
+}
+
+.dialog:active {
+  transform: translateY(1px);
 }
 
 .dialog-speaker {

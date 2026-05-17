@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type {
   DialogKind,
   DialogLine,
@@ -234,6 +234,7 @@ function applyJobChoice(s: GameState, choice: JobChoice): GameState {
 function App() {
   const [state, setState] = useState<GameState>(loadInitial);
   const [sceneReady, setSceneReady] = useState(false);
+  const dialogOpenRef = useRef(false);
 
   // Persist.
   useEffect(() => {
@@ -365,6 +366,22 @@ function App() {
     localStorage.removeItem(STORAGE_KEY);
     window.location.reload();
   }, []);
+
+  // Keyboard page-turning: Space / Enter advance an open dialog.
+  useEffect(() => {
+    dialogOpenRef.current = state.screen === "dialog" && state.dialog !== null;
+  }, [state.screen, state.dialog]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== " " && e.key !== "Enter") return;
+      if (e.repeat || !dialogOpenRef.current) return;
+      e.preventDefault();
+      advanceDialog();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [advanceDialog]);
 
   // ── Render ──────────────────────────────────────────
   const inWorld = state.flags.intro_done && state.screen !== "title";
