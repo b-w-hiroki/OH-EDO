@@ -80,10 +80,11 @@ export class TownScene extends Phaser.Scene {
     this.promptText = this.add
       .text(0, 0, "", {
         fontFamily: "sans-serif",
-        fontSize: "15px",
+        fontSize: "16px",
+        fontStyle: "bold",
         color: "#fff4dc",
-        backgroundColor: "#3a1f0fdd",
-        padding: { x: 8, y: 4 },
+        backgroundColor: "#2a1408",
+        padding: { x: 9, y: 5 },
       })
       .setOrigin(0.5, 1)
       .setDepth(2000)
@@ -119,7 +120,7 @@ export class TownScene extends Phaser.Scene {
           color: "#ffffff",
         })
         .setOrigin(0.5, 0)
-        .setAlpha(0.12)
+        .setAlpha(0.17)
         .setDepth(-19);
     });
 
@@ -164,10 +165,11 @@ export class TownScene extends Phaser.Scene {
     this.add
       .text(this.doorCenter.x, ROOM_DOOR.y - 6, "長屋の部屋", {
         fontFamily: "sans-serif",
-        fontSize: "14px",
-        color: "#f4e8d6",
-        backgroundColor: "#241a12cc",
-        padding: { x: 6, y: 2 },
+        fontSize: "15px",
+        fontStyle: "bold",
+        color: "#fbf2da",
+        backgroundColor: "#15100a",
+        padding: { x: 7, y: 3 },
       })
       .setOrigin(0.5, 1)
       .setDepth(1500);
@@ -221,10 +223,11 @@ export class TownScene extends Phaser.Scene {
       this.add
         .text(pos.x, pos.y - halfH - 6, NPCS[id].name, {
           fontFamily: "sans-serif",
-          fontSize: "14px",
-          color: "#f4e8d6",
-          backgroundColor: "#241a12cc",
-          padding: { x: 6, y: 2 },
+          fontSize: "15px",
+          fontStyle: "bold",
+          color: "#fbf2da",
+          backgroundColor: "#15100a",
+          padding: { x: 7, y: 3 },
         })
         .setOrigin(0.5, 1)
         .setDepth(1500);

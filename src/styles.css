@@ -12,8 +12,8 @@
   --washi-line: #c2af85;
   --washi-edge: #c0ac80;
   /* 墨字 — ink text on washi */
-  --ink: #2c2117;
-  --ink-soft: #5e5038;
+  --ink: #241a11;
+  --ink-soft: #463a26;
   /* 藍 — indigo */
   --ai: #33506f;
   --ai-deep: #1d3046;
@@ -26,8 +26,14 @@
   /* 金 — gold */
   --kin: #c9a44e;
   /* 生成り — light text on dark */
-  --cream: #f3e7cc;
-  --cream-soft: #c9b994;
+  --cream: #f6ecd6;
+  --cream-soft: #dccaa4;
+
+  /* fonts: serif for story text, gothic for dense UI text */
+  --font-serif: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP",
+    "Georgia", serif;
+  --font-ui: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo",
+    "Noto Sans JP", system-ui, sans-serif;
 }
 
 * {
@@ -43,10 +49,12 @@ body,
 body {
   margin: 0;
   color: var(--cream);
-  font-family: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", "Georgia",
-    serif;
-  font-size: 15px;
-  line-height: 1.75;
+  font-family: var(--font-serif);
+  font-size: 16px;
+  line-height: 1.78;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   background-color: var(--sumi);
   background-image:
     radial-gradient(
@@ -89,6 +97,18 @@ button {
 button:disabled {
   cursor: not-allowed;
   opacity: 0.5;
+}
+
+/* Gothic for dense / functional text — sharper at small sizes */
+.statusbar,
+.badge,
+.dialog-progress,
+.controls-hint,
+.logstrip-label,
+.choice-effects,
+.log,
+.status-grid ul {
+  font-family: var(--font-ui);
 }
 
 .app {
@@ -161,7 +181,8 @@ button:disabled {
   border: 1px solid var(--sumi);
   padding: 3px 11px;
   border-radius: 2px;
-  font-size: 13px;
+  font-size: 13.5px;
+  font-weight: 600;
   letter-spacing: 0.04em;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
 }
@@ -259,19 +280,22 @@ button:disabled {
 }
 
 .stat.subtle {
-  opacity: 0.72;
+  opacity: 0.9;
 }
 
 .stat-key {
-  color: var(--kin);
-  font-size: 12px;
+  color: #e6c878;
+  font-size: 12.5px;
+  font-weight: 600;
   letter-spacing: 0.06em;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.55);
 }
 
 .stat-val {
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   color: var(--cream);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
 }
 
 /* ── Title — wooden signboard (看板) ──────────── */
@@ -427,14 +451,16 @@ button:disabled {
   bottom: 8px;
   transform: translateX(-50%);
   margin: 0;
-  padding: 4px 16px;
+  padding: 5px 18px;
   text-align: center;
-  font-size: 12.5px;
-  letter-spacing: 0.04em;
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
   color: var(--cream);
-  background: rgba(29, 48, 70, 0.82);
+  background: rgba(20, 33, 49, 0.94);
   border: 1px solid var(--kin);
   border-radius: 999px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
   pointer-events: none;
   z-index: 7;
 }
@@ -525,7 +551,8 @@ button:disabled {
 
 .dialog-text {
   flex: 1;
-  font-size: 17px;
+  font-size: 18px;
+  line-height: 1.85;
   margin: 0;
   white-space: pre-wrap;
 }
@@ -541,7 +568,8 @@ button:disabled {
 .dialog-progress {
   color: var(--ink-soft);
   font-size: 13px;
-  letter-spacing: 0.08em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   font-variant-numeric: tabular-nums;
 }
 
@@ -680,7 +708,6 @@ button:disabled {
 .muted {
   color: var(--ink-soft);
   margin: 0;
-  font-style: italic;
 }
 
 /* ── Job choices — wooden fuda ───────────────── */
@@ -734,11 +761,12 @@ button:disabled {
 
 .choice-effects {
   color: var(--ink) !important;
-  font-size: 13px;
+  font-size: 13.5px;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
-  background: #f3ead0;
+  background: #f5eed6;
   border: 1px dashed var(--washi-edge);
-  padding: 5px 9px;
+  padding: 6px 10px;
   border-radius: 2px;
 }
 
