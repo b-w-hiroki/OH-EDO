@@ -3,6 +3,7 @@ import type {
   DialogLine,
   GameState,
   JobChoice,
+  FireChoice,
   NPCDef,
   NPCId,
   RumorTag,
@@ -40,6 +41,9 @@ export const INITIAL_STATE: GameState = {
     kumitori_job_done: false,
     day1_ended: false,
     day2_started: false,
+    fire_intro_started: false,
+    fire_event_done: false,
+    day3_started: false,
   },
   npcRelations: {
     landlord: { affinity: 0, caution: 0, familiarity: 0, attitude: "neutral" },
@@ -383,3 +387,40 @@ export function getRumorAreaEcho(
   if (!rumor) return null;
   return RUMOR_AREA_ECHOES[rumor]?.[area] ?? null;
 }
+
+
+export const FIRE_INTRO_LINES: DialogLine[] = [
+  { speaker: "長屋の子ども", text: "火だー！ ……じゃなくて、煙だー！" },
+  { speaker: "主人公", text: "どっちにしても騒ぐには十分だな。" },
+  { speaker: "大家", text: "裏手の物置から煙が出てる。火消し組が来るまで、町内でできることをやるよ！" },
+  { speaker: "魚屋", text: "桶ならある！ 走れるやつは井戸へ！" },
+  { speaker: "瓦版屋", text: "書いてる場合じゃねえな。……いや、あとで書くけどよ！" },
+  { speaker: "大家", text: "新入り、昨日みたいに町の役に立てるかい？" },
+];
+
+export const FIRE_CHOICES: FireChoice[] = [
+  {
+    id: "fire_evacuate",
+    label: "声を張って避難を手伝う",
+    description: "人を動かす。安全確保と人脈を優先する。",
+    effects: { trust: 3, network: 2, safety: 4 },
+    rumorTags: ["helpful", "iki"],
+    resultText: "大声で長屋中を回り、子どもと年寄りを先に外へ出した。",
+  },
+  {
+    id: "fire_bucket",
+    label: "桶を運んで消火を手伝う",
+    description: "体を動かして現場を支える。腕前と安全を優先する。",
+    effects: { trust: 2, skill: 2, safety: 6 },
+    rumorTags: ["helpful", "quick"],
+    resultText: "井戸と物置を何度も往復し、火消し組が来るまで延焼を抑えた。",
+  },
+  {
+    id: "fire_report",
+    label: "煙の出どころを確かめて伝える",
+    description: "むやみに飛び込まず、状況を見て火消し組へ伝える。",
+    effects: { trust: 2, iki: 2, safety: 5 },
+    rumorTags: ["iki", "helpful"],
+    resultText: "風向きと煙の出どころを確かめ、火消し組に手短に伝えた。",
+  },
+];

@@ -4,6 +4,7 @@ export type Screen =
   | "town"
   | "job"
   | "result"
+  | "fire_choice"
   | "room"
   | "status";
 
@@ -40,6 +41,7 @@ export type DialogKind =
   | "newsman_intro"
   | "kumitori_event"
   | "night"
+  | "fire_intro"
   | "rumor_landlord"
   | "rumor_fishmonger"
   | "rumor_child"
@@ -80,6 +82,9 @@ export interface Flags {
   kumitori_job_done: boolean;
   day1_ended: boolean;
   day2_started: boolean;
+  fire_intro_started: boolean;
+  fire_event_done: boolean;
+  day3_started: boolean;
 }
 
 export interface ActiveDialog {
@@ -99,6 +104,21 @@ export interface JobChoice {
     network?: number;
     skill?: number;
     hygiene?: number;
+  };
+  rumorTags: RumorTag[];
+  resultText: string;
+}
+
+export interface FireChoice {
+  id: "fire_evacuate" | "fire_bucket" | "fire_report";
+  label: string;
+  description: string;
+  effects: {
+    trust?: number;
+    iki?: number;
+    network?: number;
+    skill?: number;
+    safety?: number;
   };
   rumorTags: RumorTag[];
   resultText: string;
