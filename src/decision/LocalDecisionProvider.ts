@@ -7,10 +7,11 @@ function clamp01(value: number): number {
 
 export class LocalDecisionProvider implements DecisionProvider {
   async decide(context: DecisionContext): Promise<DecisionResult> {
-    const chosen =
-      RUMOR_PRIORITY.find((tag) => context.candidateRumors.includes(tag)) ??
-      context.candidateRumors[0] ??
-      "none";
+    const chosen: DecisionResult["rumor"]["type"] =
+      context.candidateRumors.length === 0
+        ? "none"
+        : RUMOR_PRIORITY.find((tag) => context.candidateRumors.includes(tag)) ??
+          context.candidateRumors[0];
 
     const importance = context.yesterdayActions.reduce(
       (sum, action) => sum + action.importance,
