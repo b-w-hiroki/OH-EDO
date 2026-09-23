@@ -281,6 +281,30 @@ function applyJobChoice(s: GameState, choice: JobChoice): GameState {
   };
 }
 
+function getNextLead(state: GameState): string | null {
+  if (state.day < 2 || !state.lastDecision) return null;
+  if (state.lastDecision.specialEvent.shouldTrigger) {
+    return "火消し小屋の方が妙に騒がしい。昨日の噂と何か関係があるらしい。";
+  }
+  if (state.lastDecision.quest.shouldUnlock) {
+    return "魚屋がこちらをちらちら見ている。どうやら次の頼みごとがあるようだ。";
+  }
+  const rumor = pickDominantRumor(state.activeRumors);
+  if (rumor === "iki" || rumor === "funny") {
+    return "瓦版屋が紙束を抱えて待ち構えている。昨日の話をもっと盛る気らしい。";
+  }
+  if (rumor === "helpful" || rumor === "clean") {
+    return "井戸端で『あの新入りに頼めばいい』という声が聞こえ始めた。";
+  }
+  if (rumor === "quick") {
+    return "商店通りで『あいつ、仕事は速いらしいぞ』という声が飛び交っている。";
+  }
+  if (rumor === "yabo") {
+    return "大家が『次はもう少し粋にやんな』と、別の仕事を匂わせている。";
+  }
+  return "町はもう次の騒ぎを始めている。少し歩けば、また何かに巻き込まれそうだ。";
+}
+
 function App() {
   const [state, setState] = useState<GameState>(loadInitial);
   const [sceneReady, setSceneReady] = useState(false);
@@ -520,6 +544,7 @@ function App() {
   const dominantRumor = pickDominantRumor(state.activeRumors);
   const areaEcho =
     state.day >= 2 ? getRumorAreaEcho(dominantRumor, state.currentArea) : null;
+  const nextLead = getNextLead(state);
 
   return (
     <div className="app">
@@ -619,6 +644,7 @@ function App() {
         )}
 
         {inWorld && (
+          <>
           <div className="logstrip">
             <span className="logstrip-label">町の声</span>
             <span className="logstrip-text">
@@ -630,6 +656,13 @@ function App() {
               </span>
             )}
           </div>
+          {nextLead && (
+            <div className="next-lead">
+              <span className="next-lead-label">次の気配</span>
+              <span className="next-lead-text">{nextLead}</span>
+            </div>
+          )}
+          </>
         )}
       </main>
     </div>
