@@ -41,6 +41,13 @@ export const INITIAL_STATE: GameState = {
     day1_ended: false,
     day2_started: false,
   },
+  npcRelations: {
+    landlord: { affinity: 0, caution: 0, familiarity: 0, attitude: "neutral" },
+    fishmonger: { affinity: 0, caution: 0, familiarity: 0, attitude: "neutral" },
+    child: { affinity: 0, caution: 0, familiarity: 0, attitude: "neutral" },
+    newsman: { affinity: 0, caution: 0, familiarity: 0, attitude: "neutral" },
+    kumitori_master: { affinity: 0, caution: 0, familiarity: 0, attitude: "neutral" },
+  },
   activeRumors: [],
   log: [],
   playerActions: [],
