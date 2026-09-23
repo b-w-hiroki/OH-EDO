@@ -695,6 +695,7 @@ function App() {
   }, []);
 
   const advanceDialog = useCallback(() => {
+    uiSound.startAmbience();
     uiSound.next();
     setState((s) => {
       if (!s.dialog) return s;
@@ -1305,6 +1306,7 @@ function App() {
         {inWorld && (
           <>
           <AreaNav state={state} onMove={(area) => {
+            uiSound.startAmbience();
             uiSound.move();
             const label = AREAS[area].name;
             setAreaTransition(label);
