@@ -1281,6 +1281,7 @@ function App() {
               dominantRumor={dominantRumor}
               areaEcho={areaEcho}
               yesterdaySummary={yesterdaySummary}
+              onTalk={(npc) => EventBus.emit("npc-interact", npc)}
             />
           </div>
         )}
@@ -1369,11 +1370,13 @@ function TownSidePanel({
   dominantRumor,
   areaEcho,
   yesterdaySummary,
+  onTalk,
 }: {
   state: GameState;
   dominantRumor: ReturnType<typeof pickDominantRumor>;
   areaEcho: string | null;
   yesterdaySummary: string | null;
+  onTalk: (npc: NPCId) => void;
 }) {
   const areaNpcIds: NPCId[] =
     state.currentArea === "market"
@@ -1394,10 +1397,17 @@ function TownSidePanel({
               <span className={`nearby-avatar avatar-${npcId}`}>
                 <span>{NPCS[npcId].name.slice(0, 1)}</span>
               </span>
-              <div>
+              <div className="nearby-copy">
                 <strong>{NPCS[npcId].name}</strong>
                 <small>{state.npcRelations[npcId].attitude}</small>
               </div>
+              <button
+                className="nearby-talk"
+                onClick={() => onTalk(npcId)}
+                aria-label={`${NPCS[npcId].name}と話す`}
+              >
+                話す
+              </button>
             </div>
           ))}
         </div>
@@ -1409,6 +1419,15 @@ function TownSidePanel({
           <p>{yesterdaySummary}</p>
         </section>
       )}
+
+      <section className="side-card town-flavor-card">
+        <div className="side-card-title">この場所の小話</div>
+        <p>
+          {AREAS[state.currentArea].flavor[
+            Math.min(AREAS[state.currentArea].flavor.length - 1, Math.max(0, state.day - 1))
+          ]}
+        </p>
+      </section>
 
       <section className="side-card rumor-card">
         <div className="side-card-title">今日のうわさ</div>
