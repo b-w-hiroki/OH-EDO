@@ -42,10 +42,24 @@ function loadInitial(): GameState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return INITIAL_STATE;
-    const parsed = JSON.parse(raw) as GameState;
+    const parsed = JSON.parse(raw) as Partial<GameState>;
+    const merged: GameState = {
+      ...INITIAL_STATE,
+      ...parsed,
+      player: { ...INITIAL_STATE.player, ...(parsed.player ?? {}) },
+      town: { ...INITIAL_STATE.town, ...(parsed.town ?? {}) },
+      flags: { ...INITIAL_STATE.flags, ...(parsed.flags ?? {}) },
+      activeRumors: parsed.activeRumors ?? [],
+      log: parsed.log ?? [],
+      playerActions: parsed.playerActions ?? [],
+      decisionLogs: parsed.decisionLogs ?? [],
+      lastDecision: parsed.lastDecision ?? null,
+      dialog: null,
+      lastJobResult: parsed.lastJobResult ?? null,
+    };
     // Drop transient dialog/overlay state on load.
-    const screen = parsed.flags.intro_done ? "town" : "title";
-    return { ...parsed, dialog: null, screen };
+    const screen = merged.flags.intro_done ? "town" : "title";
+    return { ...merged, dialog: null, screen };
   } catch {
     return INITIAL_STATE;
   }
