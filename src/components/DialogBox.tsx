@@ -7,6 +7,16 @@ interface Props {
   onNext: () => void;
 }
 
+function speakerClass(speaker: string): string {
+  if (speaker.includes("魚")) return "speaker-fishmonger";
+  if (speaker.includes("大家")) return "speaker-landlord";
+  if (speaker.includes("子ども")) return "speaker-child";
+  if (speaker.includes("瓦版")) return "speaker-newsman";
+  if (speaker.includes("火消し")) return "speaker-firechief";
+  if (speaker.includes("主人公")) return "speaker-player";
+  return "speaker-generic";
+}
+
 function speakerGlyph(speaker: string): string {
   if (speaker.includes("魚")) return "魚";
   if (speaker.includes("大家")) return "家";
@@ -21,7 +31,7 @@ export function DialogBox({ line, index, total, onNext }: Props) {
   const isLast = index === total - 1;
   return (
     <section className="dialog mock-dialog" onClick={onNext}>
-      <div className="dialog-portrait" aria-hidden="true">
+      <div className={`dialog-portrait ${speakerClass(line.speaker)}`} aria-hidden="true">
         {speakerGlyph(line.speaker)}
       </div>
       <div className="dialog-body">
