@@ -26,6 +26,8 @@
 - Jev失敗時 Local fallback
 - Decisionログ
 - CI / smoke check
+- UI効果音 + 控えめなアンビエント音
+- 音 ON/OFF 切り替え
 - GitHub Pages workflow
 
 ## 操作
