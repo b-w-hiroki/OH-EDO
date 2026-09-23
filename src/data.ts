@@ -43,6 +43,9 @@ export const INITIAL_STATE: GameState = {
   },
   activeRumors: [],
   log: [],
+  playerActions: [],
+  decisionLogs: [],
+  lastDecision: null,
   dialog: null,
   lastJobResult: null,
 };
