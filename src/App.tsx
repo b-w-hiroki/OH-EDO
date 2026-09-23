@@ -294,6 +294,17 @@ interface NPCDialogPick {
 function pickNPCDialog(s: GameState, npc: NPCId): NPCDialogPick | null {
   if (npc === "kumitori_master") return null;
 
+  // Fire-chief progression must take priority over ambient rumor reactions.
+  if (npc === "firechief") {
+    if (!s.flags.firehouse_unlocked) return null;
+    if (!s.flags.met_firechief) {
+      return { kind: "firechief_intro", lines: FIRECHIEF_INTRO_LINES };
+    }
+    if (s.day >= 3 && !s.flags.patrol_started && !s.flags.patrol_done) {
+      return { kind: "patrol_intro", lines: PATROL_INTRO_LINES };
+    }
+  }
+
   // Day 3 fire aftermath takes priority over older sewage-rumor replies.
   if (s.day >= 3 && s.flags.fire_event_done) {
     const tag = pickDominantRumor(s.activeRumors);
@@ -345,17 +356,6 @@ function pickNPCDialog(s: GameState, npc: NPCId): NPCDialogPick | null {
       return { kind: "already_met", lines: ALREADY_MET_LINES.newsman };
 
     case "firechief":
-      if (!s.flags.firehouse_unlocked) return null;
-      if (!s.flags.met_firechief) {
-        return { kind: "firechief_intro", lines: FIRECHIEF_INTRO_LINES };
-      }
-      if (
-        s.day >= 3 &&
-        !s.flags.patrol_started &&
-        !s.flags.patrol_done
-      ) {
-        return { kind: "patrol_intro", lines: PATROL_INTRO_LINES };
-      }
       return { kind: "already_met", lines: ALREADY_MET_LINES.firechief };
   }
 }
