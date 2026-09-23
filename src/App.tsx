@@ -40,6 +40,7 @@ import { JobView } from "./components/JobView";
 import { ResultView } from "./components/ResultView";
 import { PhaserGame } from "./game/PhaserGame";
 import { EventBus } from "./game/EventBus";
+import { uiSound } from "./game/uiSound";
 import { buildDayDecisionContext } from "./decision/DecisionContextBuilder";
 import {
   createDecisionService,
@@ -413,6 +414,33 @@ function applyJobChoice(s: GameState, choice: JobChoice): GameState {
   });
 }
 
+function getCurrentObjective(state: GameState): string {
+  if (!state.flags.intro_done) return "大江戸町へ入る";
+  if (!state.flags.met_landlord) return "長屋前で大家に会う";
+  if (!state.flags.kumitori_job_done) {
+    if (!state.flags.kumitori_event_started) return "町を歩いて、長屋の困りごとを聞く";
+    return "長屋の初仕事を終える";
+  }
+  if (!state.flags.day2_started) return "部屋へ戻って一日を終える";
+  if (!state.flags.fire_event_done) return "町の噂を確かめ、次の騒ぎへ向かう";
+  if (!state.flags.met_firechief) return "火消し小屋で火消し頭に会う";
+  if (!state.flags.patrol_done) return "火消し頭の見回り仕事を手伝う";
+  if (state.day >= 4) return "町を歩き、次の出来事を探す";
+  return "町を歩いて人と話す";
+}
+
+function getYesterdaySummary(state: GameState): string | null {
+  if (state.day <= 1) return null;
+  const yesterday = state.playerActions
+    .filter((action) => action.day === state.day - 1)
+    .slice(-1)[0];
+  if (!yesterday) return state.lastDecision ? "昨日の行動が町の噂になっている。" : null;
+  const tag = yesterday.tags?.[0];
+  return tag
+    ? `昨日の行動が「#${tag}」として町に残っている。`
+    : "昨日の行動を町の人たちが覚えている。";
+}
+
 function getNextLead(state: GameState): string | null {
   if (
     state.day < 2 ||
@@ -447,6 +475,8 @@ function getNextLead(state: GameState): string | null {
 function App() {
   const [state, setState] = useState<GameState>(loadInitial);
   const [sceneReady, setSceneReady] = useState(false);
+  const [areaTransition, setAreaTransition] = useState<string | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
   const dialogOpenRef = useRef(false);
 
   // Persist.
@@ -546,6 +576,7 @@ function App() {
   }, []);
 
   const advanceDialog = useCallback(() => {
+    uiSound.next();
     setState((s) => {
       if (!s.dialog) return s;
       const next = s.dialog.index + 1;
@@ -557,6 +588,9 @@ function App() {
   }, []);
 
   const chooseJob = useCallback((choice: JobChoice) => {
+    uiSound.select();
+    setToast("行動が町の評判に影響した");
+    window.setTimeout(() => setToast(null), 1800);
     setState((s) => (s.screen === "job" ? applyJobChoice(s, choice) : s));
   }, []);
 
@@ -576,6 +610,7 @@ function App() {
 
   const chooseFireResponse = useCallback(async (choice: FireChoice) => {
     if (state.screen !== "fire_choice") return;
+    uiSound.select();
     const e = choice.effects;
     const action = {
       id: `action-${Date.now()}`,
@@ -638,6 +673,9 @@ function App() {
               ? "『小火より騒がしい新入り現る』"
               : "『長屋の小火、町内総出で大事なし』";
 
+    uiSound.result();
+    setToast("昨日の行動が、今日の町の空気になった");
+    window.setTimeout(() => setToast(null), 2200);
     setState((current) => withProgression({
       ...provisional,
       screen: "fire_result",
@@ -675,6 +713,9 @@ function App() {
   }, [state]);
 
   const choosePatrol = useCallback((choice: PatrolChoice) => {
+    uiSound.select();
+    setToast("見回りの結果が町に残った");
+    window.setTimeout(() => setToast(null), 1800);
     setState((s) => {
       if (s.screen !== "patrol_choice") return s;
       const e = choice.effects;
@@ -855,6 +896,8 @@ function App() {
         ? getRumorAreaEcho(dominantRumor, state.currentArea)
         : null;
   const nextLead = getNextLead(state);
+  const currentObjective = getCurrentObjective(state);
+  const yesterdaySummary = getYesterdaySummary(state);
 
   return (
     <div className="app">
@@ -883,6 +926,12 @@ function App() {
       </header>
 
       {inWorld && <StatusBar player={state.player} town={state.town} />}
+      {inWorld && (
+        <div className="objective-strip">
+          <span>今日の目当て</span>
+          <strong>{currentObjective}</strong>
+        </div>
+      )}
 
       <main className="main">
         {state.screen === "title" && (
@@ -1016,13 +1065,22 @@ function App() {
               </div>
             )}
             </div>
-            <TownSidePanel state={state} dominantRumor={dominantRumor} areaEcho={areaEcho} />
+            <TownSidePanel
+              state={state}
+              dominantRumor={dominantRumor}
+              areaEcho={areaEcho}
+              yesterdaySummary={yesterdaySummary}
+            />
           </div>
         )}
 
         {inWorld && (
           <>
           <AreaNav state={state} onMove={(area) => {
+            uiSound.move();
+            const label = AREAS[area].name;
+            setAreaTransition(label);
+            window.setTimeout(() => setAreaTransition(null), 900);
             setState((s) => ({ ...s, currentArea: area }));
             EventBus.emit("warp", area);
           }} />
@@ -1049,6 +1107,13 @@ function App() {
           </>
         )}
       </main>
+      {areaTransition && (
+        <div className="area-transition" aria-live="polite">
+          <span>場所を移動</span>
+          <strong>{areaTransition}</strong>
+        </div>
+      )}
+      {toast && <div className="game-toast" aria-live="polite">{toast}</div>}
     </div>
   );
 }
@@ -1092,10 +1157,12 @@ function TownSidePanel({
   state,
   dominantRumor,
   areaEcho,
+  yesterdaySummary,
 }: {
   state: GameState;
   dominantRumor: ReturnType<typeof pickDominantRumor>;
   areaEcho: string | null;
+  yesterdaySummary: string | null;
 }) {
   const areaNpcIds: NPCId[] =
     state.currentArea === "market"
@@ -1124,6 +1191,13 @@ function TownSidePanel({
           ))}
         </div>
       </section>
+
+      {yesterdaySummary && (
+        <section className="side-card yesterday-card">
+          <div className="side-card-title">昨日の行動 → 今日</div>
+          <p>{yesterdaySummary}</p>
+        </section>
+      )}
 
       <section className="side-card rumor-card">
         <div className="side-card-title">今日のうわさ</div>
