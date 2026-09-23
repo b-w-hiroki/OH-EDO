@@ -351,6 +351,14 @@ export const RUMOR_REPLIES: Record<NPCId, Partial<Record<RumorTag, DialogLine[]>
       { speaker: "瓦版屋", text: "あんた、記事にしやすい顔してるよ。いや、行動が。" },
     ],
   },
+  firechief: {
+    helpful: [{ speaker: "火消し頭", text: "町の連中を助けるのは悪くねえ。だが火事場じゃ自分の身も守れ。" }],
+    quick: [{ speaker: "火消し頭", text: "速さは武器だ。だが火はもっと速い。先を読め。" }],
+    iki: [{ speaker: "火消し頭", text: "気が利くじゃねえか。そういうのは火事場で助かる。" }],
+    funny: [{ speaker: "火消し頭", text: "笑い話で済むうちはいい。火だけは笑ってくれねえぞ。" }],
+    clean: [{ speaker: "火消し頭", text: "後始末まで見るやつは信用できる。覚えとく。" }],
+    yabo: [{ speaker: "火消し頭", text: "野暮でも動けりゃまだいい。次は周りを見ろ。" }],
+  },
   kumitori_master: {},
 };
 
@@ -487,6 +495,14 @@ export const FIRE_RUMOR_REPLIES: Record<
     funny: [{ speaker: "瓦版屋", text: "昨日の話、もう二割増しだ。昼には五割増しになる予定だ。" }],
     clean: [{ speaker: "瓦版屋", text: "『火の始末、後始末まで』。真面目すぎるが、町内受けはいいな。" }],
     yabo: [{ speaker: "瓦版屋", text: "『新入り、火事場で右往左往』……いや、本人に怒られるか。" }],
+  },
+  firechief: {
+    helpful: [{ speaker: "火消し頭", text: "昨日の動きは悪くなかった。町を守る気があるなら、また小屋に来い。" }],
+    quick: [{ speaker: "火消し頭", text: "桶運びの足は見た。次は速さだけじゃなく段取りも覚えろ。" }],
+    iki: [{ speaker: "火消し頭", text: "火事場で慌てず動けるのは強みだ。若い衆にも見せてやれ。" }],
+    funny: [{ speaker: "火消し頭", text: "瓦版屋の話は半分に聞け。だが昨日お前が動いたのは本当だ。" }],
+    clean: [{ speaker: "火消し頭", text: "火の始末と後始末。両方できて一人前だ。" }],
+    yabo: [{ speaker: "火消し頭", text: "昨日は危なっかしかった。次は俺の声を聞け。" }],
   },
   kumitori_master: {},
 };
