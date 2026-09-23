@@ -412,3 +412,278 @@ body::before {
   border-radius: 8px;
   padding: 10px;
 }
+
+
+/* ── Mock alignment pass ─────────────────────────
+   Target: bright anime UI, cream cards, red/indigo accents,
+   landscape scene + right rail, portrait stacked cards. */
+
+.app {
+  max-width: 1360px;
+  padding: 14px 18px 44px;
+}
+
+.topbar {
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(210, 183, 139, .72);
+}
+
+.topbar::after {
+  display: none;
+}
+
+.brand {
+  font-size: 24px;
+  padding: 5px 16px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ef8a67, #d85e4d);
+  color: #fff9ea;
+  border: 0;
+  box-shadow: 0 5px 14px rgba(190, 85, 62, .22);
+}
+
+.badge {
+  border-radius: 999px;
+  background: #fffaf0;
+  border-color: #dfc89e;
+  box-shadow: none;
+}
+
+.badge.subtle {
+  background: #eaf6ff;
+  color: #456d8a;
+  border-color: #b6d8eb;
+}
+
+.statusbar {
+  margin-bottom: 10px;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 15px;
+  background: rgba(255, 251, 242, .94);
+  color: #493c32;
+  border-color: #e0c99e;
+  box-shadow: 0 6px 18px rgba(91, 89, 75, .10);
+}
+
+.statusbar-group {
+  gap: 6px;
+}
+
+.statusbar-group.town {
+  border-left-color: #dfc99e;
+}
+
+.stat {
+  min-width: 66px;
+  padding: 4px 8px;
+  border-radius: 10px;
+  background: #f3f8fb;
+}
+
+.stat-key {
+  color: #76818a;
+}
+
+.stat-val {
+  color: #3f5667;
+}
+
+.world-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 292px;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.stage {
+  min-width: 0;
+  border-radius: 22px;
+  border: 2px solid #caa977;
+  background: #dff3ff;
+  box-shadow: 0 14px 30px rgba(94, 102, 100, .14);
+}
+
+.phaser-container {
+  background:
+    linear-gradient(180deg, #9fdcff 0%, #dff4ff 45%, #f5e4bc 100%);
+}
+
+.town-side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.side-card {
+  background: rgba(255, 250, 240, .96);
+  border: 1px solid #dec69b;
+  border-radius: 16px;
+  padding: 13px;
+  box-shadow: 0 7px 18px rgba(112, 93, 61, .10);
+}
+
+.side-card-title {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #edf7fd;
+  color: #547c98;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .05em;
+}
+
+.nearby-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nearby-person {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px;
+  border-radius: 12px;
+  background: #fffef9;
+  border: 1px solid #eee0c3;
+}
+
+.nearby-avatar {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #8fbedd, #6796b9);
+  color: white;
+  font-family: var(--font-ui);
+  font-weight: 800;
+}
+
+.nearby-person strong,
+.nearby-person small {
+  display: block;
+  font-family: var(--font-ui);
+}
+
+.nearby-person strong {
+  color: #544436;
+  font-size: 14px;
+}
+
+.nearby-person small {
+  color: #8b7b6d;
+  margin-top: 2px;
+  font-size: 11px;
+}
+
+.rumor-card p {
+  margin: 0 0 9px;
+  color: #604b39;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.rumor-chip {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 3px 9px;
+  background: #fff0d8;
+  color: #b85c3f;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.mood-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+
+.mood-grid span {
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 9px;
+  border-radius: 10px;
+  background: #f7f2e8;
+  color: #5a4a3e;
+  font-family: var(--font-ui);
+  font-size: 12px;
+}
+
+.mood-grid b {
+  color: #8a7562;
+  font-weight: 700;
+}
+
+.dialog,
+.jobview,
+.resultview,
+.panel {
+  background: rgba(255, 250, 240, .98);
+}
+
+.dialog-speaker {
+  background: #5f90b3;
+}
+
+.logstrip {
+  background: rgba(255, 250, 240, .96);
+  border: 1px solid #dec69b;
+  border-radius: 14px;
+  box-shadow: 0 6px 14px rgba(105, 88, 62, .08);
+}
+
+.logstrip-label {
+  border: 0;
+  border-radius: 999px;
+  background: #d85e4d;
+}
+
+@media (max-width: 899px) {
+  .world-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .town-side-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .town-mood-card {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 599px) {
+  .app {
+    padding: 8px 8px 28px;
+  }
+
+  .world-layout {
+    gap: 8px;
+  }
+
+  .town-side-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .side-card {
+    padding: 11px;
+  }
+
+  .town-mood-card {
+    grid-column: auto;
+  }
+
+  .stage {
+    border-radius: 16px;
+  }
+}
