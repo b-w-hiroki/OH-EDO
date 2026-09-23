@@ -86,8 +86,8 @@ export class TownScene extends Phaser.Scene {
         fontFamily: "sans-serif",
         fontSize: "16px",
         fontStyle: "bold",
-        color: "#fff4dc",
-        backgroundColor: "#2a1408",
+        color: "#4f4337",
+        backgroundColor: "#fff7e8",
         padding: { x: 9, y: 5 },
       })
       .setOrigin(0.5, 1)
@@ -117,23 +117,23 @@ export class TownScene extends Phaser.Scene {
       const b = AREA_BOUNDS[area];
       this.add
         .rectangle(b.x + b.w / 2, b.y + b.h / 2, b.w - 8, b.h - 8, AREA_GROUND[area])
-        .setStrokeStyle(3, 0x5a4736)
+        .setStrokeStyle(3, 0xc89d65)
         .setDepth(-20);
       this.add
         .text(b.x + b.w / 2, b.y + 30, AREA_LABEL[area], {
           fontFamily: "serif",
           fontSize: "44px",
-          color: "#ffffff",
+          color: "#6f8ea3",
         })
         .setOrigin(0.5, 0)
-        .setAlpha(0.17)
+        .setAlpha(0.32)
         .setDepth(-19);
     });
 
     DECORATIONS.forEach(([x, y, w, h, color]) => {
       this.add
         .rectangle(x, y, w, h, color)
-        .setStrokeStyle(2, 0x6b5640)
+        .setStrokeStyle(2, 0xb8895d)
         .setDepth(-10);
     });
   }
@@ -161,20 +161,20 @@ export class TownScene extends Phaser.Scene {
         this.doorCenter.y,
         ROOM_DOOR.w,
         ROOM_DOOR.h,
-        0x4a3a2c
+        0xd2a474
       )
-      .setStrokeStyle(3, 0x6b5640)
+      .setStrokeStyle(3, 0xb8895d)
       .setDepth(-5);
     this.add
-      .rectangle(this.doorCenter.x, this.doorCenter.y + 22, 46, 74, 0x241a12)
+      .rectangle(this.doorCenter.x, this.doorCenter.y + 22, 46, 74, 0x855f42)
       .setDepth(-4);
     this.add
       .text(this.doorCenter.x, ROOM_DOOR.y - 6, "長屋の部屋", {
         fontFamily: "sans-serif",
         fontSize: "15px",
         fontStyle: "bold",
-        color: "#fbf2da",
-        backgroundColor: "#15100a",
+        color: "#5a4738",
+        backgroundColor: "#fff8ea",
         padding: { x: 7, y: 3 },
       })
       .setOrigin(0.5, 1)
@@ -187,9 +187,9 @@ export class TownScene extends Phaser.Scene {
         WELL_OBSTACLE.y + WELL_OBSTACLE.h / 2,
         WELL_OBSTACLE.w,
         WELL_OBSTACLE.h,
-        0x5a5048
+        0xb29b83
       )
-      .setStrokeStyle(3, 0x7a6c5a)
+      .setStrokeStyle(3, 0x9b8067)
       .setDepth(-6);
     this.add
       .ellipse(
@@ -197,7 +197,7 @@ export class TownScene extends Phaser.Scene {
         WELL_OBSTACLE.y + WELL_OBSTACLE.h / 2,
         WELL_OBSTACLE.w * 0.58,
         WELL_OBSTACLE.h * 0.5,
-        0x27424f
+        0x73afc4
       )
       .setDepth(-5);
     this.physics.add.existing(well, true);
@@ -239,8 +239,8 @@ export class TownScene extends Phaser.Scene {
           fontFamily: "sans-serif",
           fontSize: "15px",
           fontStyle: "bold",
-          color: "#fbf2da",
-          backgroundColor: "#15100a",
+          color: "#5a4738",
+          backgroundColor: "#fff8ea",
           padding: { x: 7, y: 3 },
         })
         .setOrigin(0.5, 1)
