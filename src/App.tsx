@@ -592,6 +592,7 @@ function getNextLead(state: GameState): string | null {
 function App() {
   const [state, setState] = useState<GameState>(loadInitial);
   const [sceneReady, setSceneReady] = useState(false);
+  const [soundMuted, setSoundMuted] = useState(() => uiSound.isMuted());
   const [areaTransition, setAreaTransition] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const dialogOpenRef = useRef(false);
@@ -689,10 +690,12 @@ function App() {
 
   // ── Actions ─────────────────────────────────────────
   const startGame = useCallback(() => {
+    uiSound.startAmbience();
     setState((s) => startDialogInState(s, "opening", OPENING_LINES));
   }, []);
 
   const advanceDialog = useCallback(() => {
+    uiSound.startAmbience();
     uiSound.next();
     setState((s) => {
       if (!s.dialog) return s;
@@ -1042,6 +1045,15 @@ function App() {
     setState((s) => (s.screen === "status" ? { ...s, screen: "town" } : s));
   }, []);
 
+  const toggleSound = useCallback(() => {
+    setSoundMuted((current) => {
+      const next = !current;
+      uiSound.setMuted(next);
+      if (!next) uiSound.startAmbience();
+      return next;
+    });
+  }, []);
+
   const resetGame = useCallback(() => {
     if (!window.confirm("旅をやり直しますか？セーブも消えるよ。")) return;
     localStorage.removeItem(STORAGE_KEY);
@@ -1092,6 +1104,11 @@ function App() {
           )}
         </div>
         <div className="topbar-right">
+          {state.screen !== "title" && (
+            <button className="ghost sound-toggle" onClick={toggleSound}>
+              {soundMuted ? "音 OFF" : "音 ON"}
+            </button>
+          )}
           {state.screen === "town" && (
             <button className="ghost" onClick={openStatus}>
               覚え書き
@@ -1289,6 +1306,7 @@ function App() {
         {inWorld && (
           <>
           <AreaNav state={state} onMove={(area) => {
+            uiSound.startAmbience();
             uiSound.move();
             const label = AREAS[area].name;
             setAreaTransition(label);

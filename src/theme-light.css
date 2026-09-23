@@ -1273,3 +1273,11 @@ body::before {
     transition-duration: .001ms !important;
   }
 }
+
+
+.sound-toggle {
+  min-width: 66px;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 800;
+}
