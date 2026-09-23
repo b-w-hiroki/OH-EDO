@@ -1,19 +1,15 @@
 import Phaser from "phaser";
 
 /**
- * Hand-authored chibi pixel-art sprites for the Edo cast.
+ * Soft chibi character textures for the light-anime art direction.
  *
- * Each character is drawn on an 18x24 cell grid (CELL px per cell) with a
- * two-pass technique: an inflated dark "outline" pass, then the colour pass.
- * Faces and held props are colour-only so they don't get a hard outline.
+ * These are deliberately drawn from smooth primitives rather than pixel cells,
+ * so the in-game cast reads closer to the approved mock while still requiring
+ * no external binary assets.
  */
 
-const CELL = 3;
-const GRID_W = 18;
-const GRID_H = 24;
-
-export const CHAR_TEX_W = GRID_W * CELL; // 54
-export const CHAR_TEX_H = GRID_H * CELL; // 72
+export const CHAR_TEX_W = 104;
+export const CHAR_TEX_H = 136;
 
 export type CharKind =
   | "player"
@@ -23,297 +19,317 @@ export type CharKind =
   | "newsman"
   | "firechief";
 
-/** On-screen scale per character (the child is smaller). */
 export const CHAR_SCALE: Record<CharKind, number> = {
-  player: 1.18,
-  landlord: 1.12,
-  fishmonger: 1.14,
-  child: 0.82,
-  newsman: 1.10,
-  firechief: 1.16,
+  player: 0.9,
+  landlord: 0.88,
+  fishmonger: 0.92,
+  child: 0.72,
+  newsman: 0.88,
+  firechief: 0.94,
 };
 
 interface CharPalette {
   outline: number;
   skin: number;
-  skinSh: number;
+  skinShadow: number;
   hair: number;
   kimono: number;
-  kimonoSh: number;
+  kimonoShadow: number;
   obi: number;
   white: number;
   dark: number;
-  eye: number;
   blush: number;
   accent: number;
 }
 
 const PALETTES: Record<CharKind, CharPalette> = {
   player: {
-    outline: 0x2a1d12,
-    skin: 0xf4cfa3,
-    skinSh: 0xd9ab7d,
-    hair: 0x3a312a,
-    kimono: 0xd9683a,
-    kimonoSh: 0xab4f28,
-    obi: 0x46697c,
-    white: 0xefe6d4,
-    dark: 0x4a3b2a,
-    eye: 0x241a14,
-    blush: 0xe8917c,
-    accent: 0xe8c878,
+    outline: 0x4b3528,
+    skin: 0xf5d0a6,
+    skinShadow: 0xddaa80,
+    hair: 0x3a302b,
+    kimono: 0x4f90bd,
+    kimonoShadow: 0x376f96,
+    obi: 0x6d4a37,
+    white: 0xfff8e9,
+    dark: 0x3d3128,
+    blush: 0xe99c88,
+    accent: 0xe66f55,
   },
   landlord: {
-    outline: 0x2a1d12,
-    skin: 0xeac49a,
-    skinSh: 0xcda174,
-    hair: 0x9c968c,
-    kimono: 0x6c5c46,
-    kimonoSh: 0x4f4234,
-    obi: 0x3c3a44,
-    white: 0xe7ddca,
-    dark: 0x40342a,
-    eye: 0x2a2018,
-    blush: 0xd99a82,
-    accent: 0xb8a98a,
+    outline: 0x4a382e,
+    skin: 0xebc69d,
+    skinShadow: 0xcda77d,
+    hair: 0x6f6259,
+    kimono: 0x7c6b58,
+    kimonoShadow: 0x625241,
+    obi: 0x4e4a4b,
+    white: 0xf8efdc,
+    dark: 0x40352d,
+    blush: 0xda9a84,
+    accent: 0xc8ab75,
   },
   fishmonger: {
-    outline: 0x22180f,
-    skin: 0xf3c898,
-    skinSh: 0xd6a06f,
-    hair: 0x2c2620,
-    kimono: 0x3f7d99,
-    kimonoSh: 0x2c5b71,
-    obi: 0xd8c9a8,
-    white: 0xede3d1,
-    dark: 0x3a3026,
-    eye: 0x201712,
-    blush: 0xe8917c,
-    accent: 0xd64a3e,
+    outline: 0x413126,
+    skin: 0xf2c99d,
+    skinShadow: 0xd7a777,
+    hair: 0x2f2925,
+    kimono: 0x376f9b,
+    kimonoShadow: 0x295777,
+    obi: 0xeee0c4,
+    white: 0xfff7e8,
+    dark: 0x382f28,
+    blush: 0xe98e7b,
+    accent: 0xdf5b4f,
   },
   child: {
-    outline: 0x2a1d12,
-    skin: 0xf6d0a4,
-    skinSh: 0xddae7e,
-    hair: 0x3a302a,
-    kimono: 0x6f9a52,
-    kimonoSh: 0x537b3a,
-    obi: 0xd98a4a,
-    white: 0xefe6d4,
-    dark: 0x4a3b2a,
-    eye: 0x241a14,
-    blush: 0xe88e78,
-    accent: 0xe8c060,
+    outline: 0x493529,
+    skin: 0xf6d2aa,
+    skinShadow: 0xdfb183,
+    hair: 0x392f2a,
+    kimono: 0x7ca359,
+    kimonoShadow: 0x5c7d41,
+    obi: 0xd9854e,
+    white: 0xfff8ea,
+    dark: 0x40342b,
+    blush: 0xec907d,
+    accent: 0xe5b957,
   },
   newsman: {
-    outline: 0x241a12,
-    skin: 0xf1c79a,
-    skinSh: 0xd4a06f,
-    hair: 0x352c28,
-    kimono: 0x9a5a7a,
-    kimonoSh: 0x76425c,
-    obi: 0x4a4636,
-    white: 0xefe7d6,
-    dark: 0x453626,
-    eye: 0x231a13,
-    blush: 0xe8917c,
-    accent: 0xece2d0,
+    outline: 0x443127,
+    skin: 0xf1c99f,
+    skinShadow: 0xd6a878,
+    hair: 0x362e2a,
+    kimono: 0x9d6685,
+    kimonoShadow: 0x7c4b66,
+    obi: 0x5d5541,
+    white: 0xfff8e8,
+    dark: 0x41342c,
+    blush: 0xe79884,
+    accent: 0xe9d9c2,
   },
   firechief: {
-    outline: 0x20160f,
-    skin: 0xf0c394,
-    skinSh: 0xcf9869,
-    hair: 0x29231f,
-    kimono: 0x355f7a,
-    kimonoSh: 0x24465d,
-    obi: 0xd1673e,
-    white: 0xeee2cf,
-    dark: 0x352a22,
-    eye: 0x1f1712,
-    blush: 0xd98a74,
-    accent: 0xe7c45e,
+    outline: 0x3f2d24,
+    skin: 0xf0c49a,
+    skinShadow: 0xd19b6e,
+    hair: 0x292522,
+    kimono: 0x355f7d,
+    kimonoShadow: 0x274960,
+    obi: 0xcf6544,
+    white: 0xfff5e5,
+    dark: 0x342b25,
+    blush: 0xdc8b76,
+    accent: 0xe5bf58,
   },
 };
 
-const FISH_SILVER = 0xccd2cf;
-
-type Pen = (
+function oval(
+  g: Phaser.GameObjects.Graphics,
   color: number,
   x: number,
   y: number,
   w: number,
-  h: number
-) => void;
+  h: number,
+  alpha = 1
+): void {
+  g.fillStyle(color, alpha);
+  g.fillEllipse(x, y, w, h);
+}
 
-/** Body shapes — drawn in both the outline and the colour pass. */
-function drawBody(pen: Pen, P: CharPalette, kind: CharKind, frame: number): void {
-  // Legs + feet (the walk frame nudges one leg).
-  if (frame === 0) {
-    pen(P.skin, 6, 19, 2, 3);
-    pen(P.skin, 10, 19, 2, 3);
-    pen(P.dark, 5, 21, 3, 2);
-    pen(P.dark, 10, 21, 3, 2);
+function rounded(
+  g: Phaser.GameObjects.Graphics,
+  color: number,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: number
+): void {
+  g.fillStyle(color, 1);
+  g.fillRoundedRect(x, y, w, h, r);
+}
+
+function strokeOval(
+  g: Phaser.GameObjects.Graphics,
+  color: number,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  width = 3
+): void {
+  g.lineStyle(width, color, 1);
+  g.strokeEllipse(x, y, w, h);
+}
+
+function drawHair(
+  g: Phaser.GameObjects.Graphics,
+  p: CharPalette,
+  kind: CharKind,
+  cx: number,
+  headY: number
+): void {
+  g.fillStyle(p.hair, 1);
+  if (kind === "landlord") {
+    g.fillEllipse(cx, headY - 14, 46, 22);
+    g.fillRoundedRect(cx - 22, headY - 10, 44, 14, 7);
+    g.fillEllipse(cx, headY - 25, 14, 9);
   } else {
-    pen(P.skin, 6, 19, 2, 2);
-    pen(P.skin, 10, 19, 2, 3);
-    pen(P.dark, 5, 20, 3, 2);
-    pen(P.dark, 10, 21, 3, 2);
+    g.fillEllipse(cx, headY - 15, 51, 27);
+    g.fillRoundedRect(cx - 24, headY - 12, 48, 17, 8);
   }
 
-  // Kimono body.
-  pen(P.kimono, 5, 11, 8, 8);
-  pen(P.kimono, 4, 17, 10, 2);
-  pen(P.kimonoSh, 11, 11, 2, 8);
-  pen(P.kimonoSh, 4, 18, 10, 1);
-  pen(P.kimonoSh, 8, 13, 1, 5);
-
-  // Big Edo sleeves (they swing with the walk frame).
-  const lY = 12 + (frame === 1 ? 1 : 0);
-  const rY = 12 + (frame === 1 ? 0 : 1);
-  pen(P.kimono, 2, lY, 3, 6);
-  pen(P.kimonoSh, 2, lY + 4, 3, 2);
-  pen(P.kimono, 13, rY, 3, 6);
-  pen(P.kimonoSh, 13, rY + 4, 3, 2);
-
-  // Obi sash + knot.
-  pen(P.obi, 4, 15, 10, 2);
-  pen(P.accent, 8, 15, 2, 2);
-
-  // White under-collar (V neck).
-  pen(P.white, 6, 11, 2, 3);
-  pen(P.white, 11, 11, 2, 3);
-  pen(P.white, 7, 13, 4, 1);
-
-  // Neck.
-  pen(P.skin, 8, 10, 2, 1);
-
-  // Head.
-  pen(P.skin, 6, 2, 6, 1);
-  pen(P.skin, 5, 3, 8, 6);
-  pen(P.skin, 6, 9, 6, 1);
-  pen(P.skinSh, 12, 3, 1, 6);
-
-  drawHair(pen, P, kind);
-}
-
-function drawHair(pen: Pen, P: CharPalette, kind: CharKind): void {
-  switch (kind) {
-    case "player":
-      pen(P.hair, 5, 1, 8, 2);
-      pen(P.hair, 5, 3, 1, 4);
-      pen(P.hair, 12, 3, 1, 4);
-      pen(P.hair, 4, 1, 1, 2);
-      pen(P.hair, 13, 1, 1, 2);
-      // tenugui headband
-      pen(P.white, 4, 3, 10, 1);
-      pen(P.white, 3, 3, 2, 2);
-      pen(P.white, 2, 5, 1, 2);
-      break;
-    case "landlord":
-      // shaved-front chonmage — reads as an older man
-      pen(P.hair, 7, 0, 4, 2);
-      pen(P.hair, 8, 1, 2, 1);
-      pen(P.hair, 5, 1, 8, 1);
-      pen(P.hair, 5, 2, 1, 6);
-      pen(P.hair, 12, 2, 1, 6);
-      pen(P.hair, 8, 8, 2, 1);
-      pen(P.hair, 7, 9, 4, 1);
-      break;
-    case "fishmonger":
-      pen(P.hair, 5, 1, 8, 2);
-      pen(P.hair, 5, 3, 1, 3);
-      pen(P.hair, 12, 3, 1, 3);
-      // hachimaki headband
-      pen(P.accent, 4, 3, 10, 1);
-      pen(P.accent, 12, 3, 2, 2);
-      pen(P.accent, 13, 4, 1, 3);
-      break;
-    case "child":
-      pen(P.hair, 5, 1, 8, 2);
-      pen(P.hair, 4, 1, 1, 3);
-      pen(P.hair, 13, 1, 1, 3);
-      pen(P.hair, 8, 0, 2, 1);
-      break;
-    case "newsman":
-      pen(P.hair, 5, 1, 8, 2);
-      pen(P.hair, 5, 3, 1, 5);
-      pen(P.hair, 12, 3, 1, 5);
-      pen(P.hair, 8, 0, 2, 1);
-      break;
-    case "firechief":
-      pen(P.hair, 5, 1, 8, 2);
-      pen(P.hair, 5, 3, 1, 4);
-      pen(P.hair, 12, 3, 1, 4);
-      pen(P.accent, 4, 3, 10, 1);
-      pen(P.accent, 3, 3, 2, 2);
-      break;
+  if (kind === "player") {
+    g.fillStyle(p.white, 1);
+    g.fillRoundedRect(cx - 27, headY - 13, 54, 6, 3);
+    g.fillTriangle(cx + 22, headY - 9, cx + 33, headY - 2, cx + 25, headY + 3);
+  } else if (kind === "fishmonger") {
+    g.fillStyle(p.white, 1);
+    g.fillRoundedRect(cx - 28, headY - 12, 56, 7, 3);
+    g.fillTriangle(cx + 23, headY - 8, cx + 34, headY - 1, cx + 25, headY + 4);
+  } else if (kind === "firechief") {
+    g.fillStyle(p.accent, 1);
+    g.fillRoundedRect(cx - 29, headY - 13, 58, 7, 3);
+    g.fillTriangle(cx - 22, headY - 9, cx - 34, headY - 1, cx - 25, headY + 4);
   }
 }
 
-/** Face features — colour pass only (no hard outline). */
-function drawFace(pen: Pen, P: CharPalette, kind: CharKind): void {
-  if (kind === "child") {
-    pen(P.eye, 6, 5, 2, 3);
-    pen(P.eye, 10, 5, 2, 3);
-    pen(P.white, 6, 5, 1, 1);
-    pen(P.white, 10, 5, 1, 1);
-    pen(P.blush, 4, 8, 2, 1);
-    pen(P.blush, 12, 8, 2, 1);
-    pen(P.skinSh, 8, 9, 2, 1);
-    return;
-  }
-
-  pen(P.eye, 6, 5, 2, 2);
-  pen(P.eye, 10, 5, 2, 2);
-  pen(P.white, 6, 5, 1, 1);
-  pen(P.white, 10, 5, 1, 1);
-  pen(P.blush, 5, 7, 1, 1);
-  pen(P.blush, 12, 7, 1, 1);
-  pen(P.skinSh, 8, 8, 2, 1);
+function drawFace(
+  g: Phaser.GameObjects.Graphics,
+  p: CharPalette,
+  kind: CharKind,
+  cx: number,
+  headY: number
+): void {
+  const eyeY = headY + 3;
+  g.fillStyle(p.dark, 1);
 
   if (kind === "landlord") {
-    pen(P.hair, 6, 4, 2, 1);
-    pen(P.hair, 10, 4, 2, 1);
+    g.lineStyle(2.5, p.dark, 1);
+    g.beginPath();
+    g.moveTo(cx - 13, eyeY - 1);
+    g.lineTo(cx - 4, eyeY + 1);
+    g.moveTo(cx + 4, eyeY + 1);
+    g.lineTo(cx + 13, eyeY - 1);
+    g.strokePath();
+  } else {
+    oval(g, p.dark, cx - 10, eyeY, 5, kind === "child" ? 7 : 6);
+    oval(g, p.dark, cx + 10, eyeY, 5, kind === "child" ? 7 : 6);
+    oval(g, p.white, cx - 9, eyeY - 1, 1.8, 2.2);
+    oval(g, p.white, cx + 11, eyeY - 1, 1.8, 2.2);
+  }
+
+  oval(g, p.blush, cx - 18, headY + 11, 10, 5, 0.55);
+  oval(g, p.blush, cx + 18, headY + 11, 10, 5, 0.55);
+
+  g.lineStyle(2.2, p.dark, 1);
+  g.beginPath();
+  g.arc(cx, headY + 12, kind === "firechief" ? 6 : 7, 0.1, Math.PI - 0.1, false);
+  g.strokePath();
+
+  if (kind === "landlord" || kind === "firechief") {
+    g.lineStyle(2, p.hair, 0.85);
+    g.beginPath();
+    g.moveTo(cx - 14, eyeY - 7);
+    g.lineTo(cx - 5, eyeY - 8);
+    g.moveTo(cx + 5, eyeY - 8);
+    g.lineTo(cx + 14, eyeY - 7);
+    g.strokePath();
   }
 }
 
-/** Held props — colour pass only. */
-function drawProp(pen: Pen, P: CharPalette, kind: CharKind): void {
-  if (kind === "fishmonger") {
-    pen(FISH_SILVER, 1, 14, 4, 2);
-    pen(FISH_SILVER, 0, 13, 1, 1);
-    pen(FISH_SILVER, 0, 16, 1, 1);
-    pen(P.eye, 4, 14, 1, 1);
-  } else if (kind === "newsman") {
-    pen(P.white, 5, 14, 8, 5);
-    pen(P.kimonoSh, 5, 15, 8, 1);
-    pen(P.kimonoSh, 5, 17, 8, 1);
-  } else if (kind === "firechief") {
-    pen(P.accent, 14, 10, 1, 9);
-    pen(P.accent, 12, 10, 5, 2);
-    pen(P.white, 13, 9, 3, 1);
-  }
-}
-
-function drawChibi(
+function drawProp(
   g: Phaser.GameObjects.Graphics,
-  P: CharPalette,
+  p: CharPalette,
+  kind: CharKind,
+  cx: number
+): void {
+  if (kind === "fishmonger") {
+    g.fillStyle(0xd9e1df, 1);
+    g.fillEllipse(cx - 28, 92, 26, 11);
+    g.fillTriangle(cx - 41, 92, cx - 51, 85, cx - 51, 99);
+    oval(g, p.dark, cx - 20, 90, 2.5, 2.5);
+  } else if (kind === "newsman") {
+    rounded(g, p.white, cx + 15, 79, 28, 35, 3);
+    g.lineStyle(2, p.kimonoShadow, 0.65);
+    g.lineBetween(cx + 20, 87, cx + 38, 87);
+    g.lineBetween(cx + 20, 94, cx + 38, 94);
+    g.lineBetween(cx + 20, 101, cx + 34, 101);
+  } else if (kind === "firechief") {
+    g.lineStyle(4, p.accent, 1);
+    g.lineBetween(cx + 29, 69, cx + 29, 117);
+    g.fillStyle(p.accent, 1);
+    g.fillTriangle(cx + 29, 64, cx + 17, 74, cx + 41, 74);
+    g.fillStyle(p.white, 1);
+    g.fillTriangle(cx + 29, 67, cx + 23, 72, cx + 35, 72);
+  } else if (kind === "player") {
+    rounded(g, 0x765443, cx + 23, 72, 16, 31, 6);
+    g.lineStyle(2, 0x4e382e, 1);
+    g.lineBetween(cx + 26, 72, cx + 17, 58);
+  }
+}
+
+function drawCharacter(
+  g: Phaser.GameObjects.Graphics,
   kind: CharKind,
   frame: number
 ): void {
-  const outlinePen: Pen = (_color, x, y, w, h) => {
-    g.fillStyle(P.outline, 1);
-    g.fillRect(x * CELL - 1, y * CELL - 1, w * CELL + 2, h * CELL + 2);
-  };
-  const colorPen: Pen = (color, x, y, w, h) => {
-    g.fillStyle(color, 1);
-    g.fillRect(x * CELL, y * CELL, w * CELL, h * CELL);
-  };
+  const p = PALETTES[kind];
+  const cx = CHAR_TEX_W / 2;
+  const headY = kind === "child" ? 39 : 37;
+  const bodyTop = kind === "child" ? 61 : 63;
+  const bodyH = kind === "child" ? 43 : 48;
+  const sleeveY = bodyTop + 13;
+  const step = frame === 1 ? 3 : 0;
 
-  drawBody(outlinePen, P, kind, frame);
-  drawBody(colorPen, P, kind, frame);
-  drawFace(colorPen, P, kind);
-  drawProp(colorPen, P, kind);
+  // soft sticker-like silhouette
+  oval(g, 0x000000, cx, 124, kind === "child" ? 54 : 66, 13, 0.13);
+
+  // legs and sandals
+  rounded(g, p.skinShadow, cx - 15 - step, 106, 11, 17, 5);
+  rounded(g, p.skinShadow, cx + 4 + step, 106, 11, 17, 5);
+  rounded(g, p.dark, cx - 20 - step, 119, 20, 7, 3);
+  rounded(g, p.dark, cx + 1 + step, 119, 20, 7, 3);
+
+  // sleeves
+  rounded(g, p.outline, cx - 43, sleeveY - 2, 23, 31, 11);
+  rounded(g, p.outline, cx + 20, sleeveY - 2, 23, 31, 11);
+  rounded(g, p.kimono, cx - 40, sleeveY + (frame ? 2 : 0), 18, 26, 9);
+  rounded(g, p.kimono, cx + 22, sleeveY + (frame ? 0 : 2), 18, 26, 9);
+
+  // body outline + kimono
+  rounded(g, p.outline, cx - 27, bodyTop - 3, 54, bodyH + 8, 16);
+  rounded(g, p.kimono, cx - 24, bodyTop, 48, bodyH, 14);
+  g.fillStyle(p.kimonoShadow, 1);
+  g.fillTriangle(cx + 7, bodyTop, cx + 24, bodyTop + 7, cx + 24, bodyTop + bodyH - 2);
+  g.fillTriangle(cx - 3, bodyTop + 17, cx + 8, bodyTop + 17, cx + 15, bodyTop + bodyH - 3);
+
+  // collar
+  g.fillStyle(p.white, 1);
+  g.fillTriangle(cx - 13, bodyTop + 1, cx, bodyTop + 17, cx - 2, bodyTop + 2);
+  g.fillTriangle(cx + 13, bodyTop + 1, cx, bodyTop + 17, cx + 2, bodyTop + 2);
+
+  // obi
+  rounded(g, p.obi, cx - 25, bodyTop + 27, 50, 10, 5);
+  oval(g, p.accent, cx, bodyTop + 32, 12, 8);
+
+  // neck
+  rounded(g, p.skinShadow, cx - 7, headY + 20, 14, 14, 5);
+
+  // head outline + head
+  oval(g, p.outline, cx, headY, kind === "child" ? 57 : 62, kind === "child" ? 58 : 61);
+  oval(g, p.skin, cx, headY + 1, kind === "child" ? 52 : 57, kind === "child" ? 53 : 56);
+
+  // one-side face shadow for softer anime depth
+  g.fillStyle(p.skinShadow, 0.28);
+  g.fillEllipse(cx + 11, headY + 5, 24, 40);
+
+  drawHair(g, p, kind, cx, headY);
+  drawFace(g, p, kind, cx, headY);
+  drawProp(g, p, kind, cx);
+
+  // thin outer accents
+  strokeOval(g, p.outline, cx, headY, kind === "child" ? 57 : 62, kind === "child" ? 58 : 61, 2);
 }
 
 interface TextureSpec {
@@ -332,12 +348,11 @@ const TEXTURE_SPECS: TextureSpec[] = [
   { key: "char-firechief", kind: "firechief", frame: 0 },
 ];
 
-/** Generates every character texture into the scene's texture manager. */
 export function buildCharacterTextures(scene: Phaser.Scene): void {
   for (const spec of TEXTURE_SPECS) {
     if (scene.textures.exists(spec.key)) continue;
     const g = scene.make.graphics({ x: 0, y: 0 });
-    drawChibi(g, PALETTES[spec.kind], spec.kind, spec.frame);
+    drawCharacter(g, spec.kind, spec.frame);
     g.generateTexture(spec.key, CHAR_TEX_W, CHAR_TEX_H);
     g.destroy();
   }

@@ -75,6 +75,7 @@ export class TownScene extends Phaser.Scene {
   create(): void {
     this.makeTextures();
     this.drawGround();
+    this.drawAreaAtmosphere();
     this.createPlayer();
     this.createObstacles();
     this.createNPCs();
@@ -138,9 +139,122 @@ export class TownScene extends Phaser.Scene {
     });
   }
 
+  private drawAreaAtmosphere(): void {
+    const g = this.add.graphics().setDepth(-15);
+
+    // A pale walkable street running through every district.
+    g.fillStyle(0xf2dfb7, 1);
+    g.fillRoundedRect(500, 0, 280, WORLD_HEIGHT, 28);
+
+    // Side building facades create the "street framed by Edo houses" look.
+    const drawHouse = (
+      x: number,
+      y: number,
+      w: number,
+      h: number,
+      wall: number,
+      roof: number
+    ) => {
+      g.fillStyle(wall, 1);
+      g.fillRoundedRect(x, y, w, h, 10);
+      g.fillStyle(roof, 1);
+      g.fillRect(x - 8, y - 10, w + 16, 18);
+      g.fillStyle(0x73533c, 1);
+      for (let px = x + 18; px < x + w - 12; px += 42) {
+        g.fillRect(px, y + 24, 5, h - 30);
+      }
+      g.fillStyle(0xe8d2a4, 0.9);
+      g.fillRect(x + 12, y + 34, w - 24, 7);
+    };
+
+    // 商店通り
+    drawHouse(30, 72, 250, 236, 0xd59e69, 0x6f5260);
+    drawHouse(950, 74, 290, 238, 0xd8a66f, 0x526b7f);
+    g.fillStyle(0x376f9b, 1);
+    g.fillRoundedRect(54, 150, 88, 108, 5);
+    g.fillRoundedRect(1094, 148, 92, 112, 5);
+    this.add
+      .text(98, 170, "魚", {
+        fontFamily: "serif",
+        fontSize: "48px",
+        color: "#fff8e9",
+        fontStyle: "bold",
+      })
+      .setOrigin(0.5)
+      .setDepth(-14);
+    // lantern row
+    for (let i = 0; i < 5; i++) {
+      const lx = 485 + i * 78;
+      g.lineStyle(2, 0x80634a, 0.7);
+      g.lineBetween(lx, 250, lx, 268);
+      g.fillStyle(0xe7785f, 0.95);
+      g.fillEllipse(lx, 279, 24, 32);
+    }
+
+    // 長屋前
+    drawHouse(32, 510, 330, 250, 0xc99668, 0x76604e);
+    drawHouse(910, 520, 330, 240, 0xd0a06d, 0x6a5961);
+    // laundry line
+    g.lineStyle(3, 0x755a44, 0.7);
+    g.lineBetween(94, 720, 338, 720);
+    [128, 184, 240, 296].forEach((x, i) => {
+      g.fillStyle([0x668bb0, 0xf1d7aa, 0x9fb780, 0xd1776b][i], 0.95);
+      g.fillRoundedRect(x, 720, 38, 52, 4);
+    });
+    // potted plants / buckets
+    [920, 972, 1024].forEach((x, i) => {
+      g.fillStyle(0x8a6244, 1);
+      g.fillRoundedRect(x, 736 + i * 3, 28, 22, 5);
+      g.fillStyle(0x73965e, 1);
+      g.fillEllipse(x + 14, 728 + i * 3, 26, 20);
+    });
+
+    // 井戸端
+    // willow-like trees and washing area
+    [132, 1120].forEach((x) => {
+      g.fillStyle(0x795b3f, 1);
+      g.fillRoundedRect(x, 930, 18, 150, 8);
+      g.fillStyle(0x88ad68, 0.9);
+      g.fillEllipse(x + 8, 936, 118, 72);
+      g.fillStyle(0x9dc47b, 0.7);
+      g.fillEllipse(x - 10, 975, 94, 66);
+    });
+    // stepping stones
+    for (let i = 0; i < 6; i++) {
+      g.fillStyle(0xd6c39e, 0.9);
+      g.fillEllipse(530 + i * 44, 1160 + (i % 2) * 12, 38, 20);
+    }
+
+    // 火消し小屋
+    drawHouse(36, 1392, 350, 260, 0xbd835c, 0x4e6477);
+    drawHouse(900, 1392, 340, 260, 0xc58b61, 0x536a7d);
+    // matoi pole + buckets
+    g.lineStyle(6, 0x6c4b38, 1);
+    g.lineBetween(250, 1450, 250, 1640);
+    g.fillStyle(0xe5bf58, 1);
+    g.fillTriangle(250, 1424, 220, 1460, 280, 1460);
+    for (let i = 0; i < 5; i++) {
+      g.fillStyle(0x9b6f4e, 1);
+      g.fillRoundedRect(938 + i * 48, 1580, 34, 30, 6);
+      g.lineStyle(2, 0x6e4d37, 0.7);
+      g.strokeRoundedRect(938 + i * 48, 1580, 34, 30, 6);
+    }
+
+    // A few distant silhouettes keep the town lively without becoming noisy.
+    const people = [
+      [550, 180], [700, 212], [585, 650], [720, 820],
+      [610, 1030], [692, 1215], [560, 1485], [760, 1640],
+    ];
+    people.forEach(([x, y], i) => {
+      g.fillStyle(i % 2 ? 0x6e7c71 : 0x77889b, 0.42);
+      g.fillEllipse(x, y, 20, 22);
+      g.fillRoundedRect(x - 11, y + 9, 22, 34, 8);
+    });
+  }
+
   private createPlayer(): void {
     this.playerShadow = this.add
-      .ellipse(PLAYER_SPAWN.x, PLAYER_SPAWN.y + 28, 36, 13, 0x000000, 0.32);
+      .ellipse(PLAYER_SPAWN.x, PLAYER_SPAWN.y + 52, 48, 14, 0x000000, 0.18);
     this.player = this.physics.add.sprite(
       PLAYER_SPAWN.x,
       PLAYER_SPAWN.y,
@@ -148,8 +262,8 @@ export class TownScene extends Phaser.Scene {
     );
     this.player.setCollideWorldBounds(true);
     const body = this.player.body as Phaser.Physics.Arcade.Body;
-    body.setSize(20, 12);
-    body.setOffset(17, 57);
+    body.setSize(28, 16);
+    body.setOffset(38, 112);
     this.currentArea = this.areaAt(this.player.y);
   }
 
@@ -219,7 +333,7 @@ export class TownScene extends Phaser.Scene {
       const halfH = (CHAR_TEX_H * scale) / 2;
 
       this.add
-        .ellipse(pos.x, pos.y + halfH - 8, 34 * scale, 12 * scale, 0x000000, 0.3)
+        .ellipse(pos.x, pos.y + halfH - 5, 44 * scale, 13 * scale, 0x000000, 0.16)
         .setDepth(pos.y - 1);
 
       const image = this.add.image(pos.x, pos.y, `char-${id}`);
@@ -300,7 +414,7 @@ export class TownScene extends Phaser.Scene {
 
   private syncPlayerDepth(): void {
     this.player.setDepth(this.player.y);
-    this.playerShadow.setPosition(this.player.x, this.player.y + 28);
+    this.playerShadow.setPosition(this.player.x, this.player.y + 52);
     this.playerShadow.setDepth(this.player.y - 1);
   }
 
@@ -363,7 +477,7 @@ export class TownScene extends Phaser.Scene {
 
     if (best) {
       const e = this.npcEntities.find((n) => n.id === best)!;
-      this.showPrompt(e.image.x, e.image.y - 50, "スペース：はなしかける");
+      this.showPrompt(e.image.x, e.image.y - 72, "話す");
     } else if (this.nearDoor) {
       this.showPrompt(
         this.doorCenter.x,

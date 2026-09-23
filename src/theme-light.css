@@ -687,3 +687,112 @@ body::before {
     border-radius: 16px;
   }
 }
+
+
+/* ── Anime character / mock navigation pass ─────────── */
+
+.area-nav {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+  padding: 8px;
+  border: 1px solid #dec69b;
+  border-radius: 15px;
+  background: rgba(255, 250, 240, .96);
+  box-shadow: 0 6px 14px rgba(105, 88, 62, .08);
+}
+
+.area-nav button {
+  min-height: 50px;
+  border: 1px solid #d6dfe5;
+  border-radius: 12px;
+  background: #edf6fb;
+  color: #53728a;
+  font-family: var(--font-ui);
+  font-weight: 800;
+  line-height: 1.2;
+  transition: transform .08s ease, background .12s ease, border-color .12s ease;
+}
+
+.area-nav button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: #e4f2fa;
+}
+
+.area-nav button.active {
+  color: #fff;
+  border-color: #cf604d;
+  background: linear-gradient(180deg, #ed8365, #d35f4e);
+  box-shadow: 0 4px 10px rgba(194, 88, 67, .18);
+}
+
+.area-nav button:disabled {
+  color: #aaa097;
+  background: #f4efe5;
+  border-color: #e0d6c5;
+}
+
+.area-nav small {
+  display: block;
+  margin-top: 3px;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.mood-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mood-row {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 28px;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: #67584b;
+}
+
+.mood-row > span {
+  font-weight: 700;
+}
+
+.mood-row > b {
+  text-align: right;
+  color: #56758c;
+}
+
+.mood-bar {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e8e2d7;
+  box-shadow: inset 0 1px 2px rgba(86, 70, 54, .10);
+}
+
+.mood-bar i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #7ab5d7, #e87e63);
+}
+
+@media (max-width: 599px) {
+  .area-nav {
+    position: sticky;
+    bottom: 6px;
+    z-index: 1100;
+    grid-template-columns: repeat(4, minmax(78px, 1fr));
+    overflow-x: auto;
+    padding: 6px;
+    gap: 6px;
+  }
+
+  .area-nav button {
+    min-height: 46px;
+    font-size: 12px;
+  }
+}
