@@ -75,6 +75,7 @@ export class TownScene extends Phaser.Scene {
   create(): void {
     this.makeTextures();
     this.drawGround();
+    this.drawDistantBackdrop();
     this.drawAreaAtmosphere();
     this.createPlayer();
     this.createObstacles();
@@ -139,12 +140,53 @@ export class TownScene extends Phaser.Scene {
     });
   }
 
+  private drawDistantBackdrop(): void {
+    const g = this.add.graphics().setDepth(-18);
+
+    const areaTops = [
+      AREA_BOUNDS.market.y,
+      AREA_BOUNDS.nagaya.y,
+      AREA_BOUNDS.well.y,
+      AREA_BOUNDS.firehouse.y,
+    ];
+
+    areaTops.forEach((top, index) => {
+      // pale sky band
+      g.fillStyle(index === 2 ? 0xcfe9e5 : 0xbfe5fa, 0.9);
+      g.fillRect(0, top, WORLD_WIDTH, 110);
+
+      // distant roofs to avoid the flat "boxed map" look
+      const roofY = top + 86;
+      for (let x = -40; x < WORLD_WIDTH + 80; x += 150) {
+        const offset = (x / 150) % 2 === 0 ? 0 : 12;
+        g.fillStyle(index % 2 === 0 ? 0x8596a1 : 0x8c897e, 0.22);
+        g.fillTriangle(x, roofY + offset, x + 68, roofY - 28 + offset, x + 138, roofY + offset);
+        g.fillStyle(0xc3aa84, 0.16);
+        g.fillRect(x + 13, roofY + offset, 112, 34);
+      }
+
+      // soft cloud puffs
+      g.fillStyle(0xffffff, 0.38);
+      g.fillEllipse(170, top + 46, 140, 34);
+      g.fillEllipse(240, top + 36, 96, 28);
+      g.fillEllipse(1010, top + 52, 150, 38);
+      g.fillEllipse(1080, top + 40, 86, 26);
+    });
+  }
+
   private drawAreaAtmosphere(): void {
     const g = this.add.graphics().setDepth(-15);
 
-    // A pale walkable street running through every district.
+    // A pale walkable street running through every district, with soft
+    // perspective edges so it reads more like an illustrated town street.
     g.fillStyle(0xf2dfb7, 1);
-    g.fillRoundedRect(500, 0, 280, WORLD_HEIGHT, 28);
+    g.fillRoundedRect(465, 0, 350, WORLD_HEIGHT, 34);
+    g.fillStyle(0xe2c696, 0.45);
+    g.fillTriangle(465, 0, 500, WORLD_HEIGHT, 535, 0);
+    g.fillTriangle(815, 0, 780, WORLD_HEIGHT, 745, 0);
+    g.lineStyle(2, 0xcaa977, 0.34);
+    g.lineBetween(494, 0, 526, WORLD_HEIGHT);
+    g.lineBetween(786, 0, 754, WORLD_HEIGHT);
 
     // Side building facades create the "street framed by Edo houses" look.
     const drawHouse = (
@@ -170,6 +212,19 @@ export class TownScene extends Phaser.Scene {
     // 商店通り
     drawHouse(30, 72, 250, 236, 0xd59e69, 0x6f5260);
     drawHouse(950, 74, 290, 238, 0xd8a66f, 0x526b7f);
+    // shop awnings / noren
+    g.fillStyle(0x527fa2, 0.95);
+    g.fillRoundedRect(260, 118, 168, 34, 6);
+    g.fillStyle(0xe56f59, 0.95);
+    g.fillRoundedRect(842, 126, 152, 32, 6);
+    for (let x = 270; x < 420; x += 36) {
+      g.fillStyle(0xf8e8c7, 0.78);
+      g.fillRect(x, 145, 24, 26);
+    }
+    for (let x = 850; x < 980; x += 34) {
+      g.fillStyle(0xf8e8c7, 0.78);
+      g.fillRect(x, 151, 22, 24);
+    }
     g.fillStyle(0x376f9b, 1);
     g.fillRoundedRect(54, 150, 88, 108, 5);
     g.fillRoundedRect(1094, 148, 92, 112, 5);
@@ -194,6 +249,14 @@ export class TownScene extends Phaser.Scene {
     // 長屋前
     drawHouse(32, 510, 330, 250, 0xc99668, 0x76604e);
     drawHouse(910, 520, 330, 240, 0xd0a06d, 0x6a5961);
+    // eaves and small lived-in details
+    g.fillStyle(0x6e5948, 0.9);
+    g.fillRect(32, 622, 330, 8);
+    g.fillRect(910, 632, 330, 8);
+    [80, 138, 196, 254].forEach((x) => {
+      g.fillStyle(0x8f6a4a, 1);
+      g.fillRoundedRect(x, 680, 30, 20, 4);
+    });
     // laundry line
     g.lineStyle(3, 0x755a44, 0.7);
     g.lineBetween(94, 720, 338, 720);
@@ -228,6 +291,14 @@ export class TownScene extends Phaser.Scene {
     // 火消し小屋
     drawHouse(36, 1392, 350, 260, 0xbd835c, 0x4e6477);
     drawHouse(900, 1392, 340, 260, 0xc58b61, 0x536a7d);
+    g.fillStyle(0x3d6079, 0.95);
+    g.fillRoundedRect(340, 1412, 118, 32, 6);
+    g.fillRoundedRect(820, 1418, 104, 30, 6);
+    g.fillStyle(0xf6e3bd, 0.88);
+    g.fillRect(352, 1440, 24, 34);
+    g.fillRect(388, 1440, 24, 34);
+    g.fillRect(834, 1446, 24, 32);
+    g.fillRect(870, 1446, 24, 32);
     // matoi pole + buckets
     g.lineStyle(6, 0x6c4b38, 1);
     g.lineBetween(250, 1450, 250, 1640);
@@ -240,15 +311,33 @@ export class TownScene extends Phaser.Scene {
       g.strokeRoundedRect(938 + i * 48, 1580, 34, 30, 6);
     }
 
-    // A few distant silhouettes keep the town lively without becoming noisy.
+    // Background townspeople and props keep the town lively without becoming noisy.
     const people = [
-      [550, 180], [700, 212], [585, 650], [720, 820],
-      [610, 1030], [692, 1215], [560, 1485], [760, 1640],
+      [545, 182], [704, 214], [594, 648], [724, 816],
+      [606, 1034], [696, 1210], [562, 1488], [756, 1636],
+      [500, 356], [778, 370], [540, 862], [742, 1270],
     ];
     people.forEach(([x, y], i) => {
-      g.fillStyle(i % 2 ? 0x6e7c71 : 0x77889b, 0.42);
+      g.fillStyle(i % 3 === 0 ? 0xc06f62 : i % 2 ? 0x6e7c71 : 0x77889b, 0.38);
       g.fillEllipse(x, y, 20, 22);
       g.fillRoundedRect(x - 11, y + 9, 22, 34, 8);
+      if (i % 4 === 0) {
+        g.lineStyle(2, 0x72553f, 0.35);
+        g.lineBetween(x + 14, y + 14, x + 30, y + 45);
+      }
+    });
+
+    // Crates, baskets and buckets at street edges.
+    const props = [
+      [442, 250], [828, 320], [430, 692], [840, 770],
+      [438, 1080], [828, 1190], [430, 1510], [842, 1600],
+    ];
+    props.forEach(([x, y], i) => {
+      g.fillStyle(i % 2 ? 0x9f7650 : 0xb58a5f, 0.8);
+      g.fillRoundedRect(x, y, 34, 24, 5);
+      g.lineStyle(2, 0x73543d, 0.4);
+      g.lineBetween(x + 5, y + 7, x + 29, y + 7);
+      g.lineBetween(x + 5, y + 15, x + 29, y + 15);
     });
   }
 
