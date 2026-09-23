@@ -339,3 +339,47 @@ export function pickDominantRumor(rumors: RumorTag[]): RumorTag | null {
   }
   return null;
 }
+
+
+export const RUMOR_AREA_ECHOES: Partial<
+  Record<RumorTag, Partial<Record<AreaDef["id"], string>>>
+> = {
+  helpful: {
+    nagaya: "長屋では『新入り、思ったより役に立つね』と話題になっている。",
+    well: "井戸端では、長屋の空気が少しマシになったと噂されている。",
+    market: "商店通りでは、昨日の丁寧な働きぶりを魚屋が得意げに話している。",
+  },
+  clean: {
+    nagaya: "長屋の軒先で『今日はちょっと匂いが違うね』と声が上がる。",
+    well: "井戸端では、衛生の話から昨日の新入りの仕事ぶりへ話が移っている。",
+    market: "魚屋が『仕事は地味でも町は助かる』と客に話している。",
+  },
+  iki: {
+    nagaya: "子どもたちが、昨日の新入りに勝手なあだ名をつけて呼んでいる。",
+    well: "井戸端では『臭い仕事でも愛想がいい』と笑い話になっている。",
+    market: "瓦版屋が『臭い仕事も粋にこなす』という見出しを考えている。",
+  },
+  quick: {
+    nagaya: "長屋では『あんな勢いで桶を運ぶやつは初めてだ』と笑われている。",
+    well: "井戸端では、昨日の仕事の速さと雑さが半々で語られている。",
+    market: "商店通りでは『疾風の汲み取り人』という妙な呼び名が広まりつつある。",
+  },
+  yabo: {
+    nagaya: "長屋では『嫌そうな顔はしてたけど逃げなかった』と評されている。",
+    well: "井戸端では『あの新入り、顔に出すねえ』と少しからかわれている。",
+    market: "瓦版屋は『もっと派手な失敗なら記事になったのに』と残念そうだ。",
+  },
+  funny: {
+    nagaya: "子どもたちは昨日の騒ぎを何度も再現して笑っている。",
+    well: "井戸端では、事実より少し盛られた話になっている。",
+    market: "瓦版屋が、昨日の出来事を面白おかしく話して客を集めている。",
+  },
+};
+
+export function getRumorAreaEcho(
+  rumor: RumorTag | null,
+  area: AreaDef["id"]
+): string | null {
+  if (!rumor) return null;
+  return RUMOR_AREA_ECHOES[rumor]?.[area] ?? null;
+}
