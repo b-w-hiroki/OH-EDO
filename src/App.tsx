@@ -6,6 +6,7 @@ import type {
   JobChoice,
   FireChoice,
   PatrolChoice,
+  FestivalChoice,
   NPCId,
   AreaId,
 } from "./types";
@@ -19,6 +20,10 @@ import {
   FIRECHIEF_INTRO_LINES,
   PATROL_CHOICES,
   PATROL_INTRO_LINES,
+  FESTIVAL_CHOICES,
+  FESTIVAL_INTRO_LINES,
+  NPC_EPISODES,
+  REPUTATION_LINES,
   RANKS,
   INITIAL_STATE,
   JOB_CHOICES,
@@ -82,6 +87,7 @@ function loadInitial(): GameState {
       dialog: null,
       lastJobResult: parsed.lastJobResult ?? null,
       lastPatrolResult: parsed.lastPatrolResult ?? null,
+      lastFestivalResult: parsed.lastFestivalResult ?? null,
     };
     // Drop transient dialog/overlay state on load.
     const screen = merged.flags.intro_done ? "town" : "title";
@@ -240,6 +246,83 @@ function applyDialogComplete(s: GameState, kind: DialogKind): GameState {
         log: appendLog(s.log, s.day, "火消し頭に顔を覚えられた。"),
       };
 
+    case "episode_landlord":
+      return withProgression({
+        ...closeToTown,
+        flags: { ...s.flags, episode_landlord_done: true },
+        player: { ...s.player, trust: s.player.trust + 2 },
+        npcRelations: {
+          ...s.npcRelations,
+          landlord: {
+            ...s.npcRelations.landlord,
+            affinity: s.npcRelations.landlord.affinity + 2,
+            familiarity: s.npcRelations.landlord.familiarity + 1,
+            attitude: "friendly",
+          },
+        },
+        log: appendLog(s.log, s.day, "大家に頼まれ、長屋の小さな用事を片づけた。（信用 +2）"),
+      });
+
+    case "episode_fishmonger":
+      return withProgression({
+        ...closeToTown,
+        flags: { ...s.flags, episode_fishmonger_done: true },
+        player: { ...s.player, network: s.player.network + 2, skill: s.player.skill + 1 },
+        npcRelations: {
+          ...s.npcRelations,
+          fishmonger: {
+            ...s.npcRelations.fishmonger,
+            affinity: s.npcRelations.fishmonger.affinity + 2,
+            familiarity: s.npcRelations.fishmonger.familiarity + 1,
+            attitude: "friendly",
+          },
+        },
+        log: appendLog(s.log, s.day, "魚屋の売り子を手伝い、商店通りに顔が広がった。（人脈 +2）"),
+      });
+
+    case "episode_child":
+      return withProgression({
+        ...closeToTown,
+        flags: { ...s.flags, episode_child_done: true },
+        player: { ...s.player, iki: s.player.iki + 1, network: s.player.network + 1 },
+        npcRelations: {
+          ...s.npcRelations,
+          child: {
+            ...s.npcRelations.child,
+            affinity: s.npcRelations.child.affinity + 2,
+            familiarity: s.npcRelations.child.familiarity + 1,
+            attitude: "friendly",
+          },
+        },
+        log: appendLog(s.log, s.day, "子どもの竹とんぼ騒ぎに付き合った。（粋 +1 / 人脈 +1）"),
+      });
+
+    case "episode_newsman":
+      return withProgression({
+        ...closeToTown,
+        flags: { ...s.flags, episode_newsman_done: true },
+        player: { ...s.player, iki: s.player.iki + 1, network: s.player.network + 1 },
+        npcRelations: {
+          ...s.npcRelations,
+          newsman: {
+            ...s.npcRelations.newsman,
+            affinity: s.npcRelations.newsman.affinity + 2,
+            familiarity: s.npcRelations.newsman.familiarity + 1,
+            attitude: "friendly",
+          },
+        },
+        log: appendLog(s.log, s.day, "瓦版屋と祭り前の町を歩いた。（粋 +1 / 人脈 +1）"),
+      });
+
+    case "festival_intro":
+      return {
+        ...s,
+        dialog: null,
+        screen: "festival_choice",
+        flags: { ...s.flags, festival_started: true },
+        log: appendLog(s.log, s.day, "春祭りの準備に巻き込まれた。"),
+      };
+
     case "patrol_intro":
       return {
         ...s,
@@ -283,6 +366,7 @@ function applyDialogComplete(s: GameState, kind: DialogKind): GameState {
     case "rumor_fishmonger":
     case "rumor_child":
     case "rumor_newsman":
+    case "reputation_reply":
     case "already_met":
       return closeToTown;
   }
@@ -295,6 +379,33 @@ interface NPCDialogPick {
 
 function pickNPCDialog(s: GameState, npc: NPCId): NPCDialogPick | null {
   if (npc === "kumitori_master") return null;
+
+  // Day 4+: short personal episodes make the town feel inhabited.
+  if (s.day >= 4) {
+    if (npc === "landlord" && !s.flags.episode_landlord_done) {
+      return { kind: "episode_landlord", lines: NPC_EPISODES.landlord };
+    }
+    if (npc === "fishmonger" && !s.flags.episode_fishmonger_done) {
+      return { kind: "episode_fishmonger", lines: NPC_EPISODES.fishmonger };
+    }
+    if (npc === "child" && !s.flags.episode_child_done) {
+      return { kind: "episode_child", lines: NPC_EPISODES.child };
+    }
+    if (npc === "newsman" && !s.flags.episode_newsman_done) {
+      return { kind: "episode_newsman", lines: NPC_EPISODES.newsman };
+    }
+    if (npc === "newsman" && s.flags.episode_newsman_done && !s.flags.festival_started && !s.flags.festival_done) {
+      return { kind: "festival_intro", lines: FESTIVAL_INTRO_LINES };
+    }
+  }
+
+  // Persistent reputation changes how people talk even after short-lived rumors fade.
+  for (const reputation of s.reputationTags) {
+    const lines = REPUTATION_LINES[reputation]?.[npc];
+    if (lines && lines.length > 0) {
+      return { kind: "reputation_reply", lines };
+    }
+  }
 
   // Fire-chief progression must take priority over ambient rumor reactions.
   if (npc === "firechief") {
@@ -425,6 +536,12 @@ function getCurrentObjective(state: GameState): string {
   if (!state.flags.fire_event_done) return "町の噂を確かめ、次の騒ぎへ向かう";
   if (!state.flags.met_firechief) return "火消し小屋で火消し頭に会う";
   if (!state.flags.patrol_done) return "火消し頭の見回り仕事を手伝う";
+  if (state.day >= 5) return "町の人との関係を深め、顔役への道を歩く";
+  if (state.day >= 4 && !state.flags.festival_done) {
+    if (!state.flags.episode_newsman_done) return "町の人たちの小さな頼みごとを聞く";
+    if (!state.flags.festival_started) return "瓦版屋に春祭りの話を聞く";
+    return "春祭りの準備を手伝う";
+  }
   if (state.day >= 4) return "町を歩き、次の出来事を探す";
   return "町を歩いて人と話す";
 }
@@ -711,6 +828,69 @@ function App() {
       ),
     }));
   }, [state]);
+
+  const chooseFestival = useCallback((choice: FestivalChoice) => {
+    uiSound.select();
+    setState((s) => {
+      if (s.screen !== "festival_choice") return s;
+      const e = choice.effects;
+      const hasBonus =
+        choice.favoredReputation != null &&
+        s.reputationTags.includes(choice.favoredReputation);
+      const bonus = hasBonus ? 1 : 0;
+      const next = withProgression({
+        ...s,
+        screen: "festival_result",
+        player: {
+          ...s.player,
+          trust: s.player.trust + (e.trust ?? 0) + (hasBonus && choice.id === "festival_stalls" ? 1 : 0),
+          iki: s.player.iki + (e.iki ?? 0) + (hasBonus && choice.id === "festival_decor" ? 1 : 0),
+          network: s.player.network + (e.network ?? 0) + (hasBonus && choice.id === "festival_news" ? 1 : 0),
+          skill: s.player.skill + (e.skill ?? 0),
+        },
+        town: {
+          ...s.town,
+          trend: s.town.trend + (e.trend ?? 0) + bonus,
+          economy: s.town.economy + (e.economy ?? 0) + bonus,
+        },
+        flags: { ...s.flags, festival_done: true },
+        activeRumors: Array.from(new Set([...s.activeRumors, ...choice.rumorTags])),
+        rumorHistory: [
+          ...s.rumorHistory,
+          ...makeRumorRecords(choice.rumorTags, s.day, choice.id, hasBonus ? 3.5 : 3),
+        ],
+        playerActions: [
+          ...s.playerActions,
+          {
+            id: `action-${Date.now()}`,
+            day: s.day,
+            type: choice.id,
+            targetNpcId: "newsman",
+            importance: 3,
+            tags: [...choice.rumorTags],
+          },
+        ],
+        lastFestivalResult: {
+          choiceId: choice.id,
+          resultText: choice.resultText,
+          bonusText: hasBonus
+            ? `評判「${choice.favoredReputation}」が活きて、町の反応がさらに良くなった。`
+            : null,
+          nextDayText:
+            "祭りの準備を終えた翌朝、町ではもう『新入り』ではなく名前で呼ぶ声が増えていた。",
+        },
+        log: appendLog(
+          s.log,
+          s.day,
+          choice.resultText + (hasBonus ? `（評判「${choice.favoredReputation}」が活きた）` : "")
+        ),
+      });
+      return next;
+    });
+    uiSound.result();
+    setToast("評判がイベントの結果に反映された");
+    window.setTimeout(() => setToast(null), 2200);
+  }, []);
 
   const choosePatrol = useCallback((choice: PatrolChoice) => {
     uiSound.select();
@@ -1022,6 +1202,37 @@ function App() {
               </div>
             )}
 
+            {state.screen === "festival_choice" && (
+              <div className="overlay">
+                <FestivalChoiceView choices={FESTIVAL_CHOICES} onChoose={chooseFestival} />
+              </div>
+            )}
+
+            {state.screen === "festival_result" && state.lastFestivalResult && (
+              <div className="overlay">
+                <FestivalResultView
+                  result={state.lastFestivalResult}
+                  onNext={() =>
+                    setState((s) =>
+                      withProgression({
+                        ...s,
+                        screen: "town",
+                        day: 5,
+                        time: "morning",
+                        currentArea: "nagaya",
+                        flags: { ...s.flags, day5_started: true },
+                        log: appendLog(
+                          s.log,
+                          5,
+                          s.lastFestivalResult?.nextDayText ?? "五日目の朝になった。"
+                        ),
+                      })
+                    )
+                  }
+                />
+              </div>
+            )}
+
             {state.screen === "patrol_choice" && (
               <div className="overlay">
                 <PatrolChoiceView choices={PATROL_CHOICES} onChoose={choosePatrol} />
@@ -1273,6 +1484,52 @@ function TitleView({
         <span className="cast-chip cast-landlord">大家</span>
         <span className="cast-chip cast-child">子ども</span>
         <span className="cast-chip cast-news">瓦版</span>
+      </div>
+    </section>
+  );
+}
+
+function FestivalChoiceView({
+  choices,
+  onChoose,
+}: {
+  choices: FestivalChoice[];
+  onChoose: (choice: FestivalChoice) => void;
+}) {
+  return (
+    <section className="panel festival-panel">
+      <h2>春祭りの準備</h2>
+      <p className="panel-desc">町の一員として、どこに手を貸す？</p>
+      <div className="fire-choice-list">
+        {choices.map((choice) => (
+          <button className="fire-choice" key={choice.id} onClick={() => onChoose(choice)}>
+            <strong>{choice.label}</strong>
+            <span>{choice.description}</span>
+            {choice.favoredReputation && (
+              <small className="favored-reputation">相性：{choice.favoredReputation}</small>
+            )}
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function FestivalResultView({
+  result,
+  onNext,
+}: {
+  result: NonNullable<GameState["lastFestivalResult"]>;
+  onNext: () => void;
+}) {
+  return (
+    <section className="panel festival-result">
+      <h2>祭りの準備、そのあと</h2>
+      <p>{result.resultText}</p>
+      {result.bonusText && <p className="reputation-bonus">{result.bonusText}</p>}
+      <p className="muted">{result.nextDayText}</p>
+      <div className="panel-actions">
+        <button className="primary" onClick={onNext}>五日目へ</button>
       </div>
     </section>
   );
