@@ -25,12 +25,12 @@ export type CharKind =
 
 /** On-screen scale per character (the child is smaller). */
 export const CHAR_SCALE: Record<CharKind, number> = {
-  player: 1,
-  landlord: 1,
-  fishmonger: 1,
-  child: 0.72,
-  newsman: 1,
-  firechief: 1.06,
+  player: 1.18,
+  landlord: 1.12,
+  fishmonger: 1.14,
+  child: 0.82,
+  newsman: 1.10,
+  firechief: 1.16,
 };
 
 interface CharPalette {
