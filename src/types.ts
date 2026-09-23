@@ -6,6 +6,8 @@ export type Screen =
   | "result"
   | "fire_choice"
   | "fire_result"
+  | "patrol_choice"
+  | "patrol_result"
   | "room"
   | "status";
 
@@ -42,6 +44,7 @@ export type DialogKind =
   | "child_intro"
   | "newsman_intro"
   | "firechief_intro"
+  | "patrol_intro"
   | "kumitori_event"
   | "night"
   | "fire_intro"
@@ -90,6 +93,9 @@ export interface Flags {
   fire_intro_started: boolean;
   fire_event_done: boolean;
   day3_started: boolean;
+  patrol_started: boolean;
+  patrol_done: boolean;
+  day4_started: boolean;
 }
 
 export interface ActiveDialog {
@@ -112,6 +118,43 @@ export interface JobChoice {
   };
   rumorTags: RumorTag[];
   resultText: string;
+}
+
+export interface RumorRecord {
+  id: string;
+  tag: RumorTag;
+  strength: number;
+  createdDay: number;
+  durationDays: number;
+  source: string;
+}
+
+export type ReputationTag =
+  | "頼れるやつ"
+  | "粋なやつ"
+  | "仕事が早いやつ"
+  | "丁寧なやつ"
+  | "変なやつ";
+
+export interface PatrolChoice {
+  id: "patrol_buckets" | "patrol_alley" | "patrol_roofs";
+  label: string;
+  description: string;
+  effects: {
+    trust?: number;
+    iki?: number;
+    network?: number;
+    skill?: number;
+    safety?: number;
+  };
+  rumorTags: RumorTag[];
+  resultText: string;
+}
+
+export interface PatrolResult {
+  choiceId: PatrolChoice["id"];
+  resultText: string;
+  nextDayText: string;
 }
 
 export interface FireAftermath {
@@ -185,6 +228,8 @@ export interface GameState {
   flags: Flags;
   npcRelations: NPCRelations;
   activeRumors: RumorTag[];
+  rumorHistory: RumorRecord[];
+  reputationTags: ReputationTag[];
   log: string[];
   playerActions: import("./decision/types").PlayerActionRecord[];
   decisionLogs: import("./decision/types").DecisionLogEntry[];
@@ -192,4 +237,5 @@ export interface GameState {
   fireAftermath: FireAftermath | null;
   dialog: ActiveDialog | null;
   lastJobResult: JobResult | null;
+  lastPatrolResult: PatrolResult | null;
 }
