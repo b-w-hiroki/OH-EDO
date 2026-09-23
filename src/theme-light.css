@@ -1204,3 +1204,27 @@ body::before {
     border-radius: 14px;
   }
 }
+
+
+/* ── Day4 festival / reputation feedback ───────────── */
+.favored-reputation {
+  margin-top: auto;
+  color: #8e6a46;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 800;
+}
+.reputation-bonus {
+  margin: 6px 0;
+  padding: 10px 12px;
+  border: 1px solid #e4c98f;
+  border-radius: 12px;
+  background: #fff3d7;
+  color: #a55f36;
+  font-family: var(--font-ui);
+  font-weight: 800;
+}
+.festival-panel h2::before,
+.festival-result h2::before {
+  background: #e88961;
+}
