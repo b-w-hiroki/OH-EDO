@@ -9,11 +9,16 @@
 - 小火騒ぎ → Jev aftermath → Day3
 - 火消し小屋 / 火消し頭
 - Day3 町内見回り → Day4
+- Day4 NPC個別ミニエピソード
+- 春祭り準備イベント → Day5
 - 噂履歴 / 寿命 / 評判タグ
 - 成長ランク
 - 横画面 / 縦画面レスポンシブ
-- タッチ操作
+- NPC直接タップ / サイドカードからの会話
+- エリアタブによるタッチ移動
 - production build smoke check
+- 今日の目当て / 昨日の行動→今日の変化表示
+- エリア移動演出 / UI効果音
 - GitHub Pages deploy workflow
 
 ## 外部設定が必要なもの

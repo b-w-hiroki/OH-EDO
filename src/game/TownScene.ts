@@ -428,6 +428,11 @@ export class TownScene extends Phaser.Scene {
       const image = this.add.image(pos.x, pos.y, `char-${id}`);
       image.setScale(scale);
       image.setDepth(pos.y);
+      image.setInteractive({ useHandCursor: true });
+      image.on("pointerdown", () => {
+        if (!this.inputEnabled) return;
+        EventBus.emit("npc-interact", id as NPCId);
+      });
       this.tweens.add({
         targets: image,
         scaleY: scale * 1.035,

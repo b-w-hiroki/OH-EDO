@@ -1228,3 +1228,48 @@ body::before {
 .festival-result h2::before {
   background: #e88961;
 }
+
+
+/* ── Tap interaction / town-life polish ─────────────── */
+.nearby-copy {
+  min-width: 0;
+  flex: 1;
+}
+.nearby-talk {
+  flex: none;
+  min-height: 30px;
+  padding: 4px 9px;
+  border: 1px solid #edc4b7;
+  border-radius: 999px;
+  background: #fff0eb;
+  color: #c55e4d;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 800;
+}
+.nearby-talk:hover {
+  background: #ffe5de;
+}
+.town-flavor-card p {
+  margin: 0;
+  color: #67584b;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  line-height: 1.65;
+}
+@media (pointer: coarse) {
+  .nearby-talk {
+    min-height: 38px;
+    padding-inline: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}
