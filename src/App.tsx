@@ -4,6 +4,7 @@ import type {
   DialogLine,
   GameState,
   JobChoice,
+  FireChoice,
   NPCId,
   AreaId,
 } from "./types";
@@ -12,6 +13,8 @@ import {
   AREAS,
   CHILD_INTRO_LINES,
   FISHMONGER_INTRO_LINES,
+  FIRE_CHOICES,
+  FIRE_INTRO_LINES,
   INITIAL_STATE,
   JOB_CHOICES,
   KUMITORI_EVENT_LINES,
@@ -175,6 +178,15 @@ function applyDialogComplete(s: GameState, kind: DialogKind): GameState {
         log: appendLog(s.log, 2, "夜が明けて、二日目の朝が来た。"),
       };
 
+    case "fire_intro":
+      return {
+        ...s,
+        dialog: null,
+        screen: "fire_choice",
+        flags: { ...s.flags, fire_intro_started: true },
+        log: appendLog(s.log, s.day, "長屋裏手で小火騒ぎが起きた。"),
+      };
+
     case "rumor_landlord":
     case "rumor_fishmonger":
     case "rumor_child":
@@ -282,7 +294,14 @@ function applyJobChoice(s: GameState, choice: JobChoice): GameState {
 }
 
 function getNextLead(state: GameState): string | null {
-  if (state.day < 2 || !state.lastDecision) return null;
+  if (
+    state.day < 2 ||
+    !state.lastDecision ||
+    state.flags.fire_intro_started ||
+    state.flags.fire_event_done
+  ) {
+    return null;
+  }
   if (state.lastDecision.specialEvent.shouldTrigger) {
     return "火消し小屋の方が妙に騒がしい。昨日の噂と何か関係があるらしい。";
   }
@@ -413,6 +432,69 @@ function App() {
 
   const chooseJob = useCallback((choice: JobChoice) => {
     setState((s) => (s.screen === "job" ? applyJobChoice(s, choice) : s));
+  }, []);
+
+  const startFireEvent = useCallback(() => {
+    setState((s) => {
+      if (
+        s.day < 2 ||
+        s.flags.fire_intro_started ||
+        s.flags.fire_event_done ||
+        s.screen !== "town"
+      ) {
+        return s;
+      }
+      return startDialogInState(s, "fire_intro", FIRE_INTRO_LINES);
+    });
+  }, []);
+
+  const chooseFireResponse = useCallback((choice: FireChoice) => {
+    setState((s) => {
+      if (s.screen !== "fire_choice") return s;
+      const e = choice.effects;
+      return {
+        ...s,
+        screen: "town",
+        day: 3,
+        time: "morning",
+        currentArea: "nagaya",
+        player: {
+          ...s.player,
+          trust: s.player.trust + (e.trust ?? 0),
+          iki: s.player.iki + (e.iki ?? 0),
+          network: s.player.network + (e.network ?? 0),
+          skill: s.player.skill + (e.skill ?? 0),
+        },
+        town: {
+          ...s.town,
+          safety: s.town.safety + (e.safety ?? 0),
+        },
+        flags: {
+          ...s.flags,
+          fire_event_done: true,
+          day3_started: true,
+        },
+        activeRumors: Array.from(
+          new Set([...s.activeRumors, ...choice.rumorTags])
+        ),
+        playerActions: [
+          ...s.playerActions,
+          {
+            id: `action-${Date.now()}`,
+            day: s.day,
+            type: choice.id,
+            targetNpcId: "landlord",
+            importance: 3,
+            tags: [...choice.rumorTags],
+          },
+        ],
+        log: appendLog(
+          appendLog(s.log, s.day, choice.resultText),
+          3,
+          "小火騒ぎの翌朝。町は昨日より少しだけこちらを見るようになった。"
+        ),
+      };
+    });
   }, []);
 
   const goToNight = useCallback(async () => {
@@ -629,6 +711,12 @@ function App() {
               </div>
             )}
 
+            {state.screen === "fire_choice" && (
+              <div className="overlay">
+                <FireChoiceView choices={FIRE_CHOICES} onChoose={chooseFireResponse} />
+              </div>
+            )}
+
             {state.screen === "room" && (
               <div className="overlay">
                 <RoomView day={state.day} onClose={closeRoom} />
@@ -660,6 +748,9 @@ function App() {
             <div className="next-lead">
               <span className="next-lead-label">次の気配</span>
               <span className="next-lead-text">{nextLead}</span>
+              <button className="primary" onClick={startFireEvent}>
+                騒ぎを見に行く
+              </button>
             </div>
           )}
           </>
@@ -706,6 +797,35 @@ function TitleView({
         <button className="primary" onClick={onStart}>
           {hasSave ? "続きから（保存済み）" : "はじめる"}
         </button>
+      </div>
+    </section>
+  );
+}
+
+function FireChoiceView({
+  choices,
+  onChoose,
+}: {
+  choices: FireChoice[];
+  onChoose: (choice: FireChoice) => void;
+}) {
+  return (
+    <section className="panel">
+      <h2>小火騒ぎ</h2>
+      <p className="panel-desc">
+        火消し組が来るまでのわずかな間、どう動く？
+      </p>
+      <div className="fire-choice-list">
+        {choices.map((choice) => (
+          <button
+            className="fire-choice"
+            key={choice.id}
+            onClick={() => onChoose(choice)}
+          >
+            <strong>{choice.label}</strong>
+            <span>{choice.description}</span>
+          </button>
+        ))}
       </div>
     </section>
   );
