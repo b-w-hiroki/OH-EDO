@@ -28,6 +28,13 @@ import { JobView } from "./components/JobView";
 import { ResultView } from "./components/ResultView";
 import { PhaserGame } from "./game/PhaserGame";
 import { EventBus } from "./game/EventBus";
+import { buildDayDecisionContext } from "./decision/DecisionContextBuilder";
+import {
+  createDecisionService,
+  makeDecisionLog,
+} from "./decision/DecisionService";
+
+const decisionService = createDecisionService();
 
 const STORAGE_KEY = "oh-edo-mvp-save-v2";
 
@@ -35,10 +42,24 @@ function loadInitial(): GameState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return INITIAL_STATE;
-    const parsed = JSON.parse(raw) as GameState;
+    const parsed = JSON.parse(raw) as Partial<GameState>;
+    const merged: GameState = {
+      ...INITIAL_STATE,
+      ...parsed,
+      player: { ...INITIAL_STATE.player, ...(parsed.player ?? {}) },
+      town: { ...INITIAL_STATE.town, ...(parsed.town ?? {}) },
+      flags: { ...INITIAL_STATE.flags, ...(parsed.flags ?? {}) },
+      activeRumors: parsed.activeRumors ?? [],
+      log: parsed.log ?? [],
+      playerActions: parsed.playerActions ?? [],
+      decisionLogs: parsed.decisionLogs ?? [],
+      lastDecision: parsed.lastDecision ?? null,
+      dialog: null,
+      lastJobResult: parsed.lastJobResult ?? null,
+    };
     // Drop transient dialog/overlay state on load.
-    const screen = parsed.flags.intro_done ? "town" : "title";
-    return { ...parsed, dialog: null, screen };
+    const screen = merged.flags.intro_done ? "town" : "title";
+    return { ...merged, dialog: null, screen };
   } catch {
     return INITIAL_STATE;
   }
@@ -227,6 +248,23 @@ function applyJobChoice(s: GameState, choice: JobChoice): GameState {
     flags: { ...s.flags, kumitori_job_done: true },
     activeRumors: Array.from(new Set([...s.activeRumors, ...choice.rumorTags])),
     log: appendLog(s.log, s.day, choice.resultText),
+    playerActions: [
+      ...s.playerActions,
+      {
+        id: `action-${Date.now()}`,
+        day: s.day,
+        type: choice.id,
+        targetNpcId: "kumitori_master",
+        importance:
+          choice.id === "choice_kumitori_friendly" ||
+          choice.id === "choice_kumitori_careful"
+            ? 3
+            : choice.id === "choice_kumitori_reluctant"
+              ? 1
+              : 2,
+        tags: [...choice.rumorTags],
+      },
+    ],
     lastJobResult: { choiceId: choice.id, resultText: choice.resultText, delta },
   };
 }
@@ -341,9 +379,44 @@ function App() {
     setState((s) => (s.screen === "job" ? applyJobChoice(s, choice) : s));
   }, []);
 
-  const goToNight = useCallback(() => {
-    setState((s) => startDialogInState(s, "night", NIGHT_LINES));
-  }, []);
+  const goToNight = useCallback(async () => {
+    const context = buildDayDecisionContext(state);
+    const outcome = await decisionService.decide(context);
+    const decidedRumor =
+      outcome.result.rumor.type === "none"
+        ? undefined
+        : outcome.result.rumor.type;
+    const decisionLog = makeDecisionLog(
+      context,
+      outcome.result,
+      decidedRumor,
+      outcome.fallbackReason
+    );
+
+    setState((current) => {
+      const providerLabel =
+        outcome.result.provider === "jev" ? "Jev" : "Local";
+      const rumorText = decidedRumor
+        ? `#${decidedRumor}（強さ ${outcome.result.rumor.strength.toFixed(1)}）`
+        : "大きな噂なし";
+      const fallbackText = outcome.fallbackReason
+        ? ` / fallback: ${outcome.fallbackReason}`
+        : "";
+
+      const withDecision: GameState = {
+        ...current,
+        activeRumors: decidedRumor ? [decidedRumor] : [],
+        lastDecision: outcome.result,
+        decisionLogs: [...current.decisionLogs, decisionLog],
+        log: appendLog(
+          current.log,
+          current.day,
+          `翌日の町判断：${rumorText} / ${providerLabel}${fallbackText}`
+        ),
+      };
+      return startDialogInState(withDecision, "night", NIGHT_LINES);
+    });
+  }, [state]);
 
   const closeRoom = useCallback(() => {
     setState((s) =>

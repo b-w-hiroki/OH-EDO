@@ -140,6 +140,9 @@ export interface GameState {
   flags: Flags;
   activeRumors: RumorTag[];
   log: string[];
+  playerActions: import("./decision/types").PlayerActionRecord[];
+  decisionLogs: import("./decision/types").DecisionLogEntry[];
+  lastDecision: import("./decision/types").DecisionResult | null;
   dialog: ActiveDialog | null;
   lastJobResult: JobResult | null;
 }

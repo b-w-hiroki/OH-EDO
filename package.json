@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "verify": "npm run test && npm run typecheck && npm run build",
+    "test": "node --test api/*.test.js"
   },
   "dependencies": {
     "phaser": "^3.87.0",
