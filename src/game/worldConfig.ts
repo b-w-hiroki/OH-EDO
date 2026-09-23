@@ -33,10 +33,10 @@ export const AREA_BOUNDS: Record<OutdoorArea, Rect> = {
 };
 
 export const AREA_GROUND: Record<OutdoorArea, number> = {
-  market: 0x3b2f23,
-  nagaya: 0x342a20,
-  well: 0x2b3036,
-  firehouse: 0x3a2c25,
+  market: 0xe5c68e,
+  nagaya: 0xd9b982,
+  well: 0xb9d7d5,
+  firehouse: 0xd6ad7c,
 };
 
 export const AREA_LABEL: Record<OutdoorArea, string> = {
@@ -67,17 +67,17 @@ export const WELL_OBSTACLE: Rect = { x: 430, y: 990, w: 156, h: 120 };
 /** Non-colliding decoration blocks: [x, y, w, h, fillColor]. */
 export const DECORATIONS: Array<[number, number, number, number, number]> = [
   // 商店通り — market stalls
-  [150, 130, 220, 90, 0x4b3b2b],
-  [470, 120, 200, 80, 0x4b3b2b],
-  [1010, 130, 210, 96, 0x4b3b2b],
+  [150, 130, 220, 90, 0xe9b770],
+  [470, 120, 200, 80, 0xf0c681],
+  [1010, 130, 210, 96, 0xe7b06b],
   // 長屋前 — long-house blocks
-  [180, 540, 280, 110, 0x46382a],
-  [180, 760, 280, 96, 0x46382a],
-  [620, 540, 240, 92, 0x46382a],
+  [180, 540, 280, 110, 0xcf9f6c],
+  [180, 760, 280, 96, 0xd8aa76],
+  [620, 540, 240, 92, 0xc99867],
   // 井戸端 — barrels / laundry frames
-  [900, 980, 150, 96, 0x404a3a],
-  [1080, 1140, 150, 96, 0x404a3a],
-  [180, 1150, 200, 90, 0x404a3a],
+  [900, 980, 150, 96, 0x9eb77d],
+  [1080, 1140, 150, 96, 0xa9c68e],
+  [180, 1150, 200, 90, 0x98b47b],
   // 火消し小屋 — equipment racks / buckets
   [210, 1430, 300, 110, 0x5a3b2c],
   [1040, 1450, 180, 95, 0x5a3b2c],

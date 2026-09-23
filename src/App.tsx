@@ -25,6 +25,7 @@ import {
   KUMITORI_EVENT_LINES,
   LANDLORD_INTRO_LINES,
   NEWSMAN_INTRO_LINES,
+  NPCS,
   NIGHT_LINES,
   OPENING_LINES,
   RUMOR_REPLIES,
@@ -900,8 +901,9 @@ function App() {
         )}
 
         {inWorld && (
-          <div className="stage">
-            <PhaserGame />
+          <div className="world-layout">
+            <div className="stage">
+              <PhaserGame />
 
             {state.screen === "town" && (
               <>
@@ -1016,6 +1018,8 @@ function App() {
                 <StatusPanel state={state} onClose={closeStatus} />
               </div>
             )}
+            </div>
+            <TownSidePanel state={state} dominantRumor={dominantRumor} areaEcho={areaEcho} />
           </div>
         )}
 
@@ -1045,6 +1049,60 @@ function App() {
         )}
       </main>
     </div>
+  );
+}
+
+function TownSidePanel({
+  state,
+  dominantRumor,
+  areaEcho,
+}: {
+  state: GameState;
+  dominantRumor: ReturnType<typeof pickDominantRumor>;
+  areaEcho: string | null;
+}) {
+  const areaNpcIds: NPCId[] =
+    state.currentArea === "market"
+      ? ["fishmonger", "newsman"]
+      : state.currentArea === "well"
+        ? ["child"]
+        : state.currentArea === "firehouse"
+          ? ["firechief"]
+          : ["landlord", "child"];
+
+  return (
+    <aside className="town-side-panel">
+      <section className="side-card">
+        <div className="side-card-title">このあたりの人たち</div>
+        <div className="nearby-list">
+          {areaNpcIds.map((npcId) => (
+            <div className="nearby-person" key={npcId}>
+              <span className="nearby-avatar">{NPCS[npcId].name.slice(0, 1)}</span>
+              <div>
+                <strong>{NPCS[npcId].name}</strong>
+                <small>{state.npcRelations[npcId].attitude}</small>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="side-card rumor-card">
+        <div className="side-card-title">今日のうわさ</div>
+        <p>{areaEcho ?? "まだ大きな噂はない。"}</p>
+        {dominantRumor && <span className="rumor-chip">#{dominantRumor}</span>}
+      </section>
+
+      <section className="side-card town-mood-card">
+        <div className="side-card-title">町の空気</div>
+        <div className="mood-grid">
+          <span><b>衛生</b>{state.town.hygiene}</span>
+          <span><b>治安</b>{state.town.safety}</span>
+          <span><b>流行</b>{state.town.trend}</span>
+          <span><b>景気</b>{state.town.economy}</span>
+        </div>
+      </section>
+    </aside>
   );
 }
 

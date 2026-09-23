@@ -19,8 +19,9 @@ export function PhaserGame() {
       parent: containerRef.current,
       width: GAME_WIDTH,
       height: GAME_HEIGHT,
-      backgroundColor: "#16110d",
-      pixelArt: true,
+      backgroundColor: "#dff3ff",
+      pixelArt: false,
+      antialias: true,
       physics: {
         default: "arcade",
         arcade: { gravity: { x: 0, y: 0 }, debug: false },
