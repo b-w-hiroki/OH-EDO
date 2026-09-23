@@ -11,13 +11,14 @@ export type Screen =
 
 export type TimeOfDay = "morning" | "noon" | "evening" | "night";
 
-export type AreaId = "nagaya" | "well" | "market" | "room";
+export type AreaId = "nagaya" | "well" | "market" | "firehouse" | "room";
 
 export type NPCId =
   | "landlord"
   | "fishmonger"
   | "child"
   | "newsman"
+  | "firechief"
   | "kumitori_master";
 
 export type RumorTag =
@@ -40,6 +41,7 @@ export type DialogKind =
   | "fishmonger_intro"
   | "child_intro"
   | "newsman_intro"
+  | "firechief_intro"
   | "kumitori_event"
   | "night"
   | "fire_intro"
@@ -78,6 +80,8 @@ export interface Flags {
   met_fishmonger: boolean;
   met_child: boolean;
   met_newsman: boolean;
+  met_firechief: boolean;
+  firehouse_unlocked: boolean;
   rumor_heard_kumitori: boolean;
   kumitori_event_started: boolean;
   kumitori_job_done: boolean;

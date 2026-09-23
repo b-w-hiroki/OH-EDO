@@ -319,3 +319,67 @@ body::before {
     overflow-y: auto;
   }
 }
+
+
+.mobile-controls {
+  display: none;
+}
+
+@media (pointer: coarse), (max-width: 699px) {
+  .mobile-controls {
+    position: absolute;
+    inset: auto 10px 10px 10px;
+    z-index: 1200;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    pointer-events: none;
+    touch-action: none;
+  }
+
+  .mobile-dpad {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    pointer-events: auto;
+  }
+
+  .mobile-btn,
+  .mobile-action {
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: none;
+    border: 1px solid rgba(255,255,255,.78);
+    background: rgba(55, 92, 118, .88);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(30, 52, 69, .2);
+  }
+
+  .mobile-btn {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    font-size: 18px;
+    font-weight: 800;
+  }
+
+  .mobile-btn.up { left: 51px; top: 0; }
+  .mobile-btn.left { left: 0; top: 51px; }
+  .mobile-btn.down { left: 51px; top: 102px; }
+  .mobile-btn.right { left: 102px; top: 51px; }
+
+  .mobile-action {
+    pointer-events: auto;
+    width: 82px;
+    height: 82px;
+    border-radius: 50%;
+    font-weight: 800;
+    font-size: 16px;
+    background: rgba(215, 88, 67, .92);
+  }
+
+  .controls-hint {
+    display: none;
+  }
+}

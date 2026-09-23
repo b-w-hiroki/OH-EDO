@@ -36,6 +36,8 @@ export const INITIAL_STATE: GameState = {
     met_fishmonger: false,
     met_child: false,
     met_newsman: false,
+    met_firechief: false,
+    firehouse_unlocked: false,
     rumor_heard_kumitori: false,
     kumitori_event_started: false,
     kumitori_job_done: false,
@@ -50,6 +52,7 @@ export const INITIAL_STATE: GameState = {
     fishmonger: { affinity: 0, caution: 0, familiarity: 0, attitude: "neutral" },
     child: { affinity: 0, caution: 0, familiarity: 0, attitude: "neutral" },
     newsman: { affinity: 0, caution: 0, familiarity: 0, attitude: "neutral" },
+    firechief: { affinity: 0, caution: 0, familiarity: 0, attitude: "neutral" },
     kumitori_master: { affinity: 0, caution: 0, familiarity: 0, attitude: "neutral" },
   },
   activeRumors: [],
@@ -67,6 +70,7 @@ export const NPCS: Record<NPCId, NPCDef> = {
   fishmonger: { id: "fishmonger", name: "魚屋" },
   child: { id: "child", name: "長屋の子ども" },
   newsman: { id: "newsman", name: "瓦版屋" },
+  firechief: { id: "firechief", name: "火消し頭" },
   kumitori_master: { id: "kumitori_master", name: "汲み取り親方" },
 };
 
@@ -99,6 +103,16 @@ export const AREAS: Record<AreaDef["id"], AreaDef> = {
     flavor: [
       "瓦版屋が「号外」と叫ぶたび、犬が一緒に走り出す。",
       "魚屋の前で値切る婆さんと、笑って受け流す若い衆。",
+    ],
+  },
+  firehouse: {
+    id: "firehouse",
+    name: "火消し小屋",
+    description:
+      "纏と鳶口、桶が整然と並ぶ町火消しの詰所。威勢のいい掛け声と木の匂いがする。",
+    flavor: [
+      "若い衆が纏の扱いを何度も繰り返している。",
+      "昨日の小火の話を肴に、火消したちが笑っている。",
     ],
   },
   room: {
@@ -196,6 +210,14 @@ export const NIGHT_LINES: DialogLine[] = [
   { speaker: "主人公", text: "……やっぱり来る町を間違えたかもしれない。" },
 ];
 
+export const FIRECHIEF_INTRO_LINES: DialogLine[] = [
+  { speaker: "火消し頭", text: "昨日の新入りってのは、お前か。" },
+  { speaker: "主人公", text: "たぶん、その呼ばれ方をしているのは俺だ。" },
+  { speaker: "火消し頭", text: "火事場じゃ腕より先に、周りを見る目が要る。昨日は悪くなかった。" },
+  { speaker: "主人公", text: "褒められてるのか？" },
+  { speaker: "火消し頭", text: "半分な。残り半分は次も見てから決める。暇なら小屋に顔を出せ。" },
+];
+
 export const ALREADY_MET_LINES: Record<NPCId, DialogLine[]> = {
   landlord: [
     { speaker: "大家", text: "ぼーっと突っ立ってるんじゃないよ。少しは町を見てきな。" },
@@ -208,6 +230,9 @@ export const ALREADY_MET_LINES: Record<NPCId, DialogLine[]> = {
   ],
   newsman: [
     { speaker: "瓦版屋", text: "見出しはまだ書けねえなあ。もう少し転んでくれよ。" },
+  ],
+  firechief: [
+    { speaker: "火消し頭", text: "町を守るのは派手さじゃねえ。次に備えて道具を見とけ。" },
   ],
   kumitori_master: [
     { speaker: "汲み取り親方", text: "……（腰をさすって唸っている）" },
@@ -325,6 +350,14 @@ export const RUMOR_REPLIES: Record<NPCId, Partial<Record<RumorTag, DialogLine[]>
     funny: [
       { speaker: "瓦版屋", text: "あんた、記事にしやすい顔してるよ。いや、行動が。" },
     ],
+  },
+  firechief: {
+    helpful: [{ speaker: "火消し頭", text: "町の連中を助けるのは悪くねえ。だが火事場じゃ自分の身も守れ。" }],
+    quick: [{ speaker: "火消し頭", text: "速さは武器だ。だが火はもっと速い。先を読め。" }],
+    iki: [{ speaker: "火消し頭", text: "気が利くじゃねえか。そういうのは火事場で助かる。" }],
+    funny: [{ speaker: "火消し頭", text: "笑い話で済むうちはいい。火だけは笑ってくれねえぞ。" }],
+    clean: [{ speaker: "火消し頭", text: "後始末まで見るやつは信用できる。覚えとく。" }],
+    yabo: [{ speaker: "火消し頭", text: "野暮でも動けりゃまだいい。次は周りを見ろ。" }],
   },
   kumitori_master: {},
 };
@@ -462,6 +495,14 @@ export const FIRE_RUMOR_REPLIES: Record<
     funny: [{ speaker: "瓦版屋", text: "昨日の話、もう二割増しだ。昼には五割増しになる予定だ。" }],
     clean: [{ speaker: "瓦版屋", text: "『火の始末、後始末まで』。真面目すぎるが、町内受けはいいな。" }],
     yabo: [{ speaker: "瓦版屋", text: "『新入り、火事場で右往左往』……いや、本人に怒られるか。" }],
+  },
+  firechief: {
+    helpful: [{ speaker: "火消し頭", text: "昨日の動きは悪くなかった。町を守る気があるなら、また小屋に来い。" }],
+    quick: [{ speaker: "火消し頭", text: "桶運びの足は見た。次は速さだけじゃなく段取りも覚えろ。" }],
+    iki: [{ speaker: "火消し頭", text: "火事場で慌てず動けるのは強みだ。若い衆にも見せてやれ。" }],
+    funny: [{ speaker: "火消し頭", text: "瓦版屋の話は半分に聞け。だが昨日お前が動いたのは本当だ。" }],
+    clean: [{ speaker: "火消し頭", text: "火の始末と後始末。両方できて一人前だ。" }],
+    yabo: [{ speaker: "火消し頭", text: "昨日は危なっかしかった。次は俺の声を聞け。" }],
   },
   kumitori_master: {},
 };

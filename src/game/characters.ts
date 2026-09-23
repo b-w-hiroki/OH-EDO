@@ -20,7 +20,8 @@ export type CharKind =
   | "landlord"
   | "fishmonger"
   | "child"
-  | "newsman";
+  | "newsman"
+  | "firechief";
 
 /** On-screen scale per character (the child is smaller). */
 export const CHAR_SCALE: Record<CharKind, number> = {
@@ -29,6 +30,7 @@ export const CHAR_SCALE: Record<CharKind, number> = {
   fishmonger: 1,
   child: 0.72,
   newsman: 1,
+  firechief: 1.06,
 };
 
 interface CharPalette {
@@ -116,6 +118,20 @@ const PALETTES: Record<CharKind, CharPalette> = {
     eye: 0x231a13,
     blush: 0xe8917c,
     accent: 0xece2d0,
+  },
+  firechief: {
+    outline: 0x20160f,
+    skin: 0xf0c394,
+    skinSh: 0xcf9869,
+    hair: 0x29231f,
+    kimono: 0x355f7a,
+    kimonoSh: 0x24465d,
+    obi: 0xd1673e,
+    white: 0xeee2cf,
+    dark: 0x352a22,
+    eye: 0x1f1712,
+    blush: 0xd98a74,
+    accent: 0xe7c45e,
   },
 };
 
@@ -224,6 +240,13 @@ function drawHair(pen: Pen, P: CharPalette, kind: CharKind): void {
       pen(P.hair, 12, 3, 1, 5);
       pen(P.hair, 8, 0, 2, 1);
       break;
+    case "firechief":
+      pen(P.hair, 5, 1, 8, 2);
+      pen(P.hair, 5, 3, 1, 4);
+      pen(P.hair, 12, 3, 1, 4);
+      pen(P.accent, 4, 3, 10, 1);
+      pen(P.accent, 3, 3, 2, 2);
+      break;
   }
 }
 
@@ -265,6 +288,10 @@ function drawProp(pen: Pen, P: CharPalette, kind: CharKind): void {
     pen(P.white, 5, 14, 8, 5);
     pen(P.kimonoSh, 5, 15, 8, 1);
     pen(P.kimonoSh, 5, 17, 8, 1);
+  } else if (kind === "firechief") {
+    pen(P.accent, 14, 10, 1, 9);
+    pen(P.accent, 12, 10, 5, 2);
+    pen(P.white, 13, 9, 3, 1);
   }
 }
 
@@ -302,6 +329,7 @@ const TEXTURE_SPECS: TextureSpec[] = [
   { key: "char-fishmonger", kind: "fishmonger", frame: 0 },
   { key: "char-child", kind: "child", frame: 0 },
   { key: "char-newsman", kind: "newsman", frame: 0 },
+  { key: "char-firechief", kind: "firechief", frame: 0 },
 ];
 
 /** Generates every character texture into the scene's texture manager. */

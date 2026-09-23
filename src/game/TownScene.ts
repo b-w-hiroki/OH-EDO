@@ -58,6 +58,10 @@ export class TownScene extends Phaser.Scene {
   private nearDoor = false;
   private walkTimer = 0;
   private walkFrame = 0;
+  private virtualMove: Vec = { x: 0, y: 0 };
+  private virtualActionQueued = false;
+  private firehouseUnlocked = false;
+  private firehouseGateBody: Phaser.Physics.Arcade.StaticBody | null = null;
 
   private readonly doorCenter: Vec = {
     x: ROOM_DOOR.x + ROOM_DOOR.w / 2,
@@ -93,6 +97,8 @@ export class TownScene extends Phaser.Scene {
     EventBus.on("screen-changed", this.onScreenChanged);
     EventBus.on("game-flags", this.onGameFlags);
     EventBus.on("warp", this.onWarp);
+    EventBus.on("virtual-move", this.onVirtualMove);
+    EventBus.on("virtual-action", this.onVirtualAction);
 
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.cleanup, this);
     this.events.once(Phaser.Scenes.Events.DESTROY, this.cleanup, this);
@@ -196,6 +202,14 @@ export class TownScene extends Phaser.Scene {
       .setDepth(-5);
     this.physics.add.existing(well, true);
     this.physics.add.collider(this.player, well);
+
+    // Firehouse access gate. The district is unlocked after the first fire event.
+    const gate = this.add
+      .rectangle(WORLD_WIDTH / 2, AREA_BOUNDS.firehouse.y + 8, WORLD_WIDTH, 16, 0x000000, 0)
+      .setDepth(-2);
+    this.physics.add.existing(gate, true);
+    this.firehouseGateBody = gate.body as Phaser.Physics.Arcade.StaticBody;
+    this.physics.add.collider(this.player, gate);
   }
 
   private createNPCs(): void {
@@ -298,6 +312,8 @@ export class TownScene extends Phaser.Scene {
     if (k.right.isDown || k.d.isDown) vx += 1;
     if (k.up.isDown || k.w.isDown) vy -= 1;
     if (k.down.isDown || k.s.isDown) vy += 1;
+    vx += this.virtualMove.x;
+    vy += this.virtualMove.y;
 
     const v = new Phaser.Math.Vector2(vx, vy).normalize().scale(PLAYER_SPEED);
     this.player.setVelocity(v.x, v.y);
@@ -363,7 +379,9 @@ export class TownScene extends Phaser.Scene {
     const k = this.keys!;
     const pressed =
       Phaser.Input.Keyboard.JustDown(k.space) ||
-      Phaser.Input.Keyboard.JustDown(k.e);
+      Phaser.Input.Keyboard.JustDown(k.e) ||
+      this.virtualActionQueued;
+    this.virtualActionQueued = false;
     if (!pressed) return;
 
     if (this.nearbyNPC) {
@@ -382,7 +400,8 @@ export class TownScene extends Phaser.Scene {
   private areaAt(y: number): OutdoorArea {
     if (y < AREA_BOUNDS.market.y + AREA_BOUNDS.market.h) return "market";
     if (y < AREA_BOUNDS.nagaya.y + AREA_BOUNDS.nagaya.h) return "nagaya";
-    return "well";
+    if (y < AREA_BOUNDS.well.y + AREA_BOUNDS.well.h) return "well";
+    return "firehouse";
   }
 
   // ── Bridge handlers ───────────────────────────────────
@@ -391,8 +410,15 @@ export class TownScene extends Phaser.Scene {
     this.inputEnabled = screen === "town";
   };
 
-  private onGameFlags = (flags: { roomUnlocked: boolean }): void => {
+  private onGameFlags = (flags: {
+    roomUnlocked: boolean;
+    firehouseUnlocked?: boolean;
+  }): void => {
     this.roomUnlocked = flags.roomUnlocked;
+    this.firehouseUnlocked = Boolean(flags.firehouseUnlocked);
+    if (this.firehouseGateBody) {
+      this.firehouseGateBody.enable = !this.firehouseUnlocked;
+    }
   };
 
   private onWarp = (area: AreaId): void => {
@@ -401,15 +427,30 @@ export class TownScene extends Phaser.Scene {
         ? { x: 640, y: 250 }
         : area === "well"
           ? { x: 660, y: 1080 }
-          : { x: PLAYER_SPAWN.x, y: PLAYER_SPAWN.y };
+          : area === "firehouse"
+            ? { x: 650, y: 1490 }
+            : { x: PLAYER_SPAWN.x, y: PLAYER_SPAWN.y };
     this.player.setPosition(target.x, target.y);
     this.player.setVelocity(0, 0);
     this.currentArea = this.areaAt(target.y);
+  };
+
+  private onVirtualMove = (move: Vec): void => {
+    this.virtualMove = {
+      x: Phaser.Math.Clamp(move?.x ?? 0, -1, 1),
+      y: Phaser.Math.Clamp(move?.y ?? 0, -1, 1),
+    };
+  };
+
+  private onVirtualAction = (): void => {
+    this.virtualActionQueued = true;
   };
 
   private cleanup = (): void => {
     EventBus.off("screen-changed", this.onScreenChanged);
     EventBus.off("game-flags", this.onGameFlags);
     EventBus.off("warp", this.onWarp);
+    EventBus.off("virtual-move", this.onVirtualMove);
+    EventBus.off("virtual-action", this.onVirtualAction);
   };
 }
