@@ -130,6 +130,15 @@ export interface NPCDef {
   name: string;
 }
 
+export interface NPCRelationState {
+  affinity: number;
+  caution: number;
+  familiarity: number;
+  attitude: import("./decision/types").NpcAttitude;
+}
+
+export type NPCRelations = Record<NPCId, NPCRelationState>;
+
 export interface GameState {
   screen: Screen;
   day: number;
@@ -138,6 +147,7 @@ export interface GameState {
   player: Player;
   town: Town;
   flags: Flags;
+  npcRelations: NPCRelations;
   activeRumors: RumorTag[];
   log: string[];
   playerActions: import("./decision/types").PlayerActionRecord[];
