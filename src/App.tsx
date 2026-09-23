@@ -906,12 +906,9 @@ function App() {
               <PhaserGame />
 
             {state.screen === "town" && (
-              <>
-                <p className="controls-hint">
-                  矢印 / WASD で移動・スペースで話しかける
-                </p>
-                <MobileControls />
-              </>
+              <p className="controls-hint">
+                矢印 / WASD で移動・スペースで話しかける
+              </p>
             )}
 
             {state.screen === "dialog" && state.dialog && (
@@ -1234,57 +1231,6 @@ function PatrolResultView({
         <button className="primary" onClick={onNext}>四日目へ</button>
       </div>
     </section>
-  );
-}
-
-function MobileControls() {
-  const move = (x: number, y: number) => EventBus.emit("virtual-move", { x, y });
-  const stop = () => EventBus.emit("virtual-move", { x: 0, y: 0 });
-
-  return (
-    <div className="mobile-controls" aria-label="タッチ操作">
-      <div className="mobile-dpad">
-        <button
-          className="mobile-btn up"
-          aria-label="上へ移動"
-          onPointerDown={() => move(0, -1)}
-          onPointerUp={stop}
-          onPointerCancel={stop}
-          onPointerLeave={stop}
-        >▲</button>
-        <button
-          className="mobile-btn left"
-          aria-label="左へ移動"
-          onPointerDown={() => move(-1, 0)}
-          onPointerUp={stop}
-          onPointerCancel={stop}
-          onPointerLeave={stop}
-        >◀</button>
-        <button
-          className="mobile-btn down"
-          aria-label="下へ移動"
-          onPointerDown={() => move(0, 1)}
-          onPointerUp={stop}
-          onPointerCancel={stop}
-          onPointerLeave={stop}
-        >▼</button>
-        <button
-          className="mobile-btn right"
-          aria-label="右へ移動"
-          onPointerDown={() => move(1, 0)}
-          onPointerUp={stop}
-          onPointerCancel={stop}
-          onPointerLeave={stop}
-        >▶</button>
-      </div>
-      <button
-        className="mobile-action"
-        aria-label="話す・調べる"
-        onPointerDown={() => EventBus.emit("virtual-action")}
-      >
-        話す
-      </button>
-    </div>
   );
 }
 
