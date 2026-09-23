@@ -15,6 +15,7 @@ import {
   FISHMONGER_INTRO_LINES,
   FIRE_CHOICES,
   FIRE_INTRO_LINES,
+  FIRECHIEF_INTRO_LINES,
   INITIAL_STATE,
   JOB_CHOICES,
   KUMITORI_EVENT_LINES,
@@ -160,6 +161,21 @@ function applyDialogComplete(s: GameState, kind: DialogKind): GameState {
         log: appendLog(s.log, s.day, "瓦版屋に売り出されかけた。（粋 +1）"),
       };
 
+    case "firechief_intro":
+      return {
+        ...closeToTown,
+        flags: { ...s.flags, met_firechief: true },
+        npcRelations: {
+          ...s.npcRelations,
+          firechief: {
+            ...s.npcRelations.firechief,
+            familiarity: s.npcRelations.firechief.familiarity + 1,
+            attitude: "friendly",
+          },
+        },
+        log: appendLog(s.log, s.day, "火消し頭に顔を覚えられた。"),
+      };
+
     case "kumitori_event":
       return {
         ...s,
@@ -256,6 +272,13 @@ function pickNPCDialog(s: GameState, npc: NPCId): NPCDialogPick | null {
         return { kind: "newsman_intro", lines: NEWSMAN_INTRO_LINES };
       }
       return { kind: "already_met", lines: ALREADY_MET_LINES.newsman };
+
+    case "firechief":
+      if (!s.flags.firehouse_unlocked) return null;
+      if (!s.flags.met_firechief) {
+        return { kind: "firechief_intro", lines: FIRECHIEF_INTRO_LINES };
+      }
+      return { kind: "already_met", lines: ALREADY_MET_LINES.firechief };
   }
 }
 
@@ -374,8 +397,11 @@ function App() {
   }, [state.screen]);
 
   useEffect(() => {
-    EventBus.emit("game-flags", { roomUnlocked: state.flags.room_unlocked });
-  }, [state.flags.room_unlocked]);
+    EventBus.emit("game-flags", {
+      roomUnlocked: state.flags.room_unlocked,
+      firehouseUnlocked: state.flags.firehouse_unlocked,
+    });
+  }, [state.flags.room_unlocked, state.flags.firehouse_unlocked]);
 
   useEffect(() => {
     if (sceneReady && state.day >= 2) EventBus.emit("warp", "nagaya");
@@ -385,7 +411,10 @@ function App() {
   useEffect(() => {
     if (!sceneReady) return;
     EventBus.emit("screen-changed", state.screen);
-    EventBus.emit("game-flags", { roomUnlocked: state.flags.room_unlocked });
+    EventBus.emit("game-flags", {
+      roomUnlocked: state.flags.room_unlocked,
+      firehouseUnlocked: state.flags.firehouse_unlocked,
+    });
     EventBus.emit("warp", state.currentArea);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sceneReady]);
@@ -737,9 +766,12 @@ function App() {
             <PhaserGame />
 
             {state.screen === "town" && (
-              <p className="controls-hint">
-                矢印 / WASD で移動・スペースで話しかける
-              </p>
+              <>
+                <p className="controls-hint">
+                  矢印 / WASD で移動・スペースで話しかける
+                </p>
+                <MobileControls />
+              </>
             )}
 
             {state.screen === "dialog" && state.dialog && (
@@ -788,7 +820,11 @@ function App() {
                       day: 3,
                       time: "morning",
                       currentArea: "nagaya",
-                      flags: { ...s.flags, day3_started: true },
+                      flags: {
+                        ...s.flags,
+                        day3_started: true,
+                        firehouse_unlocked: true,
+                      },
                       log: appendLog(
                         s.log,
                         3,
@@ -882,6 +918,57 @@ function TitleView({
         </button>
       </div>
     </section>
+  );
+}
+
+function MobileControls() {
+  const move = (x: number, y: number) => EventBus.emit("virtual-move", { x, y });
+  const stop = () => EventBus.emit("virtual-move", { x: 0, y: 0 });
+
+  return (
+    <div className="mobile-controls" aria-label="タッチ操作">
+      <div className="mobile-dpad">
+        <button
+          className="mobile-btn up"
+          aria-label="上へ移動"
+          onPointerDown={() => move(0, -1)}
+          onPointerUp={stop}
+          onPointerCancel={stop}
+          onPointerLeave={stop}
+        >▲</button>
+        <button
+          className="mobile-btn left"
+          aria-label="左へ移動"
+          onPointerDown={() => move(-1, 0)}
+          onPointerUp={stop}
+          onPointerCancel={stop}
+          onPointerLeave={stop}
+        >◀</button>
+        <button
+          className="mobile-btn down"
+          aria-label="下へ移動"
+          onPointerDown={() => move(0, 1)}
+          onPointerUp={stop}
+          onPointerCancel={stop}
+          onPointerLeave={stop}
+        >▼</button>
+        <button
+          className="mobile-btn right"
+          aria-label="右へ移動"
+          onPointerDown={() => move(1, 0)}
+          onPointerUp={stop}
+          onPointerCancel={stop}
+          onPointerLeave={stop}
+        >▶</button>
+      </div>
+      <button
+        className="mobile-action"
+        aria-label="話す・調べる"
+        onPointerDown={() => EventBus.emit("virtual-action")}
+      >
+        話す
+      </button>
+    </div>
   );
 }
 
