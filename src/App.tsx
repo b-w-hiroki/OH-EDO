@@ -113,9 +113,21 @@ function withProgression(s: GameState): GameState {
   if ((counts.clean ?? 0) >= 2) add("丁寧なやつ");
   if ((counts.funny ?? 0) >= 2) add("変なやつ");
 
+  const liveRumors =
+    s.rumorHistory.length === 0
+      ? s.activeRumors
+      : Array.from(
+          new Set(
+            s.rumorHistory
+              .filter((r) => s.day - r.createdDay < r.durationDays)
+              .map((r) => r.tag)
+          )
+        );
+
   return {
     ...s,
     player: { ...s.player, rank: current.rank, rankName: current.name },
+    activeRumors: liveRumors,
     reputationTags,
   };
 }
