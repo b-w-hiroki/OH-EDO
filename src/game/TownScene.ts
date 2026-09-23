@@ -140,7 +140,7 @@ export class TownScene extends Phaser.Scene {
 
   private createPlayer(): void {
     this.playerShadow = this.add
-      .ellipse(PLAYER_SPAWN.x, PLAYER_SPAWN.y + 28, 36, 13, 0x000000, 0.32);
+      .ellipse(PLAYER_SPAWN.x, PLAYER_SPAWN.y + 52, 48, 14, 0x000000, 0.18);
     this.player = this.physics.add.sprite(
       PLAYER_SPAWN.x,
       PLAYER_SPAWN.y,
@@ -148,8 +148,8 @@ export class TownScene extends Phaser.Scene {
     );
     this.player.setCollideWorldBounds(true);
     const body = this.player.body as Phaser.Physics.Arcade.Body;
-    body.setSize(20, 12);
-    body.setOffset(17, 57);
+    body.setSize(28, 16);
+    body.setOffset(38, 112);
     this.currentArea = this.areaAt(this.player.y);
   }
 
@@ -219,7 +219,7 @@ export class TownScene extends Phaser.Scene {
       const halfH = (CHAR_TEX_H * scale) / 2;
 
       this.add
-        .ellipse(pos.x, pos.y + halfH - 8, 34 * scale, 12 * scale, 0x000000, 0.3)
+        .ellipse(pos.x, pos.y + halfH - 5, 44 * scale, 13 * scale, 0x000000, 0.16)
         .setDepth(pos.y - 1);
 
       const image = this.add.image(pos.x, pos.y, `char-${id}`);
@@ -300,7 +300,7 @@ export class TownScene extends Phaser.Scene {
 
   private syncPlayerDepth(): void {
     this.player.setDepth(this.player.y);
-    this.playerShadow.setPosition(this.player.x, this.player.y + 28);
+    this.playerShadow.setPosition(this.player.x, this.player.y + 52);
     this.playerShadow.setDepth(this.player.y - 1);
   }
 
@@ -363,7 +363,7 @@ export class TownScene extends Phaser.Scene {
 
     if (best) {
       const e = this.npcEntities.find((n) => n.id === best)!;
-      this.showPrompt(e.image.x, e.image.y - 50, "スペース：はなしかける");
+      this.showPrompt(e.image.x, e.image.y - 72, "話す");
     } else if (this.nearDoor) {
       this.showPrompt(
         this.doorCenter.x,
