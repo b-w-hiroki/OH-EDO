@@ -525,6 +525,14 @@ function applyJobChoice(s: GameState, choice: JobChoice): GameState {
   });
 }
 
+function getAreaNpcIds(state: GameState): NPCId[] {
+  if (state.currentArea === "market") return ["fishmonger", "newsman"];
+  if (state.currentArea === "well") return ["child"];
+  if (state.currentArea === "firehouse") return ["firechief"];
+  if (state.currentArea === "room") return ["landlord"];
+  return ["landlord", "child"];
+}
+
 function getCurrentObjective(state: GameState): string {
   if (!state.flags.intro_done) return "大江戸町へ入る";
   if (!state.flags.met_landlord) return "長屋前で大家に会う";
@@ -1093,40 +1101,47 @@ function App() {
 
   return (
     <div className="app">
-      <header className="topbar">
-        <div className="topbar-left">
-          <span className="brand">OH！EDO！</span>
-          <span className="badge">
-            Day {state.day}・{timeLabel(state.time)}
-          </span>
+      <header className="reference-header">
+        <div className="reference-logo-wrap">
+          <span className="brand reference-logo">OH！EDO！</span>
+          <small>大江戸町</small>
+        </div>
+
+        <div className="reference-day-card">
+          <span>1年目</span>
+          <b>春</b>
+          <span>{state.day}日目</span>
+          <span className="day-weather">☀</span>
+          <strong>{timeLabel(state.time)}</strong>
           {inWorld && (
-            <span className="badge subtle">{AREAS[state.currentArea].name}</span>
+            <span className="reference-location">⌖ {AREAS[state.currentArea].name}</span>
           )}
         </div>
-        <div className="topbar-right">
+
+        <div className="reference-header-actions">
           {state.screen !== "title" && (
             <button className="ghost sound-toggle" onClick={toggleSound}>
               {soundMuted ? "音 OFF" : "音 ON"}
             </button>
           )}
           {state.screen === "town" && (
-            <button className="ghost" onClick={openStatus}>
-              覚え書き
-            </button>
+            <button className="ghost" onClick={openStatus}>☰ メニュー</button>
           )}
           {state.screen !== "title" && (
-            <button className="ghost" onClick={resetGame}>
-              はじめから
+            <button className="ghost reset-compact" onClick={resetGame}>
+              ↺
             </button>
           )}
         </div>
       </header>
 
-      {inWorld && <StatusBar player={state.player} town={state.town} />}
       {inWorld && (
-        <div className="objective-strip">
-          <span>今日の目当て</span>
-          <strong>{currentObjective}</strong>
+        <div className="reference-hud-row">
+          <StatusBar player={state.player} town={state.town} />
+          <div className="objective-strip">
+            <span>今日の目当て</span>
+            <strong>{currentObjective}</strong>
+          </div>
         </div>
       )}
 
@@ -1305,15 +1320,39 @@ function App() {
 
         {inWorld && (
           <>
-          <AreaNav state={state} onMove={(area) => {
-            uiSound.startAmbience();
-            uiSound.move();
-            const label = AREAS[area].name;
-            setAreaTransition(label);
-            window.setTimeout(() => setAreaTransition(null), 900);
-            setState((s) => ({ ...s, currentArea: area }));
-            EventBus.emit("warp", area);
-          }} />
+          <div className="reference-action-dock">
+            <AreaNav
+              state={state}
+              onMove={(area) => {
+                uiSound.startAmbience();
+                uiSound.move();
+                const label = AREAS[area].name;
+                setAreaTransition(label);
+                window.setTimeout(() => setAreaTransition(null), 900);
+                setState((s) => ({ ...s, currentArea: area }));
+                EventBus.emit("warp", area);
+              }}
+              onRoom={() =>
+                setState((s) =>
+                  s.flags.room_unlocked
+                    ? { ...s, screen: "room", currentArea: "room" }
+                    : s
+                )
+              }
+              onMap={openStatus}
+            />
+            <button
+              className="reference-talk-cta"
+              onClick={() => {
+                const primary = getAreaNpcIds(state)[0];
+                if (primary) EventBus.emit("npc-interact", primary);
+              }}
+            >
+              <span className="talk-bubble">•••</span>
+              <strong>話す</strong>
+              <small>この人と話す</small>
+            </button>
+          </div>
           <div className="logstrip">
             <span className="logstrip-label">町の声</span>
             <span className="logstrip-text">
@@ -1351,34 +1390,64 @@ function App() {
 function AreaNav({
   state,
   onMove,
+  onRoom,
+  onMap,
 }: {
   state: GameState;
   onMove: (area: AreaId) => void;
+  onRoom: () => void;
+  onMap: () => void;
 }) {
-  const items: Array<{ id: AreaId; label: string; locked?: boolean }> = [
-    { id: "nagaya", label: "長屋前" },
-    { id: "well", label: "井戸端" },
-    { id: "market", label: "商店通り" },
+  const items: Array<{
+    id: AreaId | "map";
+    label: string;
+    icon: string;
+    description: string;
+    locked?: boolean;
+  }> = [
+    { id: "nagaya", label: "長屋前", icon: "🏠", description: "住人たちと交流する" },
+    { id: "well", label: "井戸端", icon: "🪣", description: "町の人と話をする" },
+    { id: "market", label: "商店通り", icon: "🏮", description: "買い物・仕事・情報収集" },
     {
       id: "firehouse",
       label: "火消し小屋",
+      icon: "🔥",
+      description: "火消しと話す",
       locked: !state.flags.firehouse_unlocked,
     },
+    {
+      id: "room",
+      label: "部屋",
+      icon: "🚪",
+      description: "休む・持ち物の整理",
+      locked: !state.flags.room_unlocked,
+    },
+    { id: "map", label: "江戸の地図", icon: "🗺", description: "町全体を見る" },
   ];
 
   return (
-    <nav className="area-nav" aria-label="町の移動">
-      {items.map((item) => (
-        <button
-          key={item.id}
-          className={state.currentArea === item.id ? "active" : ""}
-          disabled={item.locked}
-          onClick={() => onMove(item.id)}
-        >
-          <span>{item.label}</span>
-          {item.locked && <small>まだ行けない</small>}
-        </button>
-      ))}
+    <nav className="area-nav reference-area-nav" aria-label="町の移動">
+      {items.map((item) => {
+        const active = item.id !== "map" && state.currentArea === item.id;
+        return (
+          <button
+            key={item.id}
+            className={active ? "active" : item.id === "map" ? "map-tab" : ""}
+            disabled={item.locked}
+            onClick={() => {
+              if (item.id === "map") onMap();
+              else if (item.id === "room") onRoom();
+              else onMove(item.id);
+            }}
+          >
+            <span className="area-nav-icon" aria-hidden="true">{item.icon}</span>
+            <span className="area-nav-copy">
+              <strong>{item.label}</strong>
+              <small>{item.locked ? "まだ行けない" : item.description}</small>
+            </span>
+          </button>
+        );
+      })}
     </nav>
   );
 }
@@ -1396,14 +1465,7 @@ function TownSidePanel({
   yesterdaySummary: string | null;
   onTalk: (npc: NPCId) => void;
 }) {
-  const areaNpcIds: NPCId[] =
-    state.currentArea === "market"
-      ? ["fishmonger", "newsman"]
-      : state.currentArea === "well"
-        ? ["child"]
-        : state.currentArea === "firehouse"
-          ? ["firechief"]
-          : ["landlord", "child"];
+  const areaNpcIds = getAreaNpcIds(state);
 
   return (
     <aside className="town-side-panel">
