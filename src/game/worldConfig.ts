@@ -20,27 +20,30 @@ export const GAME_HEIGHT = 552;
 
 /** Scrollable world size. */
 export const WORLD_WIDTH = 1280;
-export const WORLD_HEIGHT = 1320;
+export const WORLD_HEIGHT = 1760;
 
-export type OutdoorArea = "market" | "nagaya" | "well";
+export type OutdoorArea = "market" | "nagaya" | "well" | "firehouse";
 
 /** Outdoor areas, stacked top-to-bottom. The player walks between them. */
 export const AREA_BOUNDS: Record<OutdoorArea, Rect> = {
   market: { x: 0, y: 0, w: WORLD_WIDTH, h: 440 },
   nagaya: { x: 0, y: 440, w: WORLD_WIDTH, h: 440 },
   well: { x: 0, y: 880, w: WORLD_WIDTH, h: 440 },
+  firehouse: { x: 0, y: 1320, w: WORLD_WIDTH, h: 440 },
 };
 
 export const AREA_GROUND: Record<OutdoorArea, number> = {
   market: 0x3b2f23,
   nagaya: 0x342a20,
   well: 0x2b3036,
+  firehouse: 0x3a2c25,
 };
 
 export const AREA_LABEL: Record<OutdoorArea, string> = {
   market: "商店通り",
   nagaya: "長屋前",
   well: "井戸端",
+  firehouse: "火消し小屋",
 };
 
 export const PLAYER_SPAWN: Vec = { x: 600, y: 700 };
@@ -52,6 +55,7 @@ export const NPC_SPAWNS: Record<WorldNPC, Vec> = {
   fishmonger: { x: 930, y: 250 },
   landlord: { x: 780, y: 690 },
   child: { x: 820, y: 1090 },
+  firechief: { x: 720, y: 1510 },
 };
 
 /** Door to the long-house room — sits in the 長屋前 area. */
@@ -74,4 +78,8 @@ export const DECORATIONS: Array<[number, number, number, number, number]> = [
   [900, 980, 150, 96, 0x404a3a],
   [1080, 1140, 150, 96, 0x404a3a],
   [180, 1150, 200, 90, 0x404a3a],
+  // 火消し小屋 — equipment racks / buckets
+  [210, 1430, 300, 110, 0x5a3b2c],
+  [1040, 1450, 180, 95, 0x5a3b2c],
+  [320, 1630, 200, 70, 0x6a4a35],
 ];
