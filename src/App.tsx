@@ -20,6 +20,7 @@ import {
   NIGHT_LINES,
   OPENING_LINES,
   RUMOR_REPLIES,
+  getRumorAreaEcho,
   pickDominantRumor,
 } from "./data";
 import { DialogBox } from "./components/DialogBox";
@@ -422,13 +423,42 @@ function App() {
         familiarity: currentRelation.familiarity + 1,
         attitude: outcome.result.npc.attitude,
       };
+      const secondaryAttitude =
+        outcome.result.rumor.type === "helpful" ||
+        outcome.result.rumor.type === "clean" ||
+        outcome.result.rumor.type === "iki"
+          ? "friendly"
+          : outcome.result.rumor.type === "yabo"
+            ? "cautious"
+            : "neutral";
+      const secondaryAffinity =
+        outcome.result.rumor.type === "helpful" ||
+        outcome.result.rumor.type === "iki"
+          ? 1
+          : outcome.result.rumor.type === "yabo"
+            ? -1
+            : 0;
+      const rippleNpcIds: NPCId[] = ["fishmonger", "child", "newsman"];
+      const rippledRelations = rippleNpcIds.reduce(
+        (relations, npcId) => ({
+          ...relations,
+          [npcId]: {
+            ...relations[npcId],
+            affinity: relations[npcId].affinity + secondaryAffinity,
+            familiarity: relations[npcId].familiarity + 1,
+            attitude: secondaryAttitude,
+          },
+        }),
+        {
+          ...current.npcRelations,
+          [targetNpcId]: nextRelation,
+        }
+      );
+
       const withDecision: GameState = {
         ...current,
         activeRumors: decidedRumor ? [decidedRumor] : [],
-        npcRelations: {
-          ...current.npcRelations,
-          [targetNpcId]: nextRelation,
-        },
+        npcRelations: rippledRelations,
         lastDecision: outcome.result,
         decisionLogs: [...current.decisionLogs, decisionLog],
         log: appendLog(
@@ -487,6 +517,9 @@ function App() {
   const inWorld = state.flags.intro_done && state.screen !== "title";
   const inOpening = state.screen === "dialog" && !state.flags.intro_done;
   const lastLog = state.log[state.log.length - 1];
+  const dominantRumor = pickDominantRumor(state.activeRumors);
+  const areaEcho =
+    state.day >= 2 ? getRumorAreaEcho(dominantRumor, state.currentArea) : null;
 
   return (
     <div className="app">
@@ -589,7 +622,7 @@ function App() {
           <div className="logstrip">
             <span className="logstrip-label">町の声</span>
             <span className="logstrip-text">
-              {lastLog ?? "まだ語ることはない。"}
+              {areaEcho ?? lastLog ?? "まだ語ることはない。"}
             </span>
             {state.activeRumors.length > 0 && (
               <span className="logstrip-rumors">
@@ -706,6 +739,16 @@ function StatusPanel({
               魚屋：{state.npcRelations.fishmonger.attitude}
               （好意 {state.npcRelations.fishmonger.affinity >= 0 ? "+" : ""}
               {state.npcRelations.fishmonger.affinity}）
+            </li>
+            <li>
+              長屋の子ども：{state.npcRelations.child.attitude}
+              （好意 {state.npcRelations.child.affinity >= 0 ? "+" : ""}
+              {state.npcRelations.child.affinity}）
+            </li>
+            <li>
+              瓦版屋：{state.npcRelations.newsman.attitude}
+              （好意 {state.npcRelations.newsman.affinity >= 0 ? "+" : ""}
+              {state.npcRelations.newsman.affinity}）
             </li>
           </ul>
         </div>
