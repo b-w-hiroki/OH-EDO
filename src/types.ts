@@ -41,6 +41,7 @@ export type DialogKind =
   | "fishmonger_intro"
   | "child_intro"
   | "newsman_intro"
+  | "firechief_intro"
   | "kumitori_event"
   | "night"
   | "fire_intro"
