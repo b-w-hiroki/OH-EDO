@@ -1025,6 +1025,10 @@ function App() {
 
         {inWorld && (
           <>
+          <AreaNav state={state} onMove={(area) => {
+            setState((s) => ({ ...s, currentArea: area }));
+            EventBus.emit("warp", area);
+          }} />
           <div className="logstrip">
             <span className="logstrip-label">町の声</span>
             <span className="logstrip-text">
@@ -1049,6 +1053,41 @@ function App() {
         )}
       </main>
     </div>
+  );
+}
+
+function AreaNav({
+  state,
+  onMove,
+}: {
+  state: GameState;
+  onMove: (area: AreaId) => void;
+}) {
+  const items: Array<{ id: AreaId; label: string; locked?: boolean }> = [
+    { id: "nagaya", label: "長屋前" },
+    { id: "well", label: "井戸端" },
+    { id: "market", label: "商店通り" },
+    {
+      id: "firehouse",
+      label: "火消し小屋",
+      locked: !state.flags.firehouse_unlocked,
+    },
+  ];
+
+  return (
+    <nav className="area-nav" aria-label="町の移動">
+      {items.map((item) => (
+        <button
+          key={item.id}
+          className={state.currentArea === item.id ? "active" : ""}
+          disabled={item.locked}
+          onClick={() => onMove(item.id)}
+        >
+          <span>{item.label}</span>
+          {item.locked && <small>まだ行けない</small>}
+        </button>
+      ))}
+    </nav>
   );
 }
 
@@ -1095,11 +1134,19 @@ function TownSidePanel({
 
       <section className="side-card town-mood-card">
         <div className="side-card-title">町の空気</div>
-        <div className="mood-grid">
-          <span><b>衛生</b>{state.town.hygiene}</span>
-          <span><b>治安</b>{state.town.safety}</span>
-          <span><b>流行</b>{state.town.trend}</span>
-          <span><b>景気</b>{state.town.economy}</span>
+        <div className="mood-list">
+          {[
+            ["衛生", state.town.hygiene],
+            ["治安", state.town.safety],
+            ["流行", state.town.trend],
+            ["景気", state.town.economy],
+          ].map(([label, value]) => (
+            <div className="mood-row" key={label}>
+              <span>{label}</span>
+              <div className="mood-bar"><i style={{ width: `${Math.max(0, Math.min(100, Number(value)))}%` }} /></div>
+              <b>{value}</b>
+            </div>
+          ))}
         </div>
       </section>
     </aside>
