@@ -285,3 +285,37 @@ body::before {
     min-height: 0;
   }
 }
+
+
+.fire-aftermath {
+  max-width: 760px;
+}
+
+.aftermath-card {
+  margin-top: 10px;
+  padding: 12px 14px;
+  border: 1px solid #dcc393;
+  border-radius: 13px;
+  background: rgba(255, 250, 238, .94);
+}
+
+.aftermath-card strong {
+  display: inline-block;
+  margin-bottom: 4px;
+  color: #8c5737;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  letter-spacing: .06em;
+}
+
+.aftermath-card p {
+  margin: 0;
+  color: #594736;
+}
+
+@media (max-width: 599px) {
+  .fire-aftermath {
+    max-height: 72vh;
+    overflow-y: auto;
+  }
+}
