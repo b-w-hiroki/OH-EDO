@@ -8,6 +8,8 @@ export type Screen =
   | "fire_result"
   | "patrol_choice"
   | "patrol_result"
+  | "festival_choice"
+  | "festival_result"
   | "room"
   | "status";
 
@@ -45,6 +47,12 @@ export type DialogKind =
   | "newsman_intro"
   | "firechief_intro"
   | "patrol_intro"
+  | "festival_intro"
+  | "episode_landlord"
+  | "episode_fishmonger"
+  | "episode_child"
+  | "episode_newsman"
+  | "reputation_reply"
   | "kumitori_event"
   | "night"
   | "fire_intro"
@@ -96,6 +104,13 @@ export interface Flags {
   patrol_started: boolean;
   patrol_done: boolean;
   day4_started: boolean;
+  episode_landlord_done: boolean;
+  episode_fishmonger_done: boolean;
+  episode_child_done: boolean;
+  episode_newsman_done: boolean;
+  festival_started: boolean;
+  festival_done: boolean;
+  day5_started: boolean;
 }
 
 export interface ActiveDialog {
@@ -154,6 +169,30 @@ export interface PatrolChoice {
 export interface PatrolResult {
   choiceId: PatrolChoice["id"];
   resultText: string;
+  nextDayText: string;
+}
+
+export interface FestivalChoice {
+  id: "festival_stalls" | "festival_decor" | "festival_news";
+  label: string;
+  description: string;
+  effects: {
+    trust?: number;
+    iki?: number;
+    network?: number;
+    skill?: number;
+    trend?: number;
+    economy?: number;
+  };
+  rumorTags: RumorTag[];
+  resultText: string;
+  favoredReputation?: ReputationTag;
+}
+
+export interface FestivalResult {
+  choiceId: FestivalChoice["id"];
+  resultText: string;
+  bonusText: string | null;
   nextDayText: string;
 }
 
@@ -238,4 +277,5 @@ export interface GameState {
   dialog: ActiveDialog | null;
   lastJobResult: JobResult | null;
   lastPatrolResult: PatrolResult | null;
+  lastFestivalResult: FestivalResult | null;
 }

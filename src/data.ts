@@ -5,6 +5,7 @@ import type {
   JobChoice,
   FireChoice,
   PatrolChoice,
+  FestivalChoice,
   NPCDef,
   NPCId,
   RumorTag,
@@ -50,6 +51,13 @@ export const INITIAL_STATE: GameState = {
     patrol_started: false,
     patrol_done: false,
     day4_started: false,
+    episode_landlord_done: false,
+    episode_fishmonger_done: false,
+    episode_child_done: false,
+    episode_newsman_done: false,
+    festival_started: false,
+    festival_done: false,
+    day5_started: false,
   },
   npcRelations: {
     landlord: { affinity: 0, caution: 0, familiarity: 0, attitude: "neutral" },
@@ -70,6 +78,7 @@ export const INITIAL_STATE: GameState = {
   dialog: null,
   lastJobResult: null,
   lastPatrolResult: null,
+  lastFestivalResult: null,
 };
 
 export const NPCS: Record<NPCId, NPCDef> = {
@@ -600,3 +609,91 @@ export const RANKS = [
   { rank: 4, name: "頼れる厄介者", score: 22 },
   { rank: 5, name: "大江戸町の顔役", score: 36 },
 ] as const;
+
+
+export const NPC_EPISODES: Record<
+  "landlord" | "fishmonger" | "child" | "newsman",
+  DialogLine[]
+> = {
+  landlord: [
+    { speaker: "大家", text: "あんた、ちょっといいかい。向かいの婆さんが重い米袋を持てなくてね。" },
+    { speaker: "主人公", text: "運べばいいんだな。" },
+    { speaker: "大家", text: "話が早い。こういう小さい手間を惜しまないやつが、結局いちばん頼られるんだよ。" },
+  ],
+  fishmonger: [
+    { speaker: "魚屋", text: "新入り、手ぇ貸せ。昼前なのに魚が思ったより残ってやがる。" },
+    { speaker: "主人公", text: "売り子をやれって？" },
+    { speaker: "魚屋", text: "声の出し方だけ教えてやる。あとはお前の顔で売れ！" },
+  ],
+  child: [
+    { speaker: "長屋の子ども", text: "たいへん！ みんなで作った竹とんぼが屋根に乗った！" },
+    { speaker: "主人公", text: "それで俺を呼んだのか。" },
+    { speaker: "長屋の子ども", text: "だって新入り、なんでもやってくれるって噂だもん！" },
+  ],
+  newsman: [
+    { speaker: "瓦版屋", text: "ちょうどいい。町の春祭りの記事、見出しが弱いんだ。" },
+    { speaker: "主人公", text: "祭りの記事なら華やかでいいだろ。" },
+    { speaker: "瓦版屋", text: "だから現場を見たい。お前も来い。町が浮かれる前が一番おもしれえ。" },
+  ],
+};
+
+export const FESTIVAL_INTRO_LINES: DialogLine[] = [
+  { speaker: "瓦版屋", text: "春祭りの準備が始まったぞ。商店通りは朝から大騒ぎだ。" },
+  { speaker: "主人公", text: "祭りくらい、のんびり楽しめないのか。" },
+  { speaker: "魚屋", text: "楽しむために忙しいんだよ。江戸っ子はな！" },
+  { speaker: "大家", text: "新入りも、もう見物客って顔じゃないね。ひとつ手を貸しておいで。" },
+];
+
+export const FESTIVAL_CHOICES: FestivalChoice[] = [
+  {
+    id: "festival_stalls",
+    label: "屋台の準備を手伝う",
+    description: "商人と一緒に品物を並べ、売り場を整える。",
+    effects: { trust: 2, network: 2, economy: 5 },
+    rumorTags: ["helpful", "clean"],
+    resultText: "商店通りの屋台を手伝い、開店前のごたごたをひとつずつ片づけた。",
+    favoredReputation: "頼れるやつ",
+  },
+  {
+    id: "festival_decor",
+    label: "飾り付けを仕切る",
+    description: "通りを見ながら、花飾りと提灯の位置を整える。",
+    effects: { iki: 3, skill: 1, trend: 5 },
+    rumorTags: ["iki", "helpful"],
+    resultText: "通りの見え方を考えながら飾りを整え、祭りらしい華やかさが出てきた。",
+    favoredReputation: "粋なやつ",
+  },
+  {
+    id: "festival_news",
+    label: "瓦版屋と町を回る",
+    description: "準備中の人たちへ声をかけ、祭りの噂を広げる。",
+    effects: { network: 3, iki: 1, trend: 3, economy: 2 },
+    rumorTags: ["funny", "quick", "iki"],
+    resultText: "瓦版屋と町中を回り、準備の様子まで面白おかしく噂にした。",
+    favoredReputation: "仕事が早いやつ",
+  },
+];
+
+export const REPUTATION_LINES: Partial<
+  Record<import("./types").ReputationTag, Partial<Record<NPCId, DialogLine[]>>>
+> = {
+  "頼れるやつ": {
+    landlord: [{ speaker: "大家", text: "最近は、あんたに頼めば何とかなるって顔をされてるね。" }],
+    fishmonger: [{ speaker: "魚屋", text: "頼られるうちが花だぜ。逃げるなよ、新入り。" }],
+  },
+  "粋なやつ": {
+    landlord: [{ speaker: "大家", text: "少しは江戸の呼吸がわかってきた顔だね。" }],
+    newsman: [{ speaker: "瓦版屋", text: "『粋な新入り』。そろそろ見出しだけじゃなく名前も売れるな。" }],
+  },
+  "仕事が早いやつ": {
+    fishmonger: [{ speaker: "魚屋", text: "手が空いてるなら借りたいね。仕事の速いやつは貴重だ。" }],
+    firechief: [{ speaker: "火消し頭", text: "速いのはいい。あとは周りと足を合わせろ。" }],
+  },
+  "丁寧なやつ": {
+    landlord: [{ speaker: "大家", text: "派手じゃなくても丁寧なやつは、長く信用されるよ。" }],
+  },
+  "変なやつ": {
+    child: [{ speaker: "長屋の子ども", text: "やっぱり新入りって変！ でもおもしろい！" }],
+    newsman: [{ speaker: "瓦版屋", text: "変なやつほど記事になる。これは褒めてる。" }],
+  },
+};
