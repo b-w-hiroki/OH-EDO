@@ -18,11 +18,20 @@ const attitudeCriteria = {
   impressed: "感心し、一目置く",
 };
 
-function clamp(value, min, max) {
-  return Math.max(min, Math.min(max, Number(value)));
+function clamp(value, min, max, fallback = min) {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) return fallback;
+  return Math.max(min, Math.min(max, numeric));
 }
 
-function mapAnswers(answers) {
+function requireChoice(value, permitted, label) {
+  if (typeof value !== "string" || !Object.prototype.hasOwnProperty.call(permitted, value)) {
+    throw new Error(`Invalid ${label} choice: ${String(value)}`);
+  }
+  return value;
+}
+
+function mapAnswers(answers, permittedRumors) {
   const rumor = answers.rumor_type ?? {};
   const strength = answers.rumor_strength ?? {};
   const attitude = answers.npc_attitude ?? {};
@@ -31,19 +40,25 @@ function mapAnswers(answers) {
   const quest = answers.quest_should_unlock ?? {};
   const special = answers.special_event_should_trigger ?? {};
 
-  const talkP = clamp(talk.noul ?? 0, 0, 1);
-  const questP = clamp(quest.noul ?? 0, 0, 1);
-  const specialP = clamp(special.noul ?? 0, 0, 1);
+  const rumorChoice = requireChoice(rumor.choice ?? "none", permittedRumors, "rumor");
+  const attitudeChoice = requireChoice(
+    attitude.choice ?? "neutral",
+    attitudeCriteria,
+    "attitude"
+  );
+  const talkP = clamp(talk.noul ?? 0, 0, 1, 0);
+  const questP = clamp(quest.noul ?? 0, 0, 1, 0);
+  const specialP = clamp(special.noul ?? 0, 0, 1, 0);
 
   return {
     rumor: {
-      type: rumor.choice ?? "none",
-      strength: clamp(strength.score ?? 0, 0, 4),
+      type: rumorChoice,
+      strength: clamp(strength.score ?? 0, 0, 4, 0),
     },
     npc: {
-      attitude: attitude.choice ?? "neutral",
+      attitude: attitudeChoice,
       // Score criteria is 0..4 with 2 = no change. Convert to -2..+2.
-      affinityDelta: clamp((affinity.score ?? 2) - 2, -2, 2),
+      affinityDelta: clamp((affinity.score ?? 2) - 2, -2, 2, 0),
       shouldTalkProbability: talkP,
       shouldTalk: talkP >= 0.65,
     },
@@ -169,7 +184,7 @@ export default async function handler(req, res) {
       res.status(502).json({ error: "Jev response did not include answers" });
       return;
     }
-    res.status(200).json(mapAnswers(answers));
+    res.status(200).json(mapAnswers(answers, permittedRumors));
   } catch (error) {
     res.status(502).json({
       error: "Jev request failed",
