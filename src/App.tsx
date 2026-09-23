@@ -5,6 +5,7 @@ import type {
   GameState,
   JobChoice,
   FireChoice,
+  PatrolChoice,
   NPCId,
   AreaId,
 } from "./types";
@@ -16,6 +17,9 @@ import {
   FIRE_CHOICES,
   FIRE_INTRO_LINES,
   FIRECHIEF_INTRO_LINES,
+  PATROL_CHOICES,
+  PATROL_INTRO_LINES,
+  RANKS,
   INITIAL_STATE,
   JOB_CHOICES,
   KUMITORI_EVENT_LINES,
@@ -66,6 +70,8 @@ function loadInitial(): GameState {
         ])
       ) as GameState["npcRelations"],
       activeRumors: parsed.activeRumors ?? [],
+      rumorHistory: parsed.rumorHistory ?? [],
+      reputationTags: parsed.reputationTags ?? [],
       log: parsed.log ?? [],
       playerActions: parsed.playerActions ?? [],
       decisionLogs: parsed.decisionLogs ?? [],
@@ -73,6 +79,7 @@ function loadInitial(): GameState {
       fireAftermath: parsed.fireAftermath ?? null,
       dialog: null,
       lastJobResult: parsed.lastJobResult ?? null,
+      lastPatrolResult: parsed.lastPatrolResult ?? null,
     };
     // Drop transient dialog/overlay state on load.
     const screen = merged.flags.intro_done ? "town" : "title";
@@ -84,6 +91,61 @@ function loadInitial(): GameState {
 
 function appendLog(log: string[], day: number, entry: string): string[] {
   return [...log, `Day${day}： ${entry}`];
+}
+
+function withProgression(s: GameState): GameState {
+  const score =
+    s.player.trust + s.player.network + s.player.skill + Math.max(0, s.player.iki);
+  const current =
+    [...RANKS].reverse().find((r) => score >= r.score) ?? RANKS[0];
+
+  const counts = s.rumorHistory.reduce<Record<string, number>>((acc, rumor) => {
+    acc[rumor.tag] = (acc[rumor.tag] ?? 0) + 1;
+    return acc;
+  }, {});
+  const reputationTags = [...s.reputationTags];
+  const add = (tag: GameState["reputationTags"][number]) => {
+    if (!reputationTags.includes(tag)) reputationTags.push(tag);
+  };
+  if ((counts.helpful ?? 0) >= 2) add("頼れるやつ");
+  if ((counts.iki ?? 0) >= 2) add("粋なやつ");
+  if ((counts.quick ?? 0) >= 2) add("仕事が早いやつ");
+  if ((counts.clean ?? 0) >= 2) add("丁寧なやつ");
+  if ((counts.funny ?? 0) >= 2) add("変なやつ");
+
+  const liveRumors =
+    s.rumorHistory.length === 0
+      ? s.activeRumors
+      : Array.from(
+          new Set(
+            s.rumorHistory
+              .filter((r) => s.day - r.createdDay < r.durationDays)
+              .map((r) => r.tag)
+          )
+        );
+
+  return {
+    ...s,
+    player: { ...s.player, rank: current.rank, rankName: current.name },
+    activeRumors: liveRumors,
+    reputationTags,
+  };
+}
+
+function makeRumorRecords(
+  tags: GameState["activeRumors"],
+  day: number,
+  source: string,
+  strength = 2
+): GameState["rumorHistory"] {
+  return tags.map((tag, index) => ({
+    id: `rumor-${day}-${source}-${tag}-${index}`,
+    tag,
+    strength,
+    createdDay: day,
+    durationDays: strength >= 3 ? 3 : 2,
+    source,
+  }));
 }
 
 function metOtherCount(flags: GameState["flags"]): number {
@@ -176,6 +238,15 @@ function applyDialogComplete(s: GameState, kind: DialogKind): GameState {
         log: appendLog(s.log, s.day, "火消し頭に顔を覚えられた。"),
       };
 
+    case "patrol_intro":
+      return {
+        ...s,
+        dialog: null,
+        screen: "patrol_choice",
+        flags: { ...s.flags, patrol_started: true },
+        log: appendLog(s.log, s.day, "火消し頭から町内見回りを任された。"),
+      };
+
     case "kumitori_event":
       return {
         ...s,
@@ -222,6 +293,17 @@ interface NPCDialogPick {
 
 function pickNPCDialog(s: GameState, npc: NPCId): NPCDialogPick | null {
   if (npc === "kumitori_master") return null;
+
+  // Fire-chief progression must take priority over ambient rumor reactions.
+  if (npc === "firechief") {
+    if (!s.flags.firehouse_unlocked) return null;
+    if (!s.flags.met_firechief) {
+      return { kind: "firechief_intro", lines: FIRECHIEF_INTRO_LINES };
+    }
+    if (s.day >= 3 && !s.flags.patrol_started && !s.flags.patrol_done) {
+      return { kind: "patrol_intro", lines: PATROL_INTRO_LINES };
+    }
+  }
 
   // Day 3 fire aftermath takes priority over older sewage-rumor replies.
   if (s.day >= 3 && s.flags.fire_event_done) {
@@ -274,10 +356,6 @@ function pickNPCDialog(s: GameState, npc: NPCId): NPCDialogPick | null {
       return { kind: "already_met", lines: ALREADY_MET_LINES.newsman };
 
     case "firechief":
-      if (!s.flags.firehouse_unlocked) return null;
-      if (!s.flags.met_firechief) {
-        return { kind: "firechief_intro", lines: FIRECHIEF_INTRO_LINES };
-      }
       return { kind: "already_met", lines: ALREADY_MET_LINES.firechief };
   }
 }
@@ -292,7 +370,7 @@ function applyJobChoice(s: GameState, choice: JobChoice): GameState {
     skill: e.skill ?? 0,
     hygiene: e.hygiene ?? 0,
   };
-  return {
+  return withProgression({
     ...s,
     screen: "result",
     player: {
@@ -326,8 +404,12 @@ function applyJobChoice(s: GameState, choice: JobChoice): GameState {
         tags: [...choice.rumorTags],
       },
     ],
+    rumorHistory: [
+      ...s.rumorHistory,
+      ...makeRumorRecords(choice.rumorTags, s.day, choice.id, 2),
+    ],
     lastJobResult: { choiceId: choice.id, resultText: choice.resultText, delta },
-  };
+  });
 }
 
 function getNextLead(state: GameState): string | null {
@@ -555,13 +637,22 @@ function App() {
               ? "『小火より騒がしい新入り現る』"
               : "『長屋の小火、町内総出で大事なし』";
 
-    setState((current) => ({
+    setState((current) => withProgression({
       ...provisional,
       screen: "fire_result",
       flags: { ...provisional.flags, fire_event_done: true },
       activeRumors: decidedRumor ? [decidedRumor] : [...choice.rumorTags],
       lastDecision: outcome.result,
       decisionLogs: [...current.decisionLogs, decisionLog],
+      rumorHistory: [
+        ...current.rumorHistory,
+        ...makeRumorRecords(
+          decidedRumor ? [decidedRumor] : choice.rumorTags,
+          state.day,
+          choice.id,
+          outcome.result.rumor.strength
+        ),
+      ],
       fireAftermath: {
         choiceId: choice.id,
         resultText: choice.resultText,
@@ -581,6 +672,53 @@ function App() {
       ),
     }));
   }, [state]);
+
+  const choosePatrol = useCallback((choice: PatrolChoice) => {
+    setState((s) => {
+      if (s.screen !== "patrol_choice") return s;
+      const e = choice.effects;
+      const next = withProgression({
+        ...s,
+        screen: "patrol_result",
+        player: {
+          ...s.player,
+          trust: s.player.trust + (e.trust ?? 0),
+          iki: s.player.iki + (e.iki ?? 0),
+          network: s.player.network + (e.network ?? 0),
+          skill: s.player.skill + (e.skill ?? 0),
+        },
+        town: {
+          ...s.town,
+          safety: s.town.safety + (e.safety ?? 0),
+        },
+        flags: { ...s.flags, patrol_done: true },
+        activeRumors: Array.from(new Set([...s.activeRumors, ...choice.rumorTags])),
+        rumorHistory: [
+          ...s.rumorHistory,
+          ...makeRumorRecords(choice.rumorTags, s.day, choice.id, 2.5),
+        ],
+        playerActions: [
+          ...s.playerActions,
+          {
+            id: `action-${Date.now()}`,
+            day: s.day,
+            type: choice.id,
+            targetNpcId: "firechief",
+            importance: 2,
+            tags: [...choice.rumorTags],
+          },
+        ],
+        lastPatrolResult: {
+          choiceId: choice.id,
+          resultText: choice.resultText,
+          nextDayText:
+            "見回りの翌朝、火消し小屋では『新入りも少しは町を見る目がついた』と話されている。",
+        },
+        log: appendLog(s.log, s.day, choice.resultText),
+      });
+      return next;
+    });
+  }, []);
 
   const goToNight = useCallback(async () => {
     const context = buildDayDecisionContext(state);
@@ -836,6 +974,37 @@ function App() {
               </div>
             )}
 
+            {state.screen === "patrol_choice" && (
+              <div className="overlay">
+                <PatrolChoiceView choices={PATROL_CHOICES} onChoose={choosePatrol} />
+              </div>
+            )}
+
+            {state.screen === "patrol_result" && state.lastPatrolResult && (
+              <div className="overlay">
+                <PatrolResultView
+                  result={state.lastPatrolResult}
+                  onNext={() =>
+                    setState((s) =>
+                      withProgression({
+                        ...s,
+                        screen: "town",
+                        day: 4,
+                        time: "morning",
+                        currentArea: "firehouse",
+                        flags: { ...s.flags, day4_started: true },
+                        log: appendLog(
+                          s.log,
+                          4,
+                          s.lastPatrolResult?.nextDayText ?? "四日目の朝になった。"
+                        ),
+                      })
+                    )
+                  }
+                />
+              </div>
+            )}
+
             {state.screen === "room" && (
               <div className="overlay">
                 <RoomView day={state.day} onClose={closeRoom} />
@@ -916,6 +1085,48 @@ function TitleView({
         <button className="primary" onClick={onStart}>
           {hasSave ? "続きから（保存済み）" : "はじめる"}
         </button>
+      </div>
+    </section>
+  );
+}
+
+function PatrolChoiceView({
+  choices,
+  onChoose,
+}: {
+  choices: PatrolChoice[];
+  onChoose: (choice: PatrolChoice) => void;
+}) {
+  return (
+    <section className="panel">
+      <h2>火消し小屋の見回り</h2>
+      <p className="panel-desc">町を守るために、今日はどこを見る？</p>
+      <div className="fire-choice-list">
+        {choices.map((choice) => (
+          <button className="fire-choice" key={choice.id} onClick={() => onChoose(choice)}>
+            <strong>{choice.label}</strong>
+            <span>{choice.description}</span>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function PatrolResultView({
+  result,
+  onNext,
+}: {
+  result: NonNullable<GameState["lastPatrolResult"]>;
+  onNext: () => void;
+}) {
+  return (
+    <section className="panel">
+      <h2>見回り完了</h2>
+      <p>{result.resultText}</p>
+      <p className="muted">{result.nextDayText}</p>
+      <div className="panel-actions">
+        <button className="primary" onClick={onNext}>四日目へ</button>
       </div>
     </section>
   );
@@ -1106,7 +1317,20 @@ function StatusPanel({
               （好意 {state.npcRelations.newsman.affinity >= 0 ? "+" : ""}
               {state.npcRelations.newsman.affinity}）
             </li>
+            <li>
+              火消し頭：{state.npcRelations.firechief.attitude}
+              （好意 {state.npcRelations.firechief.affinity >= 0 ? "+" : ""}
+              {state.npcRelations.firechief.affinity}）
+            </li>
           </ul>
+        </div>
+        <div>
+          <h3>評判</h3>
+          {state.reputationTags.length === 0 ? (
+            <p className="muted">まだ町に定着した評判はない。</p>
+          ) : (
+            <ul>{state.reputationTags.map((r) => <li key={r}>{r}</li>)}</ul>
+          )}
         </div>
         <div>
           <h3>身についた噂</h3>
@@ -1121,6 +1345,26 @@ function StatusPanel({
           )}
         </div>
       </div>
+
+      <h3>最近の噂</h3>
+      {state.rumorHistory.length === 0 ? (
+        <p className="muted">まだ記録された噂はない。</p>
+      ) : (
+        <ul>
+          {[...state.rumorHistory].slice(-6).reverse().map((r) => (
+            <li key={r.id}>Day{r.createdDay} #{r.tag} / 強さ {r.strength.toFixed(1)}</li>
+          ))}
+        </ul>
+      )}
+
+      <details className="decision-debug">
+        <summary>Decisionログ（開発用）</summary>
+        {state.decisionLogs.length === 0 ? (
+          <p className="muted">まだ判断ログはない。</p>
+        ) : (
+          <pre>{JSON.stringify(state.decisionLogs.slice(-2), null, 2)}</pre>
+        )}
+      </details>
 
       <h3>これまでの覚え書き</h3>
       {state.log.length === 0 ? (

@@ -4,6 +4,7 @@ import type {
   GameState,
   JobChoice,
   FireChoice,
+  PatrolChoice,
   NPCDef,
   NPCId,
   RumorTag,
@@ -46,6 +47,9 @@ export const INITIAL_STATE: GameState = {
     fire_intro_started: false,
     fire_event_done: false,
     day3_started: false,
+    patrol_started: false,
+    patrol_done: false,
+    day4_started: false,
   },
   npcRelations: {
     landlord: { affinity: 0, caution: 0, familiarity: 0, attitude: "neutral" },
@@ -56,6 +60,8 @@ export const INITIAL_STATE: GameState = {
     kumitori_master: { affinity: 0, caution: 0, familiarity: 0, attitude: "neutral" },
   },
   activeRumors: [],
+  rumorHistory: [],
+  reputationTags: [],
   log: [],
   playerActions: [],
   decisionLogs: [],
@@ -63,6 +69,7 @@ export const INITIAL_STATE: GameState = {
   fireAftermath: null,
   dialog: null,
   lastJobResult: null,
+  lastPatrolResult: null,
 };
 
 export const NPCS: Record<NPCId, NPCDef> = {
@@ -89,7 +96,7 @@ export const AREAS: Record<AreaDef["id"], AreaDef> = {
     id: "well",
     name: "井戸端",
     description:
-      "桶の音と女衆の笑い声が響く井戸端。洗いものの石鹸の匂いと、噂話の匂いが同じくらい濃い。",
+      "桶の音と女衆の笑い声が響く井戸端。米ぬかや灰汁の匂いと、噂話の気配が同じくらい濃い。",
     flavor: [
       "誰かの旦那が昨夜どこで飲んでいたか、もう町中にバレているらしい。",
       "井戸の縁に座った猫が、欠伸を一つしてまた寝た。",
@@ -549,3 +556,47 @@ export function getFireAreaEcho(
   if (!rumor) return null;
   return FIRE_AREA_ECHOES[rumor]?.[area] ?? null;
 }
+
+
+export const PATROL_INTRO_LINES: DialogLine[] = [
+  { speaker: "火消し頭", text: "小火が消えて終わりじゃねえ。火事は、起きる前に潰す方が安い。" },
+  { speaker: "主人公", text: "つまり見回りか。" },
+  { speaker: "火消し頭", text: "桶、路地、屋根。町は狭い。ひとつ塞がりゃ全部が困る。" },
+  { speaker: "主人公", text: "江戸って、暮らすだけで忙しいな。" },
+  { speaker: "火消し頭", text: "だから面白えんだ。ひとつ見てこい。終わったら報告しろ。" },
+];
+
+export const PATROL_CHOICES: PatrolChoice[] = [
+  {
+    id: "patrol_buckets",
+    label: "防火桶を見て回る",
+    description: "水量と置き場所を確認する。地味だが確実。",
+    effects: { trust: 2, skill: 1, safety: 5 },
+    rumorTags: ["clean", "helpful"],
+    resultText: "空の桶を見つけて水を足し、倒れた桶を通り沿いへ戻した。",
+  },
+  {
+    id: "patrol_alley",
+    label: "路地の荷物を片づける",
+    description: "火事のとき人が通れるよう、通路を空ける。",
+    effects: { trust: 3, network: 1, safety: 4 },
+    rumorTags: ["helpful", "iki"],
+    resultText: "路地を塞いでいた荷物を町人と動かし、逃げ道を一本通した。",
+  },
+  {
+    id: "patrol_roofs",
+    label: "屋根と風向きを見る",
+    description: "火がどこへ広がるかを想像しながら町を見る。",
+    effects: { iki: 2, skill: 2, safety: 3 },
+    rumorTags: ["iki", "quick"],
+    resultText: "屋根の並びと風の抜け方を見て、火消し頭へ危ない筋を伝えた。",
+  },
+];
+
+export const RANKS = [
+  { rank: 1, name: "流れ者", score: 0 },
+  { rank: 2, name: "長屋の居候", score: 5 },
+  { rank: 3, name: "町の便利屋", score: 12 },
+  { rank: 4, name: "頼れる厄介者", score: 22 },
+  { rank: 5, name: "大江戸町の顔役", score: 36 },
+] as const;
