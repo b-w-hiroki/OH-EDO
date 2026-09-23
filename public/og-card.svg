@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#aee1ff"/>
+      <stop offset="1" stop-color="#fff0d6"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#sky)"/>
+  <rect x="80" y="315" width="1040" height="190" rx="24" fill="#b78659"/>
+  <path d="M120 315l120-95 120 95 120-95 120 95 120-95 120 95 120-95 120 95" fill="none" stroke="#73513a" stroke-width="26"/>
+  <text x="600" y="185" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="112" fill="#c95e48">OH! EDO!</text>
+  <text x="600" y="270" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="40" fill="#4f6680">昨日の行動が、今日の町の空気になる。</text>
+  <g font-family="sans-serif" font-weight="700" fill="#fffaf0">
+    <text x="170" y="410" font-size="42">長屋</text>
+    <text x="510" y="410" font-size="42">井戸端</text>
+    <text x="850" y="410" font-size="42">火消し小屋</text>
+  </g>
+</svg>
