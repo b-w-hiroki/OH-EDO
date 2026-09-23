@@ -49,6 +49,15 @@ function loadInitial(): GameState {
       player: { ...INITIAL_STATE.player, ...(parsed.player ?? {}) },
       town: { ...INITIAL_STATE.town, ...(parsed.town ?? {}) },
       flags: { ...INITIAL_STATE.flags, ...(parsed.flags ?? {}) },
+      npcRelations: Object.fromEntries(
+        Object.entries(INITIAL_STATE.npcRelations).map(([npcId, initial]) => [
+          npcId,
+          {
+            ...initial,
+            ...(parsed.npcRelations?.[npcId as NPCId] ?? {}),
+          },
+        ])
+      ) as GameState["npcRelations"],
       activeRumors: parsed.activeRumors ?? [],
       log: parsed.log ?? [],
       playerActions: parsed.playerActions ?? [],
@@ -254,7 +263,9 @@ function applyJobChoice(s: GameState, choice: JobChoice): GameState {
         id: `action-${Date.now()}`,
         day: s.day,
         type: choice.id,
-        targetNpcId: "kumitori_master",
+        // The landlord commissioned the town job, so she is the primary
+        // relationship target for the first "yesterday -> today" loop.
+        targetNpcId: "landlord",
         importance:
           choice.id === "choice_kumitori_friendly" ||
           choice.id === "choice_kumitori_careful"
@@ -403,15 +414,31 @@ function App() {
         ? ` / fallback: ${outcome.fallbackReason}`
         : "";
 
+      const targetNpcId = context.targetNpcId;
+      const currentRelation = current.npcRelations[targetNpcId];
+      const nextRelation = {
+        ...currentRelation,
+        affinity: currentRelation.affinity + outcome.result.npc.affinityDelta,
+        familiarity: currentRelation.familiarity + 1,
+        attitude: outcome.result.npc.attitude,
+      };
       const withDecision: GameState = {
         ...current,
         activeRumors: decidedRumor ? [decidedRumor] : [],
+        npcRelations: {
+          ...current.npcRelations,
+          [targetNpcId]: nextRelation,
+        },
         lastDecision: outcome.result,
         decisionLogs: [...current.decisionLogs, decisionLog],
         log: appendLog(
-          current.log,
+          appendLog(
+            current.log,
+            current.day,
+            `翌日の町判断：${rumorText} / ${providerLabel}${fallbackText}`
+          ),
           current.day,
-          `翌日の町判断：${rumorText} / ${providerLabel}${fallbackText}`
+          `大家の態度：${outcome.result.npc.attitude} / 好意 ${outcome.result.npc.affinityDelta >= 0 ? "+" : ""}${outcome.result.npc.affinityDelta}`
         ),
       };
       return startDialogInState(withDecision, "night", NIGHT_LINES);
@@ -665,6 +692,21 @@ function StatusPanel({
             <li>治安：{state.town.safety}</li>
             <li>流行：{state.town.trend}</li>
             <li>景気：{state.town.economy}</li>
+          </ul>
+        </div>
+        <div>
+          <h3>町の人との関係</h3>
+          <ul>
+            <li>
+              大家：{state.npcRelations.landlord.attitude}
+              （好意 {state.npcRelations.landlord.affinity >= 0 ? "+" : ""}
+              {state.npcRelations.landlord.affinity}）
+            </li>
+            <li>
+              魚屋：{state.npcRelations.fishmonger.attitude}
+              （好意 {state.npcRelations.fishmonger.affinity >= 0 ? "+" : ""}
+              {state.npcRelations.fishmonger.affinity}）
+            </li>
           </ul>
         </div>
         <div>
