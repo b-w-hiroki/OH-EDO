@@ -1113,7 +1113,9 @@ function TownSidePanel({
         <div className="nearby-list">
           {areaNpcIds.map((npcId) => (
             <div className="nearby-person" key={npcId}>
-              <span className="nearby-avatar">{NPCS[npcId].name.slice(0, 1)}</span>
+              <span className={`nearby-avatar avatar-${npcId}`}>
+                <span>{NPCS[npcId].name.slice(0, 1)}</span>
+              </span>
               <div>
                 <strong>{NPCS[npcId].name}</strong>
                 <small>{state.npcRelations[npcId].attitude}</small>
@@ -1175,18 +1177,28 @@ function TitleView({
   hasSave: boolean;
 }) {
   return (
-    <section className="title">
+    <section className="title mock-title">
+      <div className="title-hero" aria-hidden="true"></div>
+      <div className="title-copy">
+      <p className="title-kicker">あの頃も、きっと、たのしい。</p>
       <h1 className="title-main">OH！EDO！</h1>
-      <p className="title-sub">江戸ライフ成り上がり ── 歩けるプロト</p>
+      <p className="title-sub">江戸ライフ成り上がり</p>
       <p className="title-flavor">
         流れ着いたのは、騒がしくも妙に居心地のいい大江戸の長屋。
         <br />
         町を歩き、声をかけ──町は、あんたのことを少しずつ覚えていく。
       </p>
       <div className="title-actions">
-        <button className="primary" onClick={onStart}>
-          {hasSave ? "続きから（保存済み）" : "はじめる"}
+        <button className="primary title-start" onClick={onStart}>
+          {hasSave ? "つづきから" : "大江戸町へ"}
         </button>
+      </div>
+      </div>
+      <div className="title-cast" aria-hidden="true">
+        <span className="cast-chip cast-fish">魚屋</span>
+        <span className="cast-chip cast-landlord">大家</span>
+        <span className="cast-chip cast-child">子ども</span>
+        <span className="cast-chip cast-news">瓦版</span>
       </div>
     </section>
   );

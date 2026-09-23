@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620">
+<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#a9dcfb"/><stop offset="1" stop-color="#f9e8c4"/></linearGradient></defs>
+<rect width="1200" height="620" fill="url(#sky)"/>
+<circle cx="1010" cy="95" r="48" fill="#ffd774" opacity=".9"/>
+<g fill="#7fb07b" opacity=".9"><circle cx="180" cy="150" r="70"/><circle cx="250" cy="170" r="55"/><circle cx="1040" cy="170" r="80"/></g>
+<path d="M0 470 L1200 470 L1200 620 L0 620Z" fill="#e7cf9f"/>
+<g stroke="#6f5541" stroke-width="10">
+<g fill="#d69d68"><rect x="0" y="250" width="300" height="260"/><path d="M-20 260 L150 180 L320 260Z" fill="#5f6e7c"/></g>
+<g fill="#d39d6c"><rect x="900" y="240" width="300" height="270"/><path d="M880 250 L1050 170 L1220 250Z" fill="#596f82"/></g>
+</g>
+<g fill="#365f8a"><rect x="35" y="305" width="95" height="150" rx="4"/><rect x="1030" y="305" width="95" height="150" rx="4"/></g>
+<g fill="#e76f59"><ellipse cx="500" cy="270" rx="19" ry="25"/><ellipse cx="570" cy="270" rx="19" ry="25"/><ellipse cx="640" cy="270" rx="19" ry="25"/><ellipse cx="710" cy="270" rx="19" ry="25"/></g>
+<g fill="#6c5140" opacity=".45"><circle cx="545" cy="410" r="18"/><rect x="530" y="426" width="30" height="58" rx="12"/><circle cx="665" cy="400" r="18"/><rect x="650" y="416" width="30" height="58" rx="12"/></g>
+<text x="80" y="395" font-family="serif" font-size="76" font-weight="700" fill="#fff8e8">魚</text>
+<text x="600" y="110" text-anchor="middle" font-family="sans-serif" font-size="82" font-weight="900" fill="#d55e4d">OH! EDO!</text>
+</svg>
