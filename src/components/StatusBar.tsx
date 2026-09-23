@@ -5,45 +5,40 @@ interface Props {
   town: Town;
 }
 
-const PLAYER_STATS = [
-  ["位", "位"],
-  ["銭", "銭"],
-  ["信用", "信"],
-  ["粋", "粋"],
-  ["人脈", "縁"],
-  ["腕前", "腕"],
+const STATS = [
+  { label: "銭", icon: "💰", key: "money" },
+  { label: "信用", icon: "🪭", key: "trust" },
+  { label: "粋", icon: "✥", key: "iki" },
+  { label: "人脈", icon: "👥", key: "network" },
+  { label: "腕前", icon: "⚔", key: "skill" },
+  { label: "衛生", icon: "🧹", key: "hygiene" },
 ] as const;
 
 export function StatusBar({ player, town }: Props) {
-  const values = [
-    player.rankName,
-    player.money,
-    player.trust,
-    player.iki,
-    player.network,
-    player.skill,
-  ];
+  const values: Record<(typeof STATS)[number]["key"], string | number> = {
+    money: player.money,
+    trust: player.trust,
+    iki: player.iki,
+    network: player.network,
+    skill: player.skill,
+    hygiene: town.hygiene,
+  };
 
   return (
-    <div className="statusbar mock-statusbar">
-      <div className="statusbar-group player-stats">
-        {PLAYER_STATS.map(([label, icon], i) => (
-          <span className="stat stat-card" key={label}>
-            <span className="stat-icon" aria-hidden="true">{icon}</span>
-            <span className="stat-copy">
-              <span className="stat-key">{label}</span>
-              <span className="stat-val">{values[i]}</span>
+    <div className="statusbar reference-statusbar">
+      <span className="rank-chip" title="現在の立ち位置">
+        {player.rankName}
+      </span>
+      <div className="reference-stat-row">
+        {STATS.map((stat) => (
+          <span className="reference-stat" key={stat.key}>
+            <span className="reference-stat-icon" aria-hidden="true">{stat.icon}</span>
+            <span className="reference-stat-copy">
+              <span className="reference-stat-key">{stat.label}</span>
+              <strong>{values[stat.key]}</strong>
             </span>
           </span>
         ))}
-      </div>
-      <div className="statusbar-group town">
-        <span className="stat subtle compact-town">
-          <span className="stat-key">町</span>
-          <span className="stat-val">
-            衛{town.hygiene}・治{town.safety}・流{town.trend}・景{town.economy}
-          </span>
-        </span>
       </div>
     </div>
   );
