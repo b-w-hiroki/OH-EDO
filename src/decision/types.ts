@@ -16,6 +16,7 @@ export interface PlayerActionRecord {
 export interface DecisionContext {
   day: number;
   area: AreaId;
+  targetNpcId: NPCId;
   yesterdayActions: PlayerActionRecord[];
   player: {
     money: number;
@@ -30,6 +31,12 @@ export interface DecisionContext {
     trend: number;
     economy: number;
   };
+  npcRelations: Record<NPCId, {
+    affinity: number;
+    caution: number;
+    familiarity: number;
+    attitude: NpcAttitude;
+  }>;
   candidateRumors: RumorTag[];
   recentEvents: string[];
 }
