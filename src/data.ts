@@ -57,6 +57,7 @@ export const INITIAL_STATE: GameState = {
   playerActions: [],
   decisionLogs: [],
   lastDecision: null,
+  fireAftermath: null,
   dialog: null,
   lastJobResult: null,
 };
@@ -424,3 +425,86 @@ export const FIRE_CHOICES: FireChoice[] = [
     resultText: "風向きと煙の出どころを確かめ、火消し組に手短に伝えた。",
   },
 ];
+
+
+export const FIRE_RUMOR_REPLIES: Record<
+  NPCId,
+  Partial<Record<RumorTag, DialogLine[]>>
+> = {
+  landlord: {
+    helpful: [{ speaker: "大家", text: "昨日はよく動いたね。火事場じゃ、周りを見て動けるやつが一番助かるんだよ。" }],
+    quick: [{ speaker: "大家", text: "桶を持って飛び回ってたそうじゃないか。勢いだけで転ばなかったのは上出来だよ。" }],
+    iki: [{ speaker: "大家", text: "慌てず役目を見つけたって？ そういうのを少しずつ『粋』って言うんだよ。" }],
+    funny: [{ speaker: "大家", text: "火事場でまで話の種を作るとはね。あんた、妙な才能があるよ。" }],
+    clean: [{ speaker: "大家", text: "火の始末まで丁寧だったって聞いたよ。地味でも、そういう仕事が町を守るんだ。" }],
+    yabo: [{ speaker: "大家", text: "火事場で野暮は命取りだよ。次はもっと周りを見な。" }],
+  },
+  fishmonger: {
+    helpful: [{ speaker: "魚屋", text: "昨日は助かったぜ。魚より先に町を守る日もあるってこった。" }],
+    quick: [{ speaker: "魚屋", text: "桶の往復、見てたぜ。あの速さなら魚河岸でも使えるな！" }],
+    iki: [{ speaker: "魚屋", text: "火事場で騒がず役目を見つける。へえ、新入りにしちゃ粋じゃねえか。" }],
+    funny: [{ speaker: "魚屋", text: "瓦版屋が昨日の騒ぎを三割増しで話してやがる。お前、いい商売道具だな。" }],
+    clean: [{ speaker: "魚屋", text: "後始末まで抜かりなかったって？ 仕事ってのはそこまでやって一人前よ。" }],
+    yabo: [{ speaker: "魚屋", text: "次は火より先に顔を引き締めろ。町の連中はよく見てるぜ。" }],
+  },
+  child: {
+    helpful: [{ speaker: "長屋の子ども", text: "昨日かっこよかった！ ぼくも大きくなったら桶持つ！" }],
+    quick: [{ speaker: "長屋の子ども", text: "すっごい速かった！ でも水こぼしてた！ ちょっとだけ！" }],
+    iki: [{ speaker: "長屋の子ども", text: "火のとき落ち着いてた！ なんか大人っぽかった！" }],
+    funny: [{ speaker: "長屋の子ども", text: "昨日の真似してるの！ えいっ、火事だー！ ……怒られた！" }],
+    clean: [{ speaker: "長屋の子ども", text: "あと片づけもしたんだって？ えらい！ ぼくはしない！" }],
+    yabo: [{ speaker: "長屋の子ども", text: "昨日ちょっと変な顔してたね！ 火よりこわかった！" }],
+  },
+  newsman: {
+    helpful: [{ speaker: "瓦版屋", text: "見出しは『新入り、火事場で人助け』。地味だが売れる。人情は強い。" }],
+    quick: [{ speaker: "瓦版屋", text: "『疾風の桶運び、煙を追い越す』。うん、だいぶ盛った。" }],
+    iki: [{ speaker: "瓦版屋", text: "『騒がず、慌てず、火事場で粋』。こいつは字面がいい。" }],
+    funny: [{ speaker: "瓦版屋", text: "昨日の話、もう二割増しだ。昼には五割増しになる予定だ。" }],
+    clean: [{ speaker: "瓦版屋", text: "『火の始末、後始末まで』。真面目すぎるが、町内受けはいいな。" }],
+    yabo: [{ speaker: "瓦版屋", text: "『新入り、火事場で右往左往』……いや、本人に怒られるか。" }],
+  },
+  kumitori_master: {},
+};
+
+export const FIRE_AREA_ECHOES: Partial<
+  Record<RumorTag, Partial<Record<AreaDef["id"], string>>>
+> = {
+  helpful: {
+    nagaya: "長屋では『あの新入り、火事場でも人を助けてたよ』と話されている。",
+    well: "井戸端では、誰を先に逃がしたかまで細かく話が広がっている。",
+    market: "商店通りでは『困ったときに動けるやつ』として少し顔が売れた。",
+  },
+  quick: {
+    nagaya: "長屋では、昨日の桶運びの速さが子どもたちの遊びになっている。",
+    well: "井戸端では『水より先に本人が飛んでた』と少し盛られている。",
+    market: "魚屋が客に『あいつは仕事が速い』と昨日より大きな声で話している。",
+  },
+  iki: {
+    nagaya: "長屋では、慌てず役割を見つけた立ち回りが評判になっている。",
+    well: "井戸端では『火事場でも落ち着いてた』という話が何度も繰り返されている。",
+    market: "瓦版屋が『火事場の粋』という見出しを気に入っている。",
+  },
+  funny: {
+    nagaya: "子どもたちが小火騒ぎを芝居にして、昨日の動きを大げさに再現している。",
+    well: "井戸端では、事実よりだいぶ派手な火事だったことになっている。",
+    market: "瓦版屋が、煙より話を大きくして売り歩いている。",
+  },
+  clean: {
+    nagaya: "長屋では、火の始末と後片づけまでやったことが静かに評価されている。",
+    well: "井戸端では『最後までやる新入り』という評判が立ち始めた。",
+    market: "商店通りでは、派手さはないが仕事を任せられそうだという声が出ている。",
+  },
+  yabo: {
+    nagaya: "長屋では『次はもう少し落ち着けばね』と苦笑されている。",
+    well: "井戸端では、昨日の慌てぶりまで含めて話の種になっている。",
+    market: "瓦版屋は失敗談の方が売れると少し嬉しそうだ。",
+  },
+};
+
+export function getFireAreaEcho(
+  rumor: RumorTag | null,
+  area: AreaDef["id"]
+): string | null {
+  if (!rumor) return null;
+  return FIRE_AREA_ECHOES[rumor]?.[area] ?? null;
+}
