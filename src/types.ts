@@ -5,6 +5,7 @@ export type Screen =
   | "job"
   | "result"
   | "fire_choice"
+  | "fire_result"
   | "room"
   | "status";
 
@@ -109,6 +110,17 @@ export interface JobChoice {
   resultText: string;
 }
 
+export interface FireAftermath {
+  choiceId: FireChoice["id"];
+  resultText: string;
+  fireChiefAssessment: string;
+  newsHeadline: string;
+  townSummary: string;
+  provider: import("./decision/types").DecisionProviderName;
+  rumor: import("./decision/types").DecisionRumor;
+  rumorStrength: number;
+}
+
 export interface FireChoice {
   id: "fire_evacuate" | "fire_bucket" | "fire_report";
   label: string;
@@ -173,6 +185,7 @@ export interface GameState {
   playerActions: import("./decision/types").PlayerActionRecord[];
   decisionLogs: import("./decision/types").DecisionLogEntry[];
   lastDecision: import("./decision/types").DecisionResult | null;
+  fireAftermath: FireAftermath | null;
   dialog: ActiveDialog | null;
   lastJobResult: JobResult | null;
 }

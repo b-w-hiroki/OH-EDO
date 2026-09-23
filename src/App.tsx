@@ -23,6 +23,8 @@ import {
   NIGHT_LINES,
   OPENING_LINES,
   RUMOR_REPLIES,
+  FIRE_RUMOR_REPLIES,
+  getFireAreaEcho,
   getRumorAreaEcho,
   pickDominantRumor,
 } from "./data";
@@ -67,6 +69,7 @@ function loadInitial(): GameState {
       playerActions: parsed.playerActions ?? [],
       decisionLogs: parsed.decisionLogs ?? [],
       lastDecision: parsed.lastDecision ?? null,
+      fireAftermath: parsed.fireAftermath ?? null,
       dialog: null,
       lastJobResult: parsed.lastJobResult ?? null,
     };
@@ -203,6 +206,17 @@ interface NPCDialogPick {
 
 function pickNPCDialog(s: GameState, npc: NPCId): NPCDialogPick | null {
   if (npc === "kumitori_master") return null;
+
+  // Day 3 fire aftermath takes priority over older sewage-rumor replies.
+  if (s.day >= 3 && s.flags.fire_event_done) {
+    const tag = pickDominantRumor(s.activeRumors);
+    if (tag) {
+      const replies = FIRE_RUMOR_REPLIES[npc][tag];
+      if (replies && replies.length > 0) {
+        return { kind: `rumor_${npc}` as DialogKind, lines: replies };
+      }
+    }
+  }
 
   // Day 2+: rumor reply takes priority when a matching tag exists.
   if (s.day >= 2) {
@@ -448,54 +462,96 @@ function App() {
     });
   }, []);
 
-  const chooseFireResponse = useCallback((choice: FireChoice) => {
-    setState((s) => {
-      if (s.screen !== "fire_choice") return s;
-      const e = choice.effects;
-      return {
-        ...s,
-        screen: "town",
-        day: 3,
-        time: "morning",
-        currentArea: "nagaya",
-        player: {
-          ...s.player,
-          trust: s.player.trust + (e.trust ?? 0),
-          iki: s.player.iki + (e.iki ?? 0),
-          network: s.player.network + (e.network ?? 0),
-          skill: s.player.skill + (e.skill ?? 0),
-        },
-        town: {
-          ...s.town,
-          safety: s.town.safety + (e.safety ?? 0),
-        },
-        flags: {
-          ...s.flags,
-          fire_event_done: true,
-          day3_started: true,
-        },
-        activeRumors: Array.from(
-          new Set([...s.activeRumors, ...choice.rumorTags])
-        ),
-        playerActions: [
-          ...s.playerActions,
-          {
-            id: `action-${Date.now()}`,
-            day: s.day,
-            type: choice.id,
-            targetNpcId: "landlord",
-            importance: 3,
-            tags: [...choice.rumorTags],
-          },
-        ],
-        log: appendLog(
-          appendLog(s.log, s.day, choice.resultText),
-          3,
-          "小火騒ぎの翌朝。町は昨日より少しだけこちらを見るようになった。"
-        ),
-      };
-    });
-  }, []);
+  const chooseFireResponse = useCallback(async (choice: FireChoice) => {
+    if (state.screen !== "fire_choice") return;
+    const e = choice.effects;
+    const action = {
+      id: `action-${Date.now()}`,
+      day: state.day,
+      type: choice.id,
+      targetNpcId: "landlord" as const,
+      importance: 3,
+      tags: [...choice.rumorTags],
+    };
+    const provisional: GameState = {
+      ...state,
+      player: {
+        ...state.player,
+        trust: state.player.trust + (e.trust ?? 0),
+        iki: state.player.iki + (e.iki ?? 0),
+        network: state.player.network + (e.network ?? 0),
+        skill: state.player.skill + (e.skill ?? 0),
+      },
+      town: {
+        ...state.town,
+        safety: state.town.safety + (e.safety ?? 0),
+      },
+      playerActions: [...state.playerActions, action],
+      activeRumors: [...choice.rumorTags],
+      log: appendLog(state.log, state.day, choice.resultText),
+    };
+
+    const context = buildDayDecisionContext(provisional);
+    const outcome = await decisionService.decide(context);
+    const decidedRumor =
+      outcome.result.rumor.type === "none"
+        ? pickDominantRumor(choice.rumorTags)
+        : outcome.result.rumor.type;
+    const decisionLog = makeDecisionLog(
+      context,
+      outcome.result,
+      decidedRumor ?? undefined,
+      outcome.fallbackReason
+    );
+
+    const fireChiefAssessment =
+      outcome.result.npc.attitude === "impressed"
+        ? "火消し頭「新入りにしちゃ上出来だ。火事場で役目を見つけられるやつは覚えておく」"
+        : outcome.result.npc.attitude === "friendly"
+          ? "火消し頭「悪くない動きだった。次も周りを見て動け」"
+          : outcome.result.npc.attitude === "cautious"
+            ? "火消し頭「勢いはあるが、火事場じゃ一歩間違えば邪魔になる。覚えとけ」"
+            : outcome.result.npc.attitude === "annoyed"
+              ? "火消し頭「火事場で勝手はするな。町を守るなら連携を覚えろ」"
+              : "火消し頭「まずは無事で何よりだ。次に備えておけ」";
+
+    const headline =
+      decidedRumor === "quick"
+        ? "『疾風の桶運び、煙を追い越す』"
+        : decidedRumor === "iki"
+          ? "『火事場でも粋、新入りの立ち回り』"
+          : decidedRumor === "helpful"
+            ? "『新入り、長屋の小火で人助け』"
+            : decidedRumor === "funny"
+              ? "『小火より騒がしい新入り現る』"
+              : "『長屋の小火、町内総出で大事なし』";
+
+    setState((current) => ({
+      ...provisional,
+      screen: "fire_result",
+      flags: { ...provisional.flags, fire_event_done: true },
+      activeRumors: decidedRumor ? [decidedRumor] : [...choice.rumorTags],
+      lastDecision: outcome.result,
+      decisionLogs: [...current.decisionLogs, decisionLog],
+      fireAftermath: {
+        choiceId: choice.id,
+        resultText: choice.resultText,
+        fireChiefAssessment,
+        newsHeadline: headline,
+        townSummary: outcome.result.quest.shouldUnlock
+          ? "町では『次もあいつに頼める』という空気が出始めている。"
+          : "町では、昨日の動きを見ていた連中が少しずつこちらを覚え始めている。",
+        provider: outcome.result.provider,
+        rumor: outcome.result.rumor.type,
+        rumorStrength: outcome.result.rumor.strength,
+      },
+      log: appendLog(
+        provisional.log,
+        state.day,
+        `小火の翌日判断：#${decidedRumor ?? "none"} / ${outcome.result.provider}`
+      ),
+    }));
+  }, [state]);
 
   const goToNight = useCallback(async () => {
     const context = buildDayDecisionContext(state);
@@ -625,7 +681,11 @@ function App() {
   const lastLog = state.log[state.log.length - 1];
   const dominantRumor = pickDominantRumor(state.activeRumors);
   const areaEcho =
-    state.day >= 2 ? getRumorAreaEcho(dominantRumor, state.currentArea) : null;
+    state.day >= 3 && state.flags.fire_event_done
+      ? getFireAreaEcho(dominantRumor, state.currentArea)
+      : state.day >= 2
+        ? getRumorAreaEcho(dominantRumor, state.currentArea)
+        : null;
   const nextLead = getNextLead(state);
 
   return (
@@ -717,6 +777,29 @@ function App() {
               </div>
             )}
 
+            {state.screen === "fire_result" && state.fireAftermath && (
+              <div className="overlay">
+                <FireAftermathView
+                  aftermath={state.fireAftermath}
+                  onNext={() =>
+                    setState((s) => ({
+                      ...s,
+                      screen: "town",
+                      day: 3,
+                      time: "morning",
+                      currentArea: "nagaya",
+                      flags: { ...s.flags, day3_started: true },
+                      log: appendLog(
+                        s.log,
+                        3,
+                        "小火騒ぎの翌朝。町は昨日より少しだけこちらを見るようになった。"
+                      ),
+                    }))
+                  }
+                />
+              </div>
+            )}
+
             {state.screen === "room" && (
               <div className="overlay">
                 <RoomView day={state.day} onClose={closeRoom} />
@@ -797,6 +880,39 @@ function TitleView({
         <button className="primary" onClick={onStart}>
           {hasSave ? "続きから（保存済み）" : "はじめる"}
         </button>
+      </div>
+    </section>
+  );
+}
+
+function FireAftermathView({
+  aftermath,
+  onNext,
+}: {
+  aftermath: NonNullable<GameState["fireAftermath"]>;
+  onNext: () => void;
+}) {
+  return (
+    <section className="panel fire-aftermath">
+      <h2>小火騒ぎ、そのあと</h2>
+      <p>{aftermath.resultText}</p>
+      <div className="aftermath-card">
+        <strong>火消し頭</strong>
+        <p>{aftermath.fireChiefAssessment}</p>
+      </div>
+      <div className="aftermath-card">
+        <strong>瓦版の見出し</strong>
+        <p>{aftermath.newsHeadline}</p>
+      </div>
+      <div className="aftermath-card">
+        <strong>町の空気</strong>
+        <p>{aftermath.townSummary}</p>
+      </div>
+      <p className="muted">
+        判断: {aftermath.provider} / 噂強度 {aftermath.rumorStrength.toFixed(1)}
+      </p>
+      <div className="panel-actions">
+        <button className="primary" onClick={onNext}>三日目へ</button>
       </div>
     </section>
   );
