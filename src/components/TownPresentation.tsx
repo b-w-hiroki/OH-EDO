@@ -4,6 +4,7 @@ import { AREAS, NPCS } from "../data";
 interface Props {
   state: GameState;
   onTalk: (npc: NPCId) => void;
+  activeSpeaker?: string | null;
 }
 
 const AREA_BACKGROUND: Record<Exclude<AreaId, "room">, string> = {
@@ -37,14 +38,27 @@ function characterClass(npc: NPCId): string {
   return "";
 }
 
-export function TownPresentation({ state, onTalk }: Props) {
+function speakerToNpc(speaker?: string | null): NPCId | null {
+  if (!speaker) return null;
+  if (speaker.includes("大家")) return "landlord";
+  if (speaker.includes("魚")) return "fishmonger";
+  if (speaker.includes("子ども")) return "child";
+  if (speaker.includes("瓦版")) return "newsman";
+  if (speaker.includes("火消し")) return "firechief";
+  return null;
+}
+
+export function TownPresentation({ state, onTalk, activeSpeaker }: Props) {
   const area = state.currentArea === "room" ? "nagaya" : state.currentArea;
   const npcs = npcIdsForArea(state);
   const primary = npcs[0];
+  const activeNpc = speakerToNpc(activeSpeaker);
+  const playerSpeaking = Boolean(activeSpeaker?.includes("主人公"));
+  const dialogOpen = state.screen === "dialog";
 
   return (
     <section
-      className={`town-presentation area-${area}`}
+      className={`town-presentation area-${area} ${dialogOpen ? "is-dialogue" : ""} ${playerSpeaking ? "is-player-speaking" : ""}`}
       style={{ backgroundImage: `url("${AREA_BACKGROUND[area]}")` }}
       aria-label={`${AREAS[state.currentArea].name}の情景`}
     >
@@ -56,14 +70,14 @@ export function TownPresentation({ state, onTalk }: Props) {
       </div>
 
       <button
-        className="presentation-character presentation-player"
+        className={`presentation-character presentation-player ${playerSpeaking ? "is-speaking" : ""}`}
         aria-label="主人公"
         type="button"
       />
 
       {primary && (
         <button
-          className={`presentation-character presentation-npc presentation-primary ${characterClass(primary)}`}
+          className={`presentation-character presentation-npc presentation-primary ${characterClass(primary)} ${activeNpc === primary ? "is-speaking" : ""}`}
           aria-label={`${NPCS[primary].name}と話す`}
           onClick={() => onTalk(primary)}
           type="button"
@@ -74,7 +88,7 @@ export function TownPresentation({ state, onTalk }: Props) {
 
       {npcs.slice(1).map((npc) => (
         <button
-          className={`presentation-character presentation-npc presentation-secondary ${characterClass(npc)}`}
+          className={`presentation-character presentation-npc presentation-secondary ${characterClass(npc)} ${activeNpc === npc ? "is-speaking" : ""}`}
           key={npc}
           aria-label={`${NPCS[npc].name}と話す`}
           onClick={() => onTalk(npc)}
