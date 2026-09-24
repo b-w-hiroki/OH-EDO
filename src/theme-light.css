@@ -5024,3 +5024,22 @@ body::before {
     transition: none !important;
   }
 }
+
+
+/* Keep the travel dock focused on places the player can actually visit.
+   Newly unlocked districts appear naturally as progression expands. */
+.reference-area-nav button:disabled {
+  display: none;
+}
+
+
+@media (min-width: 900px) {
+  .reference-area-nav {
+    display: flex;
+  }
+
+  .reference-area-nav button {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}
