@@ -112,11 +112,6 @@ export function TownPresentation({
     >
       <div className="town-presentation-vignette" aria-hidden="true" />
 
-      <div className="presentation-location-card">
-        <span>いまいる場所</span>
-        <strong>{AREAS[state.currentArea].name}</strong>
-      </div>
-
       <div className="presentation-noren" aria-hidden="true">
         <span>{AREA_BANNER[area]}</span>
       </div>
