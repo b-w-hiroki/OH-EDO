@@ -4008,3 +4008,55 @@ body::before {
     font-size: 12px;
   }
 }
+
+
+/* ── Right-rail priority: match the approved information hierarchy ── */
+@media (min-width: 900px) {
+  .town-side-panel > .town-flavor-card,
+  .town-side-panel > .town-mood-card {
+    display: none;
+  }
+
+  .town-side-panel {
+    grid-auto-rows: max-content;
+  }
+
+  .town-side-panel > .side-card:first-child {
+    min-height: 300px;
+  }
+
+  .town-side-panel > .rumor-card {
+    min-height: 180px;
+  }
+
+  .town-side-panel > .yesterday-card {
+    min-height: 118px;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-list {
+    gap: 8px;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-person {
+    min-height: 58px;
+  }
+
+  .rumor-list li {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .action-change-list li {
+    font-size: 10px;
+  }
+}
+
+@media (min-width: 1181px) {
+  .town-side-panel > .side-card:first-child {
+    min-height: 320px;
+  }
+
+  .town-side-panel > .rumor-card {
+    min-height: 190px;
+  }
+}
