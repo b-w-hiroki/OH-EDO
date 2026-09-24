@@ -4807,3 +4807,30 @@ body::before {
 .presentation-name {
   display: none !important;
 }
+
+
+/* ── Final HUD/dialog fidelity pass ─────────────────── */
+.reference-stat-icon svg {
+  display: block;
+  width: 21px;
+  height: 21px;
+}
+
+.reference-action-dock.is-dialogue {
+  grid-template-columns: 1fr;
+}
+
+.reference-action-dock.is-dialogue .reference-talk-cta {
+  display: none;
+}
+
+.reference-action-dock.is-dialogue .reference-area-nav {
+  width: 100%;
+}
+
+@media (max-width: 599px) {
+  .reference-stat-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+}
