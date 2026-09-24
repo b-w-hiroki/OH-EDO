@@ -3861,3 +3861,9 @@ body::before {
 .presentation-location-card {
   display: none !important;
 }
+
+
+/* The approved mock relies on obvious scene/CTA affordances, not a floating control tutorial. */
+.presentation-stage .controls-hint {
+  display: none;
+}
