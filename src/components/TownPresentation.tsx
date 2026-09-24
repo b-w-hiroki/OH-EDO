@@ -17,6 +17,20 @@ const AREA_BACKGROUND: Record<Exclude<AreaId, "room">, string> = {
   firehouse: "/assets/edo/backgrounds/firehouse.webp",
 };
 
+const AREA_BANNER: Record<Exclude<AreaId, "room">, string> = {
+  nagaya: "やすらぎ長屋",
+  well: "井戸端",
+  market: "商店通り",
+  firehouse: "町火消",
+};
+
+const AREA_GREETING: Record<Exclude<AreaId, "room">, string> = {
+  nagaya: "よく来たねぇ",
+  well: "今日は何を聞いた？",
+  market: "今日は活きがいいよ！",
+  firehouse: "気を抜くなよ",
+};
+
 const AREA_NOTE: Record<Exclude<AreaId, "room">, string> = {
   nagaya: "人がつながる。町が育つ。ここに、あたらしい江戸。",
   well: "水を汲めば、噂も汲める。井戸端は今日もにぎやか。",
@@ -86,6 +100,10 @@ export function TownPresentation({
         <strong>{AREAS[state.currentArea].name}</strong>
       </div>
 
+      <div className="presentation-noren" aria-hidden="true">
+        <span>{AREA_BANNER[area]}</span>
+      </div>
+
       <aside className="presentation-hanging-note">
         <small>今日の目当て</small>
         <strong>{objective}</strong>
@@ -99,6 +117,10 @@ export function TownPresentation({
       />
 
       {primary && (
+        <>
+        <div className="presentation-speech-bubble" aria-hidden="true">
+          {AREA_GREETING[area]}
+        </div>
         <button
           className={`presentation-character presentation-npc presentation-primary ${characterClass(primary)} ${activeNpc === primary ? "is-speaking" : ""} ${selectedNpc === primary ? "is-selected" : ""}`}
           aria-label={`${NPCS[primary].name}を選ぶ`}
@@ -109,6 +131,7 @@ export function TownPresentation({
           {selectedNpc === primary && <span className="presentation-talk-ready">話せる</span>}
           <span className="presentation-name">{NPCS[primary].name}</span>
         </button>
+        </>
       )}
 
       {npcs.slice(1).map((npc) => (
