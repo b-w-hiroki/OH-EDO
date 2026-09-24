@@ -128,6 +128,9 @@ export function TownPresentation({
         aria-hidden="true"
       />
       <div className="town-presentation-vignette" aria-hidden="true" />
+      <div className="scene-petals" aria-hidden="true">
+        <i /><i /><i /><i /><i /><i /><i />
+      </div>
 
       <div className="presentation-noren" aria-hidden="true">
         <span>{AREA_BANNER[area]}</span>

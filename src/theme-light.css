@@ -5043,3 +5043,79 @@ body::before {
     min-width: 0;
   }
 }
+
+
+/* ── Spring atmosphere: subtle petals below the character layer ── */
+.scene-petals {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.scene-petals i {
+  position: absolute;
+  top: -8%;
+  display: block;
+  width: 10px;
+  height: 7px;
+  border-radius: 70% 15% 70% 15%;
+  background: rgba(249, 174, 188, .72);
+  box-shadow: 0 1px 1px rgba(143, 80, 91, .08);
+  transform: rotate(18deg);
+  animation: edoPetalFall 12s linear infinite;
+}
+
+.scene-petals i:nth-child(1) { left: 8%;  animation-delay: -2s;  animation-duration: 13.5s; }
+.scene-petals i:nth-child(2) { left: 21%; animation-delay: -8s;  animation-duration: 11.8s; transform: scale(.8) rotate(38deg); }
+.scene-petals i:nth-child(3) { left: 36%; animation-delay: -4s;  animation-duration: 14.2s; transform: scale(1.15) rotate(-12deg); }
+.scene-petals i:nth-child(4) { left: 52%; animation-delay: -10s; animation-duration: 12.6s; transform: scale(.72) rotate(52deg); }
+.scene-petals i:nth-child(5) { left: 68%; animation-delay: -6s;  animation-duration: 15s;   transform: scale(1.05) rotate(-24deg); }
+.scene-petals i:nth-child(6) { left: 81%; animation-delay: -1s;  animation-duration: 12.1s; transform: scale(.86) rotate(31deg); }
+.scene-petals i:nth-child(7) { left: 93%; animation-delay: -9s;  animation-duration: 13.8s; transform: scale(.74) rotate(-42deg); }
+
+@keyframes edoPetalFall {
+  0% {
+    top: -8%;
+    margin-left: 0;
+    opacity: 0;
+  }
+  8% {
+    opacity: .78;
+  }
+  42% {
+    margin-left: 26px;
+    transform: translateY(0) rotate(150deg);
+  }
+  72% {
+    margin-left: -18px;
+    opacity: .68;
+  }
+  100% {
+    top: 108%;
+    margin-left: 32px;
+    opacity: 0;
+    transform: rotate(340deg);
+  }
+}
+
+@media (max-width: 599px) {
+  .scene-petals i:nth-child(2),
+  .scene-petals i:nth-child(5),
+  .scene-petals i:nth-child(7) {
+    display: none;
+  }
+
+  .scene-petals i {
+    width: 8px;
+    height: 6px;
+    opacity: .65;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene-petals {
+    display: none;
+  }
+}
