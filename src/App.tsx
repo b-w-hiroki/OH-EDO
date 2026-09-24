@@ -1150,10 +1150,6 @@ function App() {
           <div className="mobile-status-wrap">
             <MobilePlayerSummary player={state.player} town={state.town} />
           </div>
-          <div className="objective-strip">
-            <span>今日の目当て</span>
-            <strong>{currentObjective}</strong>
-          </div>
         </div>
       )}
 
@@ -1178,6 +1174,7 @@ function App() {
             <div className="stage presentation-stage">
               <TownPresentation
                 state={state}
+                objective={currentObjective}
                 activeSpeaker={
                   state.screen === "dialog" && state.dialog
                     ? state.dialog.lines[state.dialog.index]?.speaker
