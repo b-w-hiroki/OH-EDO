@@ -99,10 +99,14 @@ export function TownPresentation({
 }: Props) {
   const area = state.currentArea === "room" ? "nagaya" : state.currentArea;
   const npcs = npcIdsForArea(state);
-  const primary = npcs[0];
   const activeNpc = speakerToNpc(activeSpeaker);
   const playerSpeaking = Boolean(activeSpeaker?.includes("主人公"));
   const dialogOpen = state.screen === "dialog";
+  const featuredNpc =
+    dialogOpen && activeNpc && npcs.includes(activeNpc)
+      ? activeNpc
+      : npcs[0];
+  const secondaryNpcs = npcs.filter((npc) => npc !== featuredNpc);
 
   return (
     <section
@@ -132,25 +136,25 @@ export function TownPresentation({
         type="button"
       />
 
-      {primary && (
+      {featuredNpc && (
         <>
         <div className="presentation-speech-bubble" aria-hidden="true">
           {AREA_GREETING[area]}
         </div>
         <button
-          className={`presentation-character presentation-npc presentation-primary ${characterClass(primary)} ${activeNpc === primary ? "is-speaking" : ""} ${selectedNpc === primary ? "is-selected" : ""}`}
-          aria-label={`${displayName(primary)}を選ぶ`}
-          onClick={() => onSelect(primary)}
-          onDoubleClick={() => onTalk(primary)}
+          className={`presentation-character presentation-npc presentation-primary ${characterClass(featuredNpc)} ${activeNpc === featuredNpc ? "is-speaking" : ""} ${selectedNpc === featuredNpc ? "is-selected" : ""}`}
+          aria-label={`${displayName(featuredNpc)}を選ぶ`}
+          onClick={() => onSelect(featuredNpc)}
+          onDoubleClick={() => onTalk(featuredNpc)}
           type="button"
         >
-          {selectedNpc === primary && <span className="presentation-talk-ready">話せる</span>}
-          <span className="presentation-name">{displayName(primary)}</span>
+          {selectedNpc === featuredNpc && <span className="presentation-talk-ready">話せる</span>}
+          <span className="presentation-name">{displayName(featuredNpc)}</span>
         </button>
         </>
       )}
 
-      {npcs.slice(1).map((npc) => (
+      {secondaryNpcs.map((npc) => (
         <button
           className={`presentation-character presentation-npc presentation-secondary ${characterClass(npc)} ${activeNpc === npc ? "is-speaking" : ""} ${selectedNpc === npc ? "is-selected" : ""}`}
           key={npc}
