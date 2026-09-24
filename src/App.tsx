@@ -1127,9 +1127,9 @@ function App() {
         <div className="reference-day-card">
           <span>1年目</span>
           <b>春</b>
-          <span>{state.day}日目</span>
+          <span className="calendar-date">{edoCalendarLabel(state.day)}</span>
           <span className="day-weather">☀</span>
-          <strong>{timeLabel(state.time)}</strong>
+          <strong className="time-period">{timePeriodLabel(state.time)}</strong>
           {inWorld && (
             <span className="reference-location">⌖ {AREAS[state.currentArea].name}</span>
           )}
@@ -1770,6 +1770,25 @@ function TownSidePanel({
       </section>
     </aside>
   );
+}
+
+function edoCalendarLabel(day: number): string {
+  const date = day + 2;
+  const weekday = ["火", "水", "木", "金", "土", "日", "月"][(day - 1) % 7];
+  return `4月${date}日（${weekday}）`;
+}
+
+function timePeriodLabel(t: GameState["time"]): string {
+  switch (t) {
+    case "morning":
+      return "午前";
+    case "noon":
+      return "昼";
+    case "evening":
+      return "夕方";
+    case "night":
+      return "夜";
+  }
 }
 
 function timeLabel(t: GameState["time"]): string {
