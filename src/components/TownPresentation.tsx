@@ -14,6 +14,13 @@ const AREA_BACKGROUND: Record<Exclude<AreaId, "room">, string> = {
   firehouse: "/assets/edo/backgrounds/firehouse.webp",
 };
 
+const AREA_NOTE: Record<Exclude<AreaId, "room">, string> = {
+  nagaya: "人がつながる。町が育つ。ここに、あたらしい江戸。",
+  well: "水を汲めば、噂も汲める。井戸端は今日もにぎやか。",
+  market: "声と商いが行き交えば、町はもっと面白くなる。",
+  firehouse: "町を守る手は、ひとりじゃ足りない。声を掛け合っていこう。",
+};
+
 function npcIdsForArea(state: GameState): NPCId[] {
   switch (state.currentArea) {
     case "market":
@@ -68,6 +75,10 @@ export function TownPresentation({ state, onTalk, activeSpeaker }: Props) {
         <span>いまいる場所</span>
         <strong>{AREAS[state.currentArea].name}</strong>
       </div>
+
+      <aside className="presentation-hanging-note" aria-hidden="true">
+        <span>{AREA_NOTE[area]}</span>
+      </aside>
 
       <button
         className={`presentation-character presentation-player ${playerSpeaking ? "is-speaking" : ""}`}
