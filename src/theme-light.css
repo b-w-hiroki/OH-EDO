@@ -4267,3 +4267,164 @@ body::before {
 .reference-talk-cta .talk-bubble:has(img) > span {
   display: none;
 }
+
+
+/* ── Mock-diff cleanup: remove gamey selection chrome ───────────── */
+.presentation-character.is-selected {
+  filter: drop-shadow(0 15px 18px rgba(52,34,21,.24)) saturate(1.03) brightness(1.02);
+}
+
+.presentation-character.is-selected::after {
+  content: none !important;
+}
+
+.presentation-talk-ready {
+  display: none !important;
+}
+
+.presentation-character.is-selected .presentation-name {
+  background: rgba(255,249,236,.95);
+  color: #9d4f42;
+  border-color: #d9b79b;
+  box-shadow: 0 4px 10px rgba(70,48,33,.12);
+}
+
+/* dialogue should feel like part of the illustration, not a modal card */
+.dialogue-overlay {
+  padding: 0 18px 14px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    transparent 58%,
+    rgba(41,28,20,.08) 78%,
+    rgba(41,28,20,.16) 100%
+  );
+}
+
+.dialogue-overlay .mock-dialog {
+  width: min(900px, 72%);
+  min-height: 132px;
+  margin-left: 1.5%;
+  padding: 18px 22px 14px;
+  border-radius: 12px;
+  border-width: 1.5px;
+  box-shadow: 0 10px 22px rgba(57,42,28,.16);
+}
+
+.dialogue-overlay .mock-dialog .dialog-speaker {
+  margin-top: -32px;
+  padding: 4px 16px;
+}
+
+.dialogue-overlay .mock-dialog .dialog-text {
+  min-height: 58px;
+  font-size: 18px;
+  line-height: 1.68;
+}
+
+/* mobile: compress social cards so the scene and CTA stay above the fold */
+@media (max-width: 599px) {
+  .mobile-player-summary {
+    gap: 6px;
+    padding: 8px;
+  }
+
+  .mobile-player-main {
+    grid-template-columns: 66px minmax(0,1fr);
+    gap: 8px;
+  }
+
+  .mobile-player-portrait {
+    width: 62px;
+    height: 62px;
+  }
+
+  .mobile-skill-grid {
+    gap: 4px;
+  }
+
+  .mobile-skill-card {
+    min-height: 58px;
+    padding: 5px 3px;
+  }
+
+  .mobile-skill-card > span {
+    font-size: 18px;
+  }
+
+  .mobile-skill-card small {
+    font-size: 8px;
+  }
+
+  .mobile-skill-card strong {
+    font-size: 10px;
+  }
+
+  .town-side-panel .side-card:first-child {
+    padding: 8px;
+  }
+
+  .town-side-panel .side-card:first-child .nearby-list {
+    gap: 6px;
+  }
+
+  .town-side-panel .side-card:first-child .nearby-person {
+    flex-basis: 132px;
+    min-height: 68px;
+    grid-template-columns: 42px minmax(0,1fr);
+    padding: 6px;
+  }
+
+  .town-side-panel .side-card:first-child .nearby-avatar {
+    width: 42px;
+    height: 42px;
+  }
+
+  .town-side-panel .side-card:first-child .nearby-copy strong {
+    font-size: 11px;
+  }
+
+  .npc-subtitle {
+    display: none;
+  }
+
+  .relation-pill {
+    margin-top: 2px;
+    padding: 1px 5px;
+    font-size: 8px !important;
+  }
+
+  .town-side-panel .side-card:first-child .nearby-talk {
+    min-height: 22px;
+    padding: 2px 7px;
+    font-size: 8px;
+  }
+
+  .rumor-card {
+    min-height: auto;
+  }
+
+  .rumor-list li:nth-child(n+3) {
+    display: none;
+  }
+
+  .dialogue-overlay {
+    padding: 0 7px 8px;
+  }
+
+  .dialogue-overlay .mock-dialog {
+    width: 100%;
+    min-height: 130px;
+    padding: 14px 14px 10px;
+  }
+
+  .dialogue-overlay .mock-dialog .dialog-speaker {
+    margin-top: -26px;
+  }
+
+  .dialogue-overlay .mock-dialog .dialog-text {
+    min-height: 68px;
+    font-size: 14px;
+    line-height: 1.58;
+  }
+}
