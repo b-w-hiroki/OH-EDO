@@ -4515,3 +4515,24 @@ body::before {
     color: #705987;
   }
 }
+
+
+/* fix: nearby people must be a horizontal strip on portrait screens */
+@media (max-width: 599px) {
+  .town-side-panel .side-card:first-child .nearby-list {
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 3px;
+    scroll-snap-type: x proximity;
+  }
+
+  .town-side-panel .side-card:first-child .nearby-person {
+    flex: 0 0 126px;
+    min-width: 126px;
+    min-height: 68px;
+    scroll-snap-align: start;
+  }
+}
