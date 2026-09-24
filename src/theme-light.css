@@ -4476,8 +4476,14 @@ body::before {
     display: none;
   }
 
-  .reference-area-nav:has(button:not(:disabled)[aria-label*="火消し"]) {
+  .reference-area-nav:has(button:nth-child(4):not(:disabled)) {
+    display: flex;
     overflow-x: auto;
+  }
+
+  .reference-area-nav:has(button:nth-child(4):not(:disabled)) button {
+    flex: 0 0 104px;
+    width: 104px;
   }
 
   .area-nav-copy strong {
