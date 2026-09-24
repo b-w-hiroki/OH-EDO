@@ -1166,6 +1166,11 @@ function App() {
             <div className="stage presentation-stage">
               <TownPresentation
                 state={state}
+                activeSpeaker={
+                  state.screen === "dialog" && state.dialog
+                    ? state.dialog.lines[state.dialog.index]?.speaker
+                    : null
+                }
                 onTalk={(npc) => EventBus.emit("npc-interact", npc)}
               />
 
@@ -1176,7 +1181,7 @@ function App() {
             )}
 
             {state.screen === "dialog" && state.dialog && (
-              <div className="overlay">
+              <div className="overlay dialogue-overlay">
                 <DialogBox
                   line={state.dialog.lines[state.dialog.index]}
                   index={state.dialog.index}
