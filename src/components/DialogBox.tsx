@@ -17,6 +17,13 @@ function speakerClass(speaker: string): string {
   return "speaker-generic";
 }
 
+function displaySpeaker(speaker: string): string {
+  if (speaker.includes("大家")) return "おかみさん";
+  if (speaker === "魚屋") return "熊さん";
+  if (speaker.includes("長屋の子ども")) return "源太";
+  return speaker;
+}
+
 function speakerGlyph(speaker: string): string {
   if (speaker.includes("魚")) return "魚";
   if (speaker.includes("大家")) return "家";
@@ -37,7 +44,7 @@ export function DialogBox({ line, index, total, onNext }: Props) {
         <span>{speakerGlyph(line.speaker)}</span>
       </div>
       <div className="dialog-body">
-        <div className="dialog-speaker">{line.speaker}</div>
+        <div className="dialog-speaker">{displaySpeaker(line.speaker)}</div>
         <p className="dialog-text">{line.text}</p>
         <div className="dialog-foot">
           <span className="dialog-progress">

@@ -3641,3 +3641,370 @@ body::before {
     padding: 4px 8px;
   }
 }
+
+
+/* ── Scenic signage / greeting pass ───────────────── */
+.presentation-noren {
+  position: absolute;
+  right: 3.2%;
+  top: 14%;
+  z-index: 3;
+  width: 58px;
+  min-height: 210px;
+  display: grid;
+  place-items: center;
+  padding: 12px 7px;
+  border-radius: 5px 5px 2px 2px;
+  background:
+    linear-gradient(180deg, rgba(68,106,143,.98), rgba(49,78,108,.98));
+  box-shadow: 0 7px 14px rgba(48,39,29,.16);
+  color: #f8edd7;
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  pointer-events: none;
+}
+
+.presentation-noren::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  left: -6px;
+  right: -6px;
+  height: 8px;
+  border-radius: 3px;
+  background: #806044;
+  box-shadow: 0 2px 4px rgba(51,38,28,.18);
+}
+
+.area-market .presentation-noren {
+  background: linear-gradient(180deg, rgba(65,111,146,.98), rgba(45,83,115,.98));
+}
+
+.area-well .presentation-noren {
+  background: linear-gradient(180deg, rgba(90,132,135,.98), rgba(63,102,106,.98));
+}
+
+.area-firehouse .presentation-noren {
+  background: linear-gradient(180deg, rgba(82,89,103,.98), rgba(54,62,76,.98));
+}
+
+.presentation-speech-bubble {
+  position: absolute;
+  right: 29%;
+  top: 31%;
+  z-index: 9;
+  max-width: 148px;
+  padding: 8px 12px;
+  border: 1px solid #bca789;
+  border-radius: 18px;
+  background: rgba(255,251,240,.97);
+  color: #4b3d32;
+  box-shadow: 0 6px 14px rgba(69,50,35,.12);
+  font-family: var(--font-serif);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: center;
+  pointer-events: none;
+  transform: rotate(-2deg);
+}
+
+.presentation-speech-bubble::after {
+  content: "";
+  position: absolute;
+  right: 20px;
+  bottom: -9px;
+  width: 16px;
+  height: 16px;
+  background: inherit;
+  border-right: 1px solid #bca789;
+  border-bottom: 1px solid #bca789;
+  transform: rotate(45deg);
+}
+
+.town-presentation.is-dialogue .presentation-speech-bubble {
+  opacity: 0;
+}
+
+@media (max-width: 899px) {
+  .presentation-noren {
+    right: 2%;
+    top: 13%;
+    width: 48px;
+    min-height: 168px;
+    font-size: 15px;
+  }
+
+  .presentation-speech-bubble {
+    right: 26%;
+    top: 35%;
+    max-width: 118px;
+    padding: 7px 9px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 599px) {
+  .presentation-noren {
+    right: 4px;
+    top: 16%;
+    width: 42px;
+    min-height: 150px;
+    font-size: 13px;
+  }
+
+  .presentation-speech-bubble {
+    right: 25%;
+    top: 38%;
+    max-width: 104px;
+    font-size: 10px;
+  }
+}
+
+
+/* ── Illustrated area-nav icons ────────────────────── */
+.area-nav-icon {
+  color: #456b86;
+}
+
+.area-nav-icon svg {
+  display: block;
+  width: 34px;
+  height: 34px;
+}
+
+.reference-area-nav button.active .area-nav-icon {
+  color: #9b5b2e;
+  background: rgba(255,249,235,.82);
+}
+
+.reference-area-nav button.map-tab .area-nav-icon {
+  color: #765f45;
+}
+
+.reference-area-nav button:disabled .area-nav-icon {
+  color: #9fa6a8;
+}
+
+@media (max-width: 599px) {
+  .area-nav-icon svg {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+
+/* ── Edo-style resource badges ─────────────────────── */
+.reference-stat-icon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border: 1px solid #b9c9d6;
+  border-radius: 9px;
+  background: linear-gradient(180deg, #f7fbfd, #e3eef5);
+  color: #486c88;
+  font-family: var(--font-serif);
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+}
+
+.stat-icon-money {
+  border-color: #d7bc78;
+  background: linear-gradient(180deg, #fff7d8, #f2dfaa);
+  color: #8b672d;
+}
+
+.stat-icon-trust,
+.stat-icon-network {
+  border-color: #aebfd4;
+  background: linear-gradient(180deg, #edf4fb, #dce7f3);
+  color: #46688b;
+}
+
+.stat-icon-iki {
+  border-color: #c0b0d2;
+  background: linear-gradient(180deg, #f4eff9, #e5dcef);
+  color: #6f5686;
+}
+
+.stat-icon-skill {
+  border-color: #9fb0bb;
+  background: linear-gradient(180deg, #eef3f5, #dce5e9);
+  color: #4e6471;
+}
+
+.stat-icon-hygiene {
+  border-color: #c9b991;
+  background: linear-gradient(180deg, #faf4e6, #eee3cb);
+  color: #786447;
+}
+
+@media (max-width: 599px) {
+  .reference-stat-icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    font-size: 11px;
+  }
+}
+
+
+/* location is already in the top HUD; keep the scenic canvas uncluttered */
+.presentation-location-card {
+  display: none !important;
+}
+
+
+/* The approved mock relies on obvious scene/CTA affordances, not a floating control tutorial. */
+.presentation-stage .controls-hint {
+  display: none;
+}
+
+
+/* ── Area-specific cast staging ─────────────────────── */
+.town-presentation.area-market .presentation-primary.art-fishmonger {
+  right: 4%;
+  width: 39%;
+  height: 91%;
+  bottom: -5%;
+}
+
+.town-presentation.area-market .presentation-secondary.art-newsman {
+  right: 36%;
+  width: 20%;
+  height: 52%;
+  bottom: 1%;
+}
+
+.town-presentation.area-well .presentation-player {
+  left: 3%;
+  width: 31%;
+  height: 81%;
+}
+
+.town-presentation.area-well .presentation-primary.art-child {
+  right: 11%;
+  width: 25%;
+  height: 56%;
+  bottom: 0;
+}
+
+.town-presentation.area-firehouse .presentation-primary.art-firechief {
+  right: 5%;
+  width: 35%;
+  height: 91%;
+  bottom: -5%;
+}
+
+@media (max-width: 599px) {
+  .town-presentation.area-market .presentation-primary.art-fishmonger {
+    right: -11%;
+    width: 67%;
+    height: 76%;
+  }
+
+  .town-presentation.area-market .presentation-secondary.art-newsman {
+    display: none;
+  }
+
+  .town-presentation.area-well .presentation-player {
+    left: -13%;
+    width: 67%;
+    height: 74%;
+  }
+
+  .town-presentation.area-well .presentation-primary.art-child {
+    right: -2%;
+    width: 43%;
+    height: 50%;
+  }
+
+  .town-presentation.area-firehouse .presentation-primary.art-firechief {
+    right: -12%;
+    width: 66%;
+    height: 76%;
+  }
+}
+
+
+/* ── Independent background layer for crisper scenic art ────────── */
+.town-background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transform: scale(1.012);
+  filter: saturate(1.06) contrast(1.035) brightness(1.015);
+  transform-origin: center;
+  pointer-events: none;
+}
+
+.town-presentation.area-nagaya .town-background {
+  background-position: 50% 48%;
+}
+
+.town-presentation.area-market .town-background {
+  background-position: 52% 50%;
+}
+
+.town-presentation.area-well .town-background {
+  background-position: 49% 51%;
+}
+
+.town-presentation.area-firehouse .town-background {
+  background-position: 52% 50%;
+}
+
+@media (max-width: 599px) {
+  .town-presentation.area-nagaya .town-background {
+    background-position: 52% 50%;
+  }
+
+  .town-presentation.area-market .town-background {
+    background-position: 55% 50%;
+  }
+
+  .town-presentation.area-well .town-background {
+    background-position: 52% 50%;
+  }
+
+  .town-presentation.area-firehouse .town-background {
+    background-position: 55% 50%;
+  }
+}
+
+
+/* ── Calendar/date polish ───────────────────────────── */
+.calendar-date {
+  color: #51443a;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.time-period {
+  color: #4f443b;
+  white-space: nowrap;
+}
+
+@media (max-width: 599px) {
+  .calendar-date {
+    width: 100%;
+    order: 4;
+    font-size: 10px;
+    color: #7b6a5b;
+  }
+
+  .time-period {
+    font-size: 12px;
+  }
+}
