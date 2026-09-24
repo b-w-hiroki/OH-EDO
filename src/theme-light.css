@@ -2027,20 +2027,27 @@ body::before {
   background-image: url("/assets/edo/characters/full/landlord.webp");
 }
 
+.dialog-cutin.speaker-fishmonger {
+  background-image: url("/assets/edo/characters/full/fishmonger.webp");
+}
+.dialog-cutin.speaker-child {
+  background-image: url("/assets/edo/characters/full/child.webp");
+}
+.dialog-cutin.speaker-newsman {
+  background-image: url("/assets/edo/characters/full/newsman.webp");
+}
+.dialog-cutin.speaker-firechief {
+  background-image: url("/assets/edo/characters/full/firechief.webp");
+}
+
 .dialog-cutin.speaker-fishmonger,
 .dialog-cutin.speaker-child,
 .dialog-cutin.speaker-newsman,
 .dialog-cutin.speaker-firechief {
   width: 230px;
-  background-image: url("/assets/edo/characters/characters-sheet.webp");
-  background-size: 1280px auto;
-  background-position-y: bottom;
+  background-size: contain;
+  background-position: bottom center;
 }
-
-.dialog-cutin.speaker-fishmonger { background-position-x: 46%; }
-.dialog-cutin.speaker-child { background-position-x: 65%; }
-.dialog-cutin.speaker-newsman { background-position-x: 82%; }
-.dialog-cutin.speaker-firechief { background-position-x: 100%; }
 
 .dialog-portrait {
   overflow: hidden;
