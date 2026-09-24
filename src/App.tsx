@@ -47,6 +47,7 @@ import { ResultView } from "./components/ResultView";
 import { TownPresentation } from "./components/TownPresentation";
 import { EventBus } from "./game/EventBus";
 import { uiSound } from "./game/uiSound";
+import { characterArtPath } from "./characterArt";
 import { buildDayDecisionContext } from "./decision/DecisionContextBuilder";
 import {
   createDecisionService,
@@ -1389,7 +1390,13 @@ function App() {
                 if (activeTalkNpc) EventBus.emit("npc-interact", activeTalkNpc);
               }}
             >
-              <span className="talk-bubble" aria-hidden="true"><span>•••</span></span>
+              <span className="talk-bubble" aria-hidden="true">
+                {activeTalkNpc && characterArtPath(activeTalkNpc) ? (
+                  <img src={characterArtPath(activeTalkNpc) ?? undefined} alt="" draggable={false} />
+                ) : (
+                  <span>•••</span>
+                )}
+              </span>
               <strong>話す</strong>
               <small>
                 {activeTalkNpc
@@ -1709,7 +1716,11 @@ function TownSidePanel({
               }}
             >
               <span className={`nearby-avatar avatar-${npcId}`}>
-                <span>{NPCS[npcId].name.slice(0, 1)}</span>
+                {characterArtPath(npcId) ? (
+                  <img src={characterArtPath(npcId) ?? undefined} alt="" draggable={false} />
+                ) : (
+                  <span>{NPCS[npcId].name.slice(0, 1)}</span>
+                )}
               </span>
               <div className="nearby-copy">
                 <strong>{npcDisplayName(npcId)}</strong>
