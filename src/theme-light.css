@@ -1952,14 +1952,14 @@ body::before {
   left: 3%;
   width: 46%;
   height: 88%;
-  background-image: url("/assets/edo/characters/player.webp");
+  background-image: url("/assets/edo/characters/full/player.webp");
 }
 
 .title-hero::after {
   right: 2%;
   width: 43%;
   height: 88%;
-  background-image: url("/assets/edo/characters/landlord.webp");
+  background-image: url("/assets/edo/characters/full/landlord.webp");
 }
 
 .room-panel {
@@ -2020,11 +2020,11 @@ body::before {
 }
 
 .dialog-cutin.speaker-player {
-  background-image: url("/assets/edo/characters/player.webp");
+  background-image: url("/assets/edo/characters/full/player.webp");
 }
 
 .dialog-cutin.speaker-landlord {
-  background-image: url("/assets/edo/characters/landlord.webp");
+  background-image: url("/assets/edo/characters/full/landlord.webp");
 }
 
 .dialog-cutin.speaker-fishmonger,
@@ -2054,47 +2054,49 @@ body::before {
 }
 
 .dialog-portrait.speaker-player {
-  background-image: url("/assets/edo/characters/player.webp") !important;
+  background-image: url("/assets/edo/characters/full/player.webp") !important;
   background-size: 145% auto !important;
   background-position: 50% 10% !important;
 }
 
 .dialog-portrait.speaker-landlord {
-  background-image: url("/assets/edo/characters/landlord.webp") !important;
+  background-image: url("/assets/edo/characters/full/landlord.webp") !important;
   background-size: 150% auto !important;
   background-position: 50% 8% !important;
 }
 
+.dialog-portrait.speaker-fishmonger {
+  background-image: url("/assets/edo/characters/full/fishmonger.webp") !important;
+}
+.dialog-portrait.speaker-child {
+  background-image: url("/assets/edo/characters/full/child.webp") !important;
+}
+.dialog-portrait.speaker-newsman {
+  background-image: url("/assets/edo/characters/full/newsman.webp") !important;
+}
+.dialog-portrait.speaker-firechief {
+  background-image: url("/assets/edo/characters/full/firechief.webp") !important;
+}
 .dialog-portrait.speaker-fishmonger,
 .dialog-portrait.speaker-child,
 .dialog-portrait.speaker-newsman,
 .dialog-portrait.speaker-firechief {
-  background-image: url("/assets/edo/characters/characters-sheet.webp") !important;
-  background-size: 590% auto !important;
-  background-position-y: 11% !important;
+  background-size: 150% auto !important;
+  background-position: 50% 8% !important;
 }
-.dialog-portrait.speaker-fishmonger { background-position-x: 40% !important; }
-.dialog-portrait.speaker-child { background-position-x: 64% !important; }
-.dialog-portrait.speaker-newsman { background-position-x: 81% !important; }
-.dialog-portrait.speaker-firechief { background-position-x: 100% !important; }
 
 .nearby-avatar {
   color: transparent;
-  background-image: url("/assets/edo/characters/characters-sheet.webp") !important;
   background-repeat: no-repeat !important;
-  background-size: 590% auto !important;
-  background-position-y: 11% !important;
+  background-position: 50% 8% !important;
+  background-size: 155% auto !important;
 }
 .nearby-avatar span { opacity: 0; }
-.avatar-landlord {
-  background-image: url("/assets/edo/characters/landlord.webp") !important;
-  background-size: 155% auto !important;
-  background-position: 50% 8% !important;
-}
-.avatar-fishmonger { background-position-x: 40% !important; }
-.avatar-child { background-position-x: 64% !important; }
-.avatar-newsman { background-position-x: 81% !important; }
-.avatar-firechief { background-position-x: 100% !important; }
+.avatar-landlord { background-image: url("/assets/edo/characters/full/landlord.webp") !important; }
+.avatar-fishmonger { background-image: url("/assets/edo/characters/full/fishmonger.webp") !important; }
+.avatar-child { background-image: url("/assets/edo/characters/full/child.webp") !important; }
+.avatar-newsman { background-image: url("/assets/edo/characters/full/newsman.webp") !important; }
+.avatar-firechief { background-image: url("/assets/edo/characters/full/firechief.webp") !important; }
 
 .side-card {
   position: relative;
@@ -2268,7 +2270,7 @@ body::before {
   width: 33%;
   height: 88%;
   pointer-events: none;
-  background-image: url("/assets/edo/characters/player.webp");
+  background-image: url("/assets/edo/characters/full/player.webp");
 }
 
 .presentation-primary {
@@ -2305,22 +2307,29 @@ body::before {
 }
 
 .art-landlord {
-  background-image: url("/assets/edo/characters/landlord.webp");
+  background-image: url("/assets/edo/characters/full/landlord.webp");
+}
+
+.art-fishmonger {
+  background-image: url("/assets/edo/characters/full/fishmonger.webp");
+}
+.art-child {
+  background-image: url("/assets/edo/characters/full/child.webp");
+}
+.art-newsman {
+  background-image: url("/assets/edo/characters/full/newsman.webp");
+}
+.art-firechief {
+  background-image: url("/assets/edo/characters/full/firechief.webp");
 }
 
 .art-fishmonger,
 .art-child,
 .art-newsman,
 .art-firechief {
-  background-image: url("/assets/edo/characters/characters-sheet.webp");
-  background-size: 610% auto;
-  background-position-y: bottom;
+  background-size: contain;
+  background-position: bottom center;
 }
-
-.art-fishmonger { background-position-x: 42%; }
-.art-child { background-position-x: 64%; }
-.art-newsman { background-position-x: 82%; }
-.art-firechief { background-position-x: 100%; }
 
 .presentation-scene-note {
   position: absolute;
@@ -2574,12 +2583,6 @@ body::before {
   bottom: 14px;
 }
 
-.nearby-avatar.avatar-child {
-  background-position: 60% 63% !important;
-}
-.dialog-portrait.speaker-child {
-  background-position: 60% 63% !important;
-}
 
 @media (max-width: 899px) {
   .town-presentation.area-nagaya .presentation-player {
@@ -2926,7 +2929,7 @@ body::before {
     border: 3px solid #fff6e5;
     outline: 1px solid #ceb189;
     background:
-      #e7f3fb url("/assets/edo/characters/player.webp") 50% 5% / 145% auto no-repeat;
+      #e7f3fb url("/assets/edo/characters/full/player.webp") 50% 5% / 145% auto no-repeat;
     box-shadow: 0 5px 12px rgba(74,61,44,.13);
   }
 
@@ -3122,18 +3125,6 @@ body::before {
     font-size: 9px;
   }
 
-  .nearby-avatar.avatar-child {
-    background-image: none !important;
-    background: linear-gradient(180deg, #9fc97b, #6f9e55) !important;
-  }
-
-  .nearby-avatar.avatar-child span {
-    opacity: 1 !important;
-    color: #fff9eb;
-    font-family: var(--font-ui);
-    font-size: 18px;
-    font-weight: 900;
-  }
 
   .rumor-card {
     min-height: 96px;
@@ -4084,7 +4075,7 @@ body::before {
 }
 
 .reference-talk-cta.talk-target-landlord .talk-bubble {
-  background-image: url("/assets/edo/characters/landlord.webp");
+  background-image: url("/assets/edo/characters/full/landlord.webp");
   color: transparent;
 }
 
@@ -4092,19 +4083,30 @@ body::before {
   opacity: 0;
 }
 
+.reference-talk-cta.talk-target-fishmonger .talk-bubble {
+  background-image: url("/assets/edo/characters/full/fishmonger.webp");
+  color: transparent;
+}
+.reference-talk-cta.talk-target-child .talk-bubble {
+  background-image: url("/assets/edo/characters/full/child.webp");
+  color: transparent;
+}
+.reference-talk-cta.talk-target-newsman .talk-bubble {
+  background-image: url("/assets/edo/characters/full/newsman.webp");
+  color: transparent;
+}
+.reference-talk-cta.talk-target-firechief .talk-bubble {
+  background-image: url("/assets/edo/characters/full/firechief.webp");
+  color: transparent;
+}
+
 .reference-talk-cta.talk-target-fishmonger .talk-bubble,
 .reference-talk-cta.talk-target-child .talk-bubble,
 .reference-talk-cta.talk-target-newsman .talk-bubble,
 .reference-talk-cta.talk-target-firechief .talk-bubble {
-  background-image: url("/assets/edo/characters/characters-sheet.webp");
-  background-size: 590% auto;
-  color: transparent;
+  background-size: 155% auto;
+  background-position: 50% 8%;
 }
-
-.reference-talk-cta.talk-target-fishmonger .talk-bubble { background-position: 40% 11%; }
-.reference-talk-cta.talk-target-child .talk-bubble { background-position: 60% 63%; }
-.reference-talk-cta.talk-target-newsman .talk-bubble { background-position: 81% 11%; }
-.reference-talk-cta.talk-target-firechief .talk-bubble { background-position: 100% 11%; }
 
 .reference-talk-cta.talk-target-fishmonger .talk-bubble > span,
 .reference-talk-cta.talk-target-child .talk-bubble > span,
