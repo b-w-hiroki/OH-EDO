@@ -1472,6 +1472,51 @@ function AreaNav({
   );
 }
 
+function sidePanelNpcIds(state: GameState): NPCId[] {
+  const local = getAreaNpcIds(state);
+  const nearbyByArea: Partial<Record<AreaId, NPCId[]>> = {
+    nagaya: ["landlord", "child", "fishmonger", "newsman"],
+    market: ["fishmonger", "newsman", "child", "landlord"],
+    well: ["child", "landlord", "fishmonger", "newsman"],
+    firehouse: ["firechief", "newsman", "landlord", "fishmonger"],
+    room: ["landlord"],
+  };
+  const merged = [...local, ...(nearbyByArea[state.currentArea] ?? [])];
+  return Array.from(new Set(merged)).slice(0, 4);
+}
+
+function npcDisplayName(npc: NPCId): string {
+  switch (npc) {
+    case "landlord":
+      return "おかみさん";
+    case "fishmonger":
+      return "魚屋の熊さん";
+    case "child":
+      return "長屋の子ども";
+    case "newsman":
+      return "瓦版屋";
+    case "firechief":
+      return "火消し頭";
+    default:
+      return NPCS[npc].name;
+  }
+}
+
+function relationLabel(attitude: GameState["npcRelations"][NPCId]["attitude"]): string {
+  switch (attitude) {
+    case "friendly":
+      return "仲良し";
+    case "impressed":
+      return "頼られてる";
+    case "cautious":
+      return "気にされてる";
+    case "annoyed":
+      return "ちょっと苦手";
+    default:
+      return "はじめて";
+  }
+}
+
 function TownSidePanel({
   state,
   dominantRumor,
@@ -1485,12 +1530,15 @@ function TownSidePanel({
   yesterdaySummary: string | null;
   onTalk: (npc: NPCId) => void;
 }) {
-  const areaNpcIds = getAreaNpcIds(state);
+  const areaNpcIds = sidePanelNpcIds(state);
 
   return (
     <aside className="town-side-panel">
       <section className="side-card">
-        <div className="side-card-title">このあたりの人たち</div>
+        <div className="side-card-title">
+          <span>♟ このあたりの人たち</span>
+          <small className="side-card-more">顔なじみ</small>
+        </div>
         <div className="nearby-list">
           {areaNpcIds.map((npcId) => (
             <div className="nearby-person" key={npcId}>
@@ -1498,13 +1546,13 @@ function TownSidePanel({
                 <span>{NPCS[npcId].name.slice(0, 1)}</span>
               </span>
               <div className="nearby-copy">
-                <strong>{NPCS[npcId].name}</strong>
-                <small>{state.npcRelations[npcId].attitude}</small>
+                <strong>{npcDisplayName(npcId)}</strong>
+                <small className="relation-pill">♥ {relationLabel(state.npcRelations[npcId].attitude)}</small>
               </div>
               <button
                 className="nearby-talk"
                 onClick={() => onTalk(npcId)}
-                aria-label={`${NPCS[npcId].name}と話す`}
+                aria-label={`${npcDisplayName(npcId)}と話す`}
               >
                 話す
               </button>
@@ -1515,13 +1563,13 @@ function TownSidePanel({
 
       {yesterdaySummary && (
         <section className="side-card yesterday-card">
-          <div className="side-card-title">昨日の行動 → 今日</div>
+          <div className="side-card-title"><span>▣ 昨日の行動 → 今日の変化</span></div>
           <p>{yesterdaySummary}</p>
         </section>
       )}
 
       <section className="side-card town-flavor-card">
-        <div className="side-card-title">この場所の小話</div>
+        <div className="side-card-title"><span>▤ この場所の小話</span></div>
         <p>
           {AREAS[state.currentArea].flavor[
             Math.min(AREAS[state.currentArea].flavor.length - 1, Math.max(0, state.day - 1))
@@ -1530,13 +1578,13 @@ function TownSidePanel({
       </section>
 
       <section className="side-card rumor-card">
-        <div className="side-card-title">今日のうわさ</div>
+        <div className="side-card-title"><span>☕ 今日のうわさ</span></div>
         <p>{areaEcho ?? "まだ大きな噂はない。"}</p>
         {dominantRumor && <span className="rumor-chip">#{dominantRumor}</span>}
       </section>
 
       <section className="side-card town-mood-card">
-        <div className="side-card-title">町の空気</div>
+        <div className="side-card-title"><span>⌁ 町の空気</span></div>
         <div className="mood-list">
           {[
             ["衛生", state.town.hygiene],
