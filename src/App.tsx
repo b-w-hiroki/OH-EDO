@@ -1531,6 +1531,14 @@ function TownSidePanel({
   onTalk: (npc: NPCId) => void;
 }) {
   const areaNpcIds = sidePanelNpcIds(state);
+  const areaFlavor = AREAS[state.currentArea].flavor;
+  const rumorItems = [
+    areaEcho ?? "まだ大きな噂はない。",
+    areaFlavor[(state.day + 1) % areaFlavor.length] ?? areaFlavor[0],
+    dominantRumor
+      ? `町では「#${dominantRumor}」の話が少しずつ広がっている。`
+      : "商店通りでは、朝から新しい話題を探す声が聞こえる。",
+  ];
 
   return (
     <aside className="town-side-panel">
@@ -1579,7 +1587,14 @@ function TownSidePanel({
 
       <section className="side-card rumor-card">
         <div className="side-card-title"><span>☕ 今日のうわさ</span></div>
-        <p>{areaEcho ?? "まだ大きな噂はない。"}</p>
+        <ul className="rumor-list">
+          {rumorItems.map((item, index) => (
+            <li key={`${index}-${item}`}>
+              <span aria-hidden="true">{index === 0 ? "🐟" : index === 1 ? "🏮" : "🌸"}</span>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
         {dominantRumor && <span className="rumor-chip">#{dominantRumor}</span>}
       </section>
 
