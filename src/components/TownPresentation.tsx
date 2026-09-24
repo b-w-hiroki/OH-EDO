@@ -25,11 +25,12 @@ const AREA_BANNER: Record<Exclude<AreaId, "room">, string> = {
   firehouse: "町火消",
 };
 
-const AREA_GREETING: Record<Exclude<AreaId, "room">, string> = {
-  nagaya: "よく来たねぇ",
-  well: "今日は何を聞いた？",
-  market: "今日は活きがいいよ！",
-  firehouse: "気を抜くなよ",
+const NPC_GREETING: Partial<Record<NPCId, string>> = {
+  landlord: "よく来たねぇ",
+  fishmonger: "今日は活きがいいよ！",
+  child: "ねえねえ、聞いて！",
+  newsman: "面白い話、あるよ！",
+  firechief: "気を抜くなよ",
 };
 
 const AREA_NOTE: Record<Exclude<AreaId, "room">, string> = {
@@ -112,7 +113,9 @@ export function TownPresentation({
   const featuredNpc =
     dialogOpen && activeNpc && npcs.includes(activeNpc)
       ? activeNpc
-      : npcs[0];
+      : selectedNpc && npcs.includes(selectedNpc)
+        ? selectedNpc
+        : npcs[0];
 
   return (
     <section
@@ -147,10 +150,11 @@ export function TownPresentation({
       {featuredNpc && (
         <>
         <div className="presentation-speech-bubble" aria-hidden="true">
-          {AREA_GREETING[area]}
+          {NPC_GREETING[featuredNpc] ?? "今日はどうした？"}
         </div>
         <button
-          className={`presentation-character presentation-npc presentation-primary ${characterClass(featuredNpc)} ${activeNpc === featuredNpc ? "is-speaking" : ""} ${selectedNpc === featuredNpc ? "is-selected" : ""}`}
+          key={featuredNpc}
+          className={`presentation-character presentation-npc presentation-primary presentation-featured ${characterClass(featuredNpc)} ${activeNpc === featuredNpc ? "is-speaking" : ""} ${selectedNpc === featuredNpc ? "is-selected" : ""}`}
           aria-label={`${displayName(featuredNpc)}を選ぶ`}
           onClick={() => onSelect(featuredNpc)}
           onDoubleClick={() => onTalk(featuredNpc)}

@@ -4880,3 +4880,64 @@ body::before {
     height: 18px;
   }
 }
+
+
+/* ── Selected NPC becomes the scenic focal character ───────────── */
+@keyframes scenicTargetIn {
+  from {
+    opacity: .78;
+    transform: translateY(10px) scale(.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.presentation-featured {
+  animation: scenicTargetIn .18s ease-out;
+}
+
+.presentation-featured.is-selected {
+  filter: drop-shadow(0 16px 18px rgba(52,34,21,.24)) saturate(1.04) brightness(1.015);
+}
+
+.nearby-person.selected {
+  border-color: #dea08d !important;
+  background: linear-gradient(180deg, #fffaf6, #fff3ea) !important;
+}
+
+.nearby-person.selected .nearby-avatar {
+  outline: 2px solid rgba(210,99,75,.22);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .presentation-featured {
+    animation: none;
+  }
+}
+
+
+/* ── Day-one consequence placeholder keeps the desktop rail mock-complete ── */
+.quiet-change {
+  margin: 0;
+  color: #8a7b70;
+  font-family: var(--font-ui);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.yesterday-card.is-empty {
+  background: linear-gradient(180deg, rgba(255,252,246,.98), rgba(248,243,234,.98));
+}
+
+.yesterday-card.is-empty .side-card-title {
+  opacity: .78;
+}
+
+@media (max-width: 599px) {
+  .yesterday-card.is-empty {
+    display: none;
+  }
+}
