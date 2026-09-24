@@ -4515,3 +4515,106 @@ body::before {
     color: #705987;
   }
 }
+
+
+/* ── Final portrait density: turn nearby people into a compact 2×2 roster ── */
+@media (max-width: 599px) {
+  .town-side-panel > .side-card:first-child {
+    padding: 8px;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    overflow: visible;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-person {
+    width: auto;
+    min-height: 88px;
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    gap: 3px 6px;
+    padding: 7px;
+    border-radius: 10px;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-avatar {
+    grid-row: 1 / 3;
+    width: 44px;
+    height: 44px;
+    align-self: center;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-copy {
+    min-width: 0;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-copy strong {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    font-size: 11px;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .town-side-panel > .side-card:first-child .relation-pill {
+    margin-top: 2px;
+    padding: 1px 5px;
+    font-size: 8px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-talk {
+    justify-self: start;
+    min-height: 24px;
+    padding: 2px 8px;
+    font-size: 8px;
+  }
+
+  .town-side-panel > .side-card:first-child .side-card-title {
+    margin-bottom: 6px;
+  }
+
+  .town-side-panel > .side-card:first-child .side-card-more {
+    display: none;
+  }
+
+  .rumor-card {
+    padding: 9px;
+  }
+
+  .rumor-list {
+    gap: 0;
+  }
+
+  .rumor-list li {
+    grid-template-columns: 20px minmax(0, 1fr);
+    gap: 6px;
+    padding: 6px 0;
+    font-size: 10px;
+    line-height: 1.45;
+  }
+
+  .rumor-list li > span:first-child {
+    width: 19px;
+    height: 19px;
+    font-size: 10px;
+  }
+
+  .reference-talk-cta {
+    width: 86%;
+    min-height: 68px;
+  }
+
+  .reference-talk-cta strong {
+    font-size: 24px;
+  }
+
+  .reference-talk-cta small {
+    font-size: 9px;
+  }
+}
