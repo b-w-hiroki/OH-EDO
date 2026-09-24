@@ -4491,3 +4491,27 @@ body::before {
     white-space: nowrap;
   }
 }
+
+
+@media (max-width: 599px) {
+  .mobile-skill-card > span {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border: 1px solid #b8c6d3;
+    border-radius: 9px;
+    background: linear-gradient(180deg, #f7fbfd, #e5eef5);
+    color: #4f6d86;
+    font-family: var(--font-serif);
+    font-size: 12px;
+    font-weight: 900;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.75);
+  }
+
+  .mobile-skill-card:nth-child(4) > span {
+    border-color: #c4b3d0;
+    background: linear-gradient(180deg, #f7f1fa, #e8dff0);
+    color: #705987;
+  }
+}
