@@ -3982,3 +3982,29 @@ body::before {
     background-position: 55% 50%;
   }
 }
+
+
+/* ── Calendar/date polish ───────────────────────────── */
+.calendar-date {
+  color: #51443a;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.time-period {
+  color: #4f443b;
+  white-space: nowrap;
+}
+
+@media (max-width: 599px) {
+  .calendar-date {
+    width: 100%;
+    order: 4;
+    font-size: 10px;
+    color: #7b6a5b;
+  }
+
+  .time-period {
+    font-size: 12px;
+  }
+}
