@@ -3867,3 +3867,69 @@ body::before {
 .presentation-stage .controls-hint {
   display: none;
 }
+
+
+/* ── Area-specific cast staging ─────────────────────── */
+.town-presentation.area-market .presentation-primary.art-fishmonger {
+  right: 4%;
+  width: 39%;
+  height: 91%;
+  bottom: -5%;
+}
+
+.town-presentation.area-market .presentation-secondary.art-newsman {
+  right: 36%;
+  width: 20%;
+  height: 52%;
+  bottom: 1%;
+}
+
+.town-presentation.area-well .presentation-player {
+  left: 3%;
+  width: 31%;
+  height: 81%;
+}
+
+.town-presentation.area-well .presentation-primary.art-child {
+  right: 11%;
+  width: 25%;
+  height: 56%;
+  bottom: 0;
+}
+
+.town-presentation.area-firehouse .presentation-primary.art-firechief {
+  right: 5%;
+  width: 35%;
+  height: 91%;
+  bottom: -5%;
+}
+
+@media (max-width: 599px) {
+  .town-presentation.area-market .presentation-primary.art-fishmonger {
+    right: -11%;
+    width: 67%;
+    height: 76%;
+  }
+
+  .town-presentation.area-market .presentation-secondary.art-newsman {
+    display: none;
+  }
+
+  .town-presentation.area-well .presentation-player {
+    left: -13%;
+    width: 67%;
+    height: 74%;
+  }
+
+  .town-presentation.area-well .presentation-primary.art-child {
+    right: -2%;
+    width: 43%;
+    height: 50%;
+  }
+
+  .town-presentation.area-firehouse .presentation-primary.art-firechief {
+    right: -12%;
+    width: 66%;
+    height: 76%;
+  }
+}
