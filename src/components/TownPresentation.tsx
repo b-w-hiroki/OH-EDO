@@ -107,9 +107,13 @@ export function TownPresentation({
   return (
     <section
       className={`town-presentation area-${area} ${dialogOpen ? "is-dialogue" : ""} ${playerSpeaking ? "is-player-speaking" : ""}`}
-      style={{ backgroundImage: `url("${AREA_BACKGROUND[area]}")` }}
       aria-label={`${AREAS[state.currentArea].name}の情景`}
     >
+      <div
+        className="town-background"
+        style={{ backgroundImage: `url("${AREA_BACKGROUND[area]}")` }}
+        aria-hidden="true"
+      />
       <div className="town-presentation-vignette" aria-hidden="true" />
 
       <div className="presentation-noren" aria-hidden="true">
