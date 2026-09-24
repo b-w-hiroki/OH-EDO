@@ -158,7 +158,6 @@ export function TownPresentation({
           type="button"
         >
           <CharacterImage id={featuredNpc} />
-          {selectedNpc === featuredNpc && <span className="presentation-talk-ready">話せる</span>}
           <span className="presentation-name">{displayName(featuredNpc)}</span>
         </button>
         </>
@@ -174,7 +173,6 @@ export function TownPresentation({
           type="button"
         >
           <CharacterImage id={npc} />
-          {selectedNpc === npc && <span className="presentation-talk-ready">話せる</span>}
           <span className="presentation-name">{displayName(npc)}</span>
         </button>
       ))}

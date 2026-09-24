@@ -11,10 +11,10 @@ function meter(value: number): number {
 
 export function MobilePlayerSummary({ player, town }: Props) {
   const skills = [
-    { icon: "🪭", label: "人との縁", value: player.network },
-    { icon: "🔨", label: "仕事の腕", value: player.skill },
-    { icon: "🍚", label: "暮らし力", value: town.hygiene },
-    { icon: "🌸", label: "江戸の粋", value: player.iki },
+    { icon: "縁", label: "人との縁", value: player.network },
+    { icon: "腕", label: "仕事の腕", value: player.skill },
+    { icon: "暮", label: "暮らし力", value: town.hygiene },
+    { icon: "粋", label: "江戸の粋", value: player.iki },
   ];
 
   return (
