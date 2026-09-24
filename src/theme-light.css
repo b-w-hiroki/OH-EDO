@@ -4941,3 +4941,86 @@ body::before {
     display: none;
   }
 }
+
+
+/* ── Scene integration pass: make cast feel grounded in the painted world ── */
+.presentation-character::before {
+  content: "";
+  position: absolute;
+  left: 17%;
+  right: 17%;
+  bottom: 1.5%;
+  height: 7%;
+  z-index: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(74,52,33,.22) 0%,
+    rgba(74,52,33,.12) 45%,
+    transparent 74%
+  );
+  filter: blur(3px);
+  transform: scaleX(1.08);
+  pointer-events: none;
+}
+
+.presentation-character-image {
+  z-index: 1;
+  filter:
+    drop-shadow(0 9px 8px rgba(62,43,28,.12))
+    saturate(1.015)
+    contrast(1.01);
+}
+
+.presentation-player .presentation-character-image {
+  filter:
+    drop-shadow(0 10px 9px rgba(62,43,28,.14))
+    saturate(1.01)
+    contrast(1.01);
+}
+
+.town-presentation::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255,245,221,.03), transparent 48%),
+    radial-gradient(circle at 52% 92%, rgba(255,223,174,.09), transparent 31%);
+  mix-blend-mode: soft-light;
+}
+
+.presentation-hanging-note,
+.presentation-noren,
+.presentation-speech-bubble,
+.presentation-character {
+  z-index: 5;
+}
+
+.town-presentation-vignette {
+  z-index: 3;
+}
+
+@media (max-width: 599px) {
+  .presentation-character::before {
+    left: 20%;
+    right: 20%;
+    height: 6%;
+    bottom: 1%;
+    opacity: .82;
+  }
+
+  .presentation-character-image {
+    filter:
+      drop-shadow(0 7px 6px rgba(62,43,28,.11))
+      saturate(1.01);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .presentation-character,
+  .presentation-character-image {
+    transition: none !important;
+  }
+}
