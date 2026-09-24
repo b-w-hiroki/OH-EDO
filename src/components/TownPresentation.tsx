@@ -70,6 +70,21 @@ function displayName(npc: NPCId): string {
   }
 }
 
+const CHARACTER_ART: Partial<Record<NPCId | "player", string>> = {
+  player: "/assets/edo/characters/full/player.webp",
+  landlord: "/assets/edo/characters/full/landlord.webp",
+  fishmonger: "/assets/edo/characters/full/fishmonger.webp",
+  child: "/assets/edo/characters/full/child.webp",
+  newsman: "/assets/edo/characters/full/newsman.webp",
+  firechief: "/assets/edo/characters/full/firechief.webp",
+};
+
+function CharacterImage({ id, alt = "" }: { id: NPCId | "player"; alt?: string }) {
+  const src = CHARACTER_ART[id];
+  if (!src) return null;
+  return <img className="presentation-character-image" src={src} alt={alt} draggable={false} />;
+}
+
 function characterClass(npc: NPCId): string {
   if (npc === "landlord") return "art-landlord";
   if (npc === "fishmonger") return "art-fishmonger";
@@ -134,7 +149,9 @@ export function TownPresentation({
         className={`presentation-character presentation-player ${playerSpeaking ? "is-speaking" : ""}`}
         aria-label="主人公"
         type="button"
-      />
+      >
+        <CharacterImage id="player" />
+      </button>
 
       {featuredNpc && (
         <>
@@ -148,6 +165,7 @@ export function TownPresentation({
           onDoubleClick={() => onTalk(featuredNpc)}
           type="button"
         >
+          <CharacterImage id={featuredNpc} />
           {selectedNpc === featuredNpc && <span className="presentation-talk-ready">話せる</span>}
           <span className="presentation-name">{displayName(featuredNpc)}</span>
         </button>
@@ -163,6 +181,7 @@ export function TownPresentation({
           onDoubleClick={() => onTalk(npc)}
           type="button"
         >
+          <CharacterImage id={npc} />
           {selectedNpc === npc && <span className="presentation-talk-ready">話せる</span>}
           <span className="presentation-name">{displayName(npc)}</span>
         </button>
