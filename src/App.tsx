@@ -1472,6 +1472,70 @@ function AreaNav({
   );
 }
 
+function sidePanelNpcIds(state: GameState): NPCId[] {
+  const local = getAreaNpcIds(state);
+  const nearbyByArea: Partial<Record<AreaId, NPCId[]>> = {
+    nagaya: ["landlord", "child", "fishmonger", "newsman"],
+    market: ["fishmonger", "newsman", "child", "landlord"],
+    well: ["child", "landlord", "fishmonger", "newsman"],
+    firehouse: ["firechief", "newsman", "landlord", "fishmonger"],
+    room: ["landlord"],
+  };
+  const merged = [...local, ...(nearbyByArea[state.currentArea] ?? [])];
+  return Array.from(new Set(merged)).slice(0, 4);
+}
+
+function npcDisplayName(npc: NPCId): string {
+  switch (npc) {
+    case "landlord":
+      return "おかみさん";
+    case "fishmonger":
+      return "魚屋の熊さん";
+    case "child":
+      return "長屋の子ども";
+    case "newsman":
+      return "瓦版屋";
+    case "firechief":
+      return "火消し頭";
+    default:
+      return NPCS[npc].name;
+  }
+}
+
+function actionTagLabel(tag?: string): string {
+  switch (tag) {
+    case "helpful":
+      return "町の人を手伝った";
+    case "clean":
+      return "丁寧に仕事をした";
+    case "iki":
+      return "粋に立ち回った";
+    case "quick":
+      return "手早く片づけた";
+    case "funny":
+      return "町を笑わせた";
+    case "yabo":
+      return "少し不器用に動いた";
+    default:
+      return "町でひと仕事した";
+  }
+}
+
+function relationLabel(attitude: GameState["npcRelations"][NPCId]["attitude"]): string {
+  switch (attitude) {
+    case "friendly":
+      return "仲良し";
+    case "impressed":
+      return "頼られてる";
+    case "cautious":
+      return "気にされてる";
+    case "annoyed":
+      return "ちょっと苦手";
+    default:
+      return "はじめて";
+  }
+}
+
 function TownSidePanel({
   state,
   dominantRumor,
@@ -1485,12 +1549,33 @@ function TownSidePanel({
   yesterdaySummary: string | null;
   onTalk: (npc: NPCId) => void;
 }) {
-  const areaNpcIds = getAreaNpcIds(state);
+  const areaNpcIds = sidePanelNpcIds(state);
+  const areaFlavor = AREAS[state.currentArea].flavor;
+  const recentActionItems = state.playerActions
+    .slice(-3)
+    .reverse()
+    .map((action) => ({
+      label: actionTagLabel(action.tags?.[0]),
+      effect: action.tags?.[0]
+        ? `「#${action.tags[0]}」として町に残った`
+        : "町の人が覚えている",
+    }));
+
+  const rumorItems = [
+    areaEcho ?? "まだ大きな噂はない。",
+    areaFlavor[(state.day + 1) % areaFlavor.length] ?? areaFlavor[0],
+    dominantRumor
+      ? `町では「#${dominantRumor}」の話が少しずつ広がっている。`
+      : "商店通りでは、朝から新しい話題を探す声が聞こえる。",
+  ];
 
   return (
     <aside className="town-side-panel">
       <section className="side-card">
-        <div className="side-card-title">このあたりの人たち</div>
+        <div className="side-card-title">
+          <span>♟ このあたりの人たち</span>
+          <small className="side-card-more">顔なじみ</small>
+        </div>
         <div className="nearby-list">
           {areaNpcIds.map((npcId) => (
             <div className="nearby-person" key={npcId}>
@@ -1498,13 +1583,13 @@ function TownSidePanel({
                 <span>{NPCS[npcId].name.slice(0, 1)}</span>
               </span>
               <div className="nearby-copy">
-                <strong>{NPCS[npcId].name}</strong>
-                <small>{state.npcRelations[npcId].attitude}</small>
+                <strong>{npcDisplayName(npcId)}</strong>
+                <small className="relation-pill">♥ {relationLabel(state.npcRelations[npcId].attitude)}</small>
               </div>
               <button
                 className="nearby-talk"
                 onClick={() => onTalk(npcId)}
-                aria-label={`${NPCS[npcId].name}と話す`}
+                aria-label={`${npcDisplayName(npcId)}と話す`}
               >
                 話す
               </button>
@@ -1513,15 +1598,27 @@ function TownSidePanel({
         </div>
       </section>
 
-      {yesterdaySummary && (
+      {(recentActionItems.length > 0 || yesterdaySummary) && (
         <section className="side-card yesterday-card">
-          <div className="side-card-title">昨日の行動 → 今日</div>
-          <p>{yesterdaySummary}</p>
+          <div className="side-card-title"><span>▣ 昨日の行動 → 今日の変化</span></div>
+          {recentActionItems.length > 0 ? (
+            <ul className="action-change-list">
+              {recentActionItems.map((item, index) => (
+                <li key={`${index}-${item.label}`}>
+                  <span>{item.label}</span>
+                  <b>→</b>
+                  <strong>{item.effect}</strong>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>{yesterdaySummary}</p>
+          )}
         </section>
       )}
 
       <section className="side-card town-flavor-card">
-        <div className="side-card-title">この場所の小話</div>
+        <div className="side-card-title"><span>▤ この場所の小話</span></div>
         <p>
           {AREAS[state.currentArea].flavor[
             Math.min(AREAS[state.currentArea].flavor.length - 1, Math.max(0, state.day - 1))
@@ -1530,13 +1627,20 @@ function TownSidePanel({
       </section>
 
       <section className="side-card rumor-card">
-        <div className="side-card-title">今日のうわさ</div>
-        <p>{areaEcho ?? "まだ大きな噂はない。"}</p>
+        <div className="side-card-title"><span>☕ 今日のうわさ</span></div>
+        <ul className="rumor-list">
+          {rumorItems.map((item, index) => (
+            <li key={`${index}-${item}`}>
+              <span aria-hidden="true">{index === 0 ? "🐟" : index === 1 ? "🏮" : "🌸"}</span>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
         {dominantRumor && <span className="rumor-chip">#{dominantRumor}</span>}
       </section>
 
       <section className="side-card town-mood-card">
-        <div className="side-card-title">町の空気</div>
+        <div className="side-card-title"><span>⌁ 町の空気</span></div>
         <div className="mood-list">
           {[
             ["衛生", state.town.hygiene],
