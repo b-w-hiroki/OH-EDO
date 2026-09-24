@@ -43,7 +43,7 @@ import { DialogBox } from "./components/DialogBox";
 import { StatusBar } from "./components/StatusBar";
 import { JobView } from "./components/JobView";
 import { ResultView } from "./components/ResultView";
-import { PhaserGame } from "./game/PhaserGame";
+import { TownPresentation } from "./components/TownPresentation";
 import { EventBus } from "./game/EventBus";
 import { uiSound } from "./game/uiSound";
 import { buildDayDecisionContext } from "./decision/DecisionContextBuilder";
@@ -1163,12 +1163,15 @@ function App() {
 
         {inWorld && (
           <div className="world-layout">
-            <div className="stage">
-              <PhaserGame />
+            <div className="stage presentation-stage">
+              <TownPresentation
+                state={state}
+                onTalk={(npc) => EventBus.emit("npc-interact", npc)}
+              />
 
             {state.screen === "town" && (
               <p className="controls-hint">
-                矢印 / WASD で移動・スペースで話しかける
+                人物をクリック / タップして話す・下の場所タブで移動
               </p>
             )}
 
