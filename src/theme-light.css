@@ -4224,3 +4224,46 @@ body::before {
     object-position: 50% 100%;
   }
 }
+
+
+/* ── Dedicated portrait image elements ───────────────────────────── */
+.nearby-avatar {
+  background-image: none !important;
+  background: #edf5f8 !important;
+}
+
+.nearby-avatar img,
+.reference-talk-cta .talk-bubble img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: 50% 8%;
+  user-select: none;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+.nearby-avatar img {
+  border-radius: inherit;
+}
+
+.reference-talk-cta .talk-bubble {
+  background-image: none !important;
+  color: transparent;
+}
+
+.reference-talk-cta .talk-bubble img {
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: 50% 8%;
+}
+
+.reference-talk-cta .talk-bubble > span {
+  opacity: 1;
+  color: #c6483d;
+}
+
+.reference-talk-cta .talk-bubble:has(img) > span {
+  display: none;
+}

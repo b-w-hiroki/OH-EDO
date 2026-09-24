@@ -1,5 +1,6 @@
 import type { AreaId, GameState, NPCId } from "../types";
 import { AREAS, NPCS } from "../data";
+import { characterArtPath } from "../characterArt";
 
 interface Props {
   state: GameState;
@@ -70,17 +71,8 @@ function displayName(npc: NPCId): string {
   }
 }
 
-const CHARACTER_ART: Partial<Record<NPCId | "player", string>> = {
-  player: "/assets/edo/characters/full/player.webp",
-  landlord: "/assets/edo/characters/full/landlord.webp",
-  fishmonger: "/assets/edo/characters/full/fishmonger.webp",
-  child: "/assets/edo/characters/full/child.webp",
-  newsman: "/assets/edo/characters/full/newsman.webp",
-  firechief: "/assets/edo/characters/full/firechief.webp",
-};
-
 function CharacterImage({ id, alt = "" }: { id: NPCId | "player"; alt?: string }) {
-  const src = CHARACTER_ART[id];
+  const src = characterArtPath(id);
   if (!src) return null;
   return <img className="presentation-character-image" src={src} alt={alt} draggable={false} />;
 }
