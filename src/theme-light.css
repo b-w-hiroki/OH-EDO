@@ -3465,3 +3465,60 @@ body::before {
     font-size: 9px;
   }
 }
+
+
+/* ── Desktop proportion pass: match the approved 1600px mock ─────── */
+@media (min-width: 1181px) {
+  .app {
+    max-width: 1510px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .world-layout {
+    grid-template-columns: minmax(0, 1fr) 368px;
+    gap: 12px;
+  }
+
+  .presentation-stage {
+    aspect-ratio: 16 / 9;
+  }
+
+  .town-side-panel {
+    height: 100%;
+    align-content: start;
+    gap: 7px;
+  }
+
+  .town-side-panel .side-card {
+    padding: 9px 10px;
+  }
+
+  .town-side-panel .side-card-title {
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
+
+  .town-side-panel .nearby-person {
+    min-height: 50px;
+  }
+
+  .town-side-panel .nearby-avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .town-side-panel .rumor-list li,
+  .town-side-panel .action-change-list li {
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+
+  .reference-action-dock {
+    grid-template-columns: minmax(0, 1fr) 210px;
+  }
+
+  .reference-talk-cta {
+    min-height: 84px;
+  }
+}
