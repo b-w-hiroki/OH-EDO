@@ -41,6 +41,7 @@ import {
 } from "./data";
 import { DialogBox } from "./components/DialogBox";
 import { StatusBar } from "./components/StatusBar";
+import { MobilePlayerSummary } from "./components/MobilePlayerSummary";
 import { JobView } from "./components/JobView";
 import { ResultView } from "./components/ResultView";
 import { TownPresentation } from "./components/TownPresentation";
@@ -1147,7 +1148,7 @@ function App() {
       {inWorld && (
         <div className="reference-hud-row">
           <div className="mobile-status-wrap">
-            <StatusBar player={state.player} town={state.town} />
+            <MobilePlayerSummary player={state.player} town={state.town} />
           </div>
           <div className="objective-strip">
             <span>今日の目当て</span>
