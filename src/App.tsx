@@ -1593,9 +1593,9 @@ function npcDisplayName(npc: NPCId): string {
     case "landlord":
       return "おかみさん";
     case "fishmonger":
-      return "魚屋の熊さん";
+      return "熊さん";
     case "child":
-      return "長屋の子ども";
+      return "源太";
     case "newsman":
       return "瓦版屋";
     case "firechief":
