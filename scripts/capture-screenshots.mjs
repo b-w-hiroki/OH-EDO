@@ -16,7 +16,7 @@ async function startToTown(page) {
     await page.waitForTimeout(180);
     const dialog = page.locator(".mock-dialog:visible");
     if (await dialog.count()) {
-      await dialog.first().click({ position: { x: 420, y: 90 } });
+      await dialog.first().evaluate((el) => el.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true })));
       continue;
     }
     if (await page.locator(".world-layout").count()) break;
@@ -26,7 +26,7 @@ async function startToTown(page) {
   for (let i = 0; i < 8; i++) {
     const dialog = page.locator(".mock-dialog:visible");
     if (!(await dialog.count())) break;
-    await dialog.first().click({ position: { x: 420, y: 90 } });
+    await dialog.first().evaluate((el) => el.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true })));
     await page.waitForTimeout(160);
   }
   await page.waitForSelector(".world-layout", { timeout: 10000 });
