@@ -43,20 +43,20 @@ async function capture(name, viewport, mobile = false) {
   const page = await context.newPage();
 
   await startToTown(page);
-  await page.screenshot({ path: `screenshots/${name}-world.png`, fullPage: true });
+  await page.screenshot({ path: `screenshots/${name}-world.png`, fullPage: false });
 
   const talk = page.locator(".nearby-talk:visible").first();
   if (await talk.count()) {
     await talk.click();
     await page.waitForSelector(".mock-dialog:visible", { timeout: 5000 });
     await page.waitForTimeout(300);
-    await page.screenshot({ path: `screenshots/${name}-dialog.png`, fullPage: true });
+    await page.screenshot({ path: `screenshots/${name}-dialog.png`, fullPage: false });
   }
 
   await browser.close();
 }
 
-await capture("desktop-1600", { width: 1600, height: 1000 });
+await capture("desktop-1600", { width: 1600, height: 900 });
 await capture("mobile-430", { width: 430, height: 932 }, true);
 
 console.log("Captured actual OH!EDO! browser screenshots.");
