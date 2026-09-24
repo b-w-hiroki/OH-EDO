@@ -4644,3 +4644,68 @@ body::before {
     min-height: 70px !important;
   }
 }
+
+
+/* keep the portrait HUD compact enough that the town scene appears earlier */
+@media (max-width: 599px) {
+  .reference-header {
+    margin-bottom: 6px;
+  }
+
+  .reference-hud-row {
+    margin-bottom: 6px;
+  }
+
+  .mobile-player-summary {
+    padding: 8px !important;
+    gap: 6px !important;
+  }
+
+  .mobile-player-main {
+    grid-template-columns: 58px minmax(0, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .mobile-player-portrait {
+    width: 56px !important;
+    height: 56px !important;
+  }
+
+  .mobile-player-name {
+    margin-bottom: 2px !important;
+    font-size: 15px !important;
+  }
+
+  .mobile-profile-row {
+    margin: 2px 0 !important;
+  }
+
+  .mobile-money {
+    margin-top: 2px !important;
+  }
+
+  .mobile-money strong {
+    font-size: 13px !important;
+  }
+
+  .mobile-skill-card {
+    min-height: 52px !important;
+    padding: 4px 2px !important;
+  }
+
+  .mobile-skill-card > span {
+    width: 27px !important;
+    height: 27px !important;
+    font-size: 11px !important;
+  }
+
+  .mobile-skill-card small {
+    margin-top: 2px !important;
+    font-size: 7.5px !important;
+  }
+
+  .mobile-skill-card strong {
+    margin-top: 1px !important;
+    font-size: 9px !important;
+  }
+}
