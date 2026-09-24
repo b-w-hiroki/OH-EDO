@@ -2472,3 +2472,207 @@ body::before {
     font-size: 13px;
   }
 }
+
+
+/* ── Scenic fidelity pass: dialogue stays inside the illustrated scene ── */
+.town-presentation.is-dialogue .town-presentation-vignette {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.01) 0%, transparent 48%, rgba(35,24,17,.20) 100%),
+    linear-gradient(90deg, rgba(35,24,17,.03), transparent 26%, transparent 72%, rgba(35,24,17,.05));
+}
+
+.town-presentation.is-dialogue .presentation-character {
+  transition: transform .18s ease, filter .18s ease, opacity .18s ease;
+}
+
+.town-presentation.is-dialogue .presentation-character:not(.is-speaking) {
+  filter: drop-shadow(0 14px 14px rgba(52,34,21,.18)) saturate(.92) brightness(.96);
+}
+
+.town-presentation.is-dialogue .presentation-character.is-speaking {
+  transform: translateY(-2.2%) scale(1.085);
+  filter: drop-shadow(0 20px 22px rgba(52,34,21,.30)) saturate(1.05);
+  z-index: 7;
+}
+
+.town-presentation.area-nagaya .presentation-player {
+  left: 4%;
+  width: 41%;
+  height: 98%;
+  bottom: -7%;
+}
+
+.town-presentation.area-nagaya .presentation-primary.art-landlord {
+  right: 2%;
+  width: 41%;
+  height: 96%;
+  bottom: -7%;
+}
+
+.town-presentation.area-nagaya .presentation-secondary {
+  right: 35%;
+  width: 14%;
+  height: 39%;
+  bottom: 2%;
+}
+
+.dialogue-overlay {
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 0 26px 24px;
+  background:
+    linear-gradient(180deg, transparent 0%, transparent 54%, rgba(33,23,16,.10) 74%, rgba(33,23,16,.20) 100%);
+  backdrop-filter: none;
+  pointer-events: none;
+}
+
+.dialogue-overlay .mock-dialog {
+  pointer-events: auto;
+  width: min(880px, 76%);
+  min-height: 148px;
+  margin: 0 0 0 2.5%;
+  grid-template-columns: 1fr;
+  padding: 20px 24px 16px;
+  border: 2px solid #c6a77a;
+  border-radius: 14px;
+  background:
+    linear-gradient(rgba(255,251,241,.985), rgba(255,251,241,.985)),
+    url("/assets/edo/ui/ui-sheet.webp") center/cover;
+  box-shadow: 0 12px 28px rgba(57,42,28,.20);
+}
+
+.dialogue-overlay .dialog-cutin,
+.dialogue-overlay .dialog-portrait {
+  display: none;
+}
+
+.dialogue-overlay .mock-dialog .dialog-speaker {
+  margin: -36px 0 8px -8px;
+  padding: 5px 18px;
+  border: 1px solid #4b3425;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #6b4a35, #4c3426);
+  color: #fffaf0;
+  font-size: 15px;
+  box-shadow: 0 4px 8px rgba(48,34,24,.14);
+}
+
+.dialogue-overlay .mock-dialog .dialog-text {
+  margin: 4px 0 0;
+  min-height: 66px;
+  font-size: 19px;
+  line-height: 1.72;
+}
+
+.dialogue-overlay .mock-dialog .dialog-foot {
+  margin-top: 4px;
+  padding-top: 7px;
+  border-top: 1px dashed #ddceb4;
+}
+
+.presentation-scene-note {
+  bottom: 14px;
+}
+
+.nearby-avatar.avatar-child {
+  background-position: 60% 63% !important;
+}
+.dialog-portrait.speaker-child {
+  background-position: 60% 63% !important;
+}
+
+@media (max-width: 899px) {
+  .town-presentation.area-nagaya .presentation-player {
+    left: -9%;
+    width: 62%;
+    height: 83%;
+    bottom: -5%;
+  }
+
+  .town-presentation.area-nagaya .presentation-primary.art-landlord {
+    right: -9%;
+    width: 61%;
+    height: 82%;
+    bottom: -5%;
+  }
+
+  .dialogue-overlay {
+    padding: 0 12px 14px;
+  }
+
+  .dialogue-overlay .mock-dialog {
+    width: 100%;
+    margin: 0;
+    min-height: 138px;
+    padding: 17px 18px 14px;
+  }
+
+  .dialogue-overlay .mock-dialog .dialog-speaker {
+    margin-top: -31px;
+  }
+
+  .dialogue-overlay .mock-dialog .dialog-text {
+    font-size: 16px;
+    line-height: 1.65;
+  }
+}
+
+@media (max-width: 599px) {
+  .town-presentation.area-nagaya .presentation-player {
+    left: -15%;
+    width: 69%;
+    height: 77%;
+  }
+
+  .town-presentation.area-nagaya .presentation-primary.art-landlord {
+    right: -15%;
+    width: 69%;
+    height: 76%;
+  }
+
+  .town-presentation.is-dialogue .presentation-character.is-speaking {
+    transform: translateY(-1.5%) scale(1.04);
+  }
+
+  .dialogue-overlay {
+    padding: 0 8px 10px;
+  }
+
+  .dialogue-overlay .mock-dialog {
+    min-height: 148px;
+    padding: 16px 16px 12px;
+  }
+
+  .dialogue-overlay .mock-dialog .dialog-speaker {
+    margin: -29px 0 7px 0;
+    font-size: 13px;
+  }
+
+  .dialogue-overlay .mock-dialog .dialog-text {
+    min-height: 78px;
+    font-size: 15px;
+    line-height: 1.62;
+  }
+
+  .reference-area-nav {
+    position: static !important;
+  }
+
+  .reference-action-dock {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .reference-talk-cta {
+    order: 0;
+    width: 82%;
+    align-self: center;
+    min-height: 74px;
+  }
+
+  .reference-area-nav {
+    order: 1;
+    width: 100%;
+  }
+}
