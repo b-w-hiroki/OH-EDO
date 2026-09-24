@@ -2676,3 +2676,217 @@ body::before {
     width: 100%;
   }
 }
+
+
+/* ── Mock header fidelity pass ─────────────────────── */
+.reference-header {
+  grid-template-columns: 180px minmax(360px, 1fr) minmax(520px, 1.35fr) auto;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.reference-logo-wrap {
+  position: relative;
+  justify-content: center;
+  min-height: 74px;
+}
+
+.reference-logo {
+  position: relative;
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 0 8px 2px;
+  min-width: 150px;
+  min-height: 54px;
+  color: #201915;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  transform: none;
+  font-family: var(--font-ui);
+  line-height: .9;
+}
+
+.reference-logo::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,.14) 0 25%, transparent 26%),
+    repeating-conic-gradient(from 0deg, rgba(255,255,255,.16) 0 6deg, transparent 6deg 14deg),
+    #df4f43;
+  box-shadow: 0 3px 10px rgba(151,54,43,.18);
+}
+
+.logo-oh,
+.logo-edo {
+  position: relative;
+  z-index: 1;
+}
+
+.logo-oh {
+  align-self: flex-start;
+  margin-top: 4px;
+  color: #fff8ed;
+  font-size: 17px;
+  font-weight: 900;
+  transform: rotate(-9deg);
+  text-shadow: 0 2px 0 rgba(105,39,32,.25);
+}
+
+.logo-edo {
+  margin-left: -10px;
+  color: #211915;
+  font-family: Impact, "Arial Black", var(--font-ui);
+  font-size: 35px;
+  font-weight: 900;
+  letter-spacing: -.05em;
+  transform: rotate(-3deg);
+  text-shadow:
+    2px 2px 0 #fff7e8,
+    -1px -1px 0 #fff7e8;
+}
+
+.reference-logo-wrap small {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  min-width: 96px;
+  text-align: center;
+}
+
+.reference-day-card {
+  justify-content: flex-start;
+  min-height: 74px;
+  padding: 10px 16px;
+  font-size: 13px;
+}
+
+.desktop-header-status {
+  min-width: 0;
+}
+
+.desktop-header-status .reference-statusbar {
+  height: 100%;
+  margin: 0;
+  padding: 6px 8px;
+}
+
+.desktop-header-status .rank-chip {
+  display: none;
+}
+
+.desktop-header-status .reference-stat-row {
+  grid-template-columns: repeat(6, minmax(70px, 1fr));
+}
+
+.desktop-header-status .reference-stat {
+  min-height: 58px;
+}
+
+.desktop-header-status .reference-stat-icon {
+  font-size: 19px;
+}
+
+.desktop-header-status .reference-stat-copy strong {
+  font-size: 14px;
+}
+
+.mobile-status-wrap {
+  display: none;
+}
+
+.reference-hud-row {
+  grid-template-columns: 1fr;
+}
+
+.reference-header-actions {
+  align-self: center;
+}
+
+@media (max-width: 1180px) {
+  .reference-header {
+    grid-template-columns: 150px minmax(300px, 1fr) auto;
+  }
+
+  .desktop-header-status {
+    grid-column: 1 / -1;
+    order: 4;
+  }
+
+  .desktop-header-status .reference-statusbar {
+    min-height: 58px;
+  }
+}
+
+@media (max-width: 899px) {
+  .reference-header {
+    grid-template-columns: 106px minmax(0, 1fr) auto;
+    align-items: center;
+  }
+
+  .reference-logo-wrap {
+    min-height: 62px;
+  }
+
+  .reference-logo {
+    min-width: 98px;
+    min-height: 44px;
+    padding: 0;
+  }
+
+  .reference-logo::before {
+    width: 48px;
+    height: 48px;
+  }
+
+  .logo-oh {
+    font-size: 13px;
+  }
+
+  .logo-edo {
+    margin-left: -7px;
+    font-size: 26px;
+  }
+
+  .reference-logo-wrap small {
+    display: none;
+  }
+
+  .desktop-header-status {
+    display: none;
+  }
+
+  .mobile-status-wrap {
+    display: block;
+  }
+
+  .reference-day-card {
+    min-height: 58px;
+  }
+}
+
+@media (max-width: 599px) {
+  .reference-header {
+    grid-template-columns: 96px minmax(0, 1fr) 46px;
+  }
+
+  .reference-logo {
+    min-width: 90px;
+  }
+
+  .logo-edo {
+    font-size: 23px;
+  }
+
+  .reference-day-card {
+    min-height: 60px;
+  }
+}
