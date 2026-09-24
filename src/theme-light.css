@@ -3465,3 +3465,66 @@ body::before {
     font-size: 9px;
   }
 }
+
+
+/* ── Objective note replaces the duplicate HUD strip ─────────────── */
+.reference-hud-row {
+  margin-bottom: 8px;
+}
+
+.reference-hud-row:empty {
+  display: none;
+}
+
+.presentation-hanging-note {
+  align-content: center;
+  gap: 5px;
+}
+
+.presentation-hanging-note small {
+  color: #b65f49;
+  font-family: var(--font-ui);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .12em;
+}
+
+.presentation-hanging-note strong {
+  color: #46372c;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.presentation-hanging-note > span {
+  margin-top: 2px;
+  color: #7a6959;
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+@media (max-width: 599px) {
+  .presentation-hanging-note {
+    display: grid;
+    left: auto;
+    right: 8px;
+    top: 72px;
+    width: 112px;
+    min-height: 92px;
+    padding: 10px 9px;
+    transform: rotate(1deg);
+  }
+
+  .presentation-hanging-note strong {
+    font-size: 11px;
+  }
+
+  .presentation-hanging-note > span {
+    display: none;
+  }
+
+  .presentation-location-card {
+    top: 8px;
+    left: 8px;
+  }
+}
