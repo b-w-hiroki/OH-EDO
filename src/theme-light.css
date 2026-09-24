@@ -3373,3 +3373,48 @@ body::before {
     margin-bottom: 4px;
   }
 }
+
+
+.rumor-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0;
+}
+
+.rumor-list li {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 7px;
+  align-items: start;
+  padding: 8px 0;
+  border-top: 1px solid #eadfce;
+  color: #5e5045;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.rumor-list li:first-child {
+  border-top: 0;
+  padding-top: 2px;
+}
+
+.rumor-list li > span:first-child {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #eef6fa;
+  font-size: 12px;
+}
+
+@media (max-width: 599px) {
+  .rumor-list li {
+    grid-template-columns: 22px minmax(0, 1fr);
+    padding: 7px 0;
+    font-size: 11px;
+  }
+}
