@@ -4428,3 +4428,29 @@ body::before {
     line-height: 1.58;
   }
 }
+
+
+/* keep the scenic artwork clean; names belong to the people rail / dialogue */
+.presentation-name {
+  opacity: 0;
+  transform: translateX(-50%) translateY(4px);
+  transition: opacity .15s ease, transform .15s ease;
+}
+
+.presentation-character:hover .presentation-name,
+.presentation-character:focus-visible .presentation-name,
+.presentation-character.is-selected .presentation-name,
+.presentation-character.is-speaking .presentation-name {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.town-presentation.is-dialogue .presentation-name {
+  opacity: 0;
+}
+
+@media (pointer: coarse) {
+  .presentation-character:hover .presentation-name {
+    opacity: 0;
+  }
+}
