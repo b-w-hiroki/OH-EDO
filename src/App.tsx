@@ -1791,18 +1791,6 @@ function timePeriodLabel(t: GameState["time"]): string {
   }
 }
 
-function timeLabel(t: GameState["time"]): string {
-  switch (t) {
-    case "morning":
-      return "朝";
-    case "noon":
-      return "昼";
-    case "evening":
-      return "夕";
-    case "night":
-      return "夜";
-  }
-}
 
 function hasSave(s: GameState): boolean {
   return s.day !== 1 || s.flags.intro_done;
