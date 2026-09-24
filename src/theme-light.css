@@ -3796,3 +3796,62 @@ body::before {
     height: 30px;
   }
 }
+
+
+/* ── Edo-style resource badges ─────────────────────── */
+.reference-stat-icon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border: 1px solid #b9c9d6;
+  border-radius: 9px;
+  background: linear-gradient(180deg, #f7fbfd, #e3eef5);
+  color: #486c88;
+  font-family: var(--font-serif);
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+}
+
+.stat-icon-money {
+  border-color: #d7bc78;
+  background: linear-gradient(180deg, #fff7d8, #f2dfaa);
+  color: #8b672d;
+}
+
+.stat-icon-trust,
+.stat-icon-network {
+  border-color: #aebfd4;
+  background: linear-gradient(180deg, #edf4fb, #dce7f3);
+  color: #46688b;
+}
+
+.stat-icon-iki {
+  border-color: #c0b0d2;
+  background: linear-gradient(180deg, #f4eff9, #e5dcef);
+  color: #6f5686;
+}
+
+.stat-icon-skill {
+  border-color: #9fb0bb;
+  background: linear-gradient(180deg, #eef3f5, #dce5e9);
+  color: #4e6471;
+}
+
+.stat-icon-hygiene {
+  border-color: #c9b991;
+  background: linear-gradient(180deg, #faf4e6, #eee3cb);
+  color: #786447;
+}
+
+@media (max-width: 599px) {
+  .reference-stat-icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    font-size: 11px;
+  }
+}
