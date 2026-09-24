@@ -5119,3 +5119,50 @@ body::before {
     display: none;
   }
 }
+
+
+/* ── Brand polish: give OH! EDO! the same visual weight as the mock ── */
+@media (min-width: 1181px) {
+  .reference-header {
+    grid-template-columns: 192px minmax(360px, 1fr) minmax(520px, 1.35fr) auto;
+  }
+
+  .reference-logo-wrap {
+    min-height: 78px;
+  }
+
+  .reference-logo {
+    min-width: 166px;
+    min-height: 58px;
+  }
+
+  .reference-logo::before {
+    width: 66px;
+    height: 66px;
+  }
+
+  .logo-oh {
+    font-size: 18px;
+  }
+
+  .logo-edo {
+    font-size: 40px;
+  }
+
+  .reference-logo-wrap small {
+    bottom: -1px;
+    z-index: 3;
+    min-width: 104px;
+    padding: 2px 11px 3px;
+    border: 1px solid #b9996b;
+    border-radius: 5px;
+    background: linear-gradient(180deg, #fff3cf, #ead3a4);
+    color: #503b2b;
+    box-shadow: 0 3px 7px rgba(70,48,31,.12);
+    font-family: var(--font-serif);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    line-height: 1.15;
+  }
+}
