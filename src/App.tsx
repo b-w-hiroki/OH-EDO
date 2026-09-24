@@ -1656,6 +1656,23 @@ function relationLabel(attitude: GameState["npcRelations"][NPCId]["attitude"]): 
   }
 }
 
+function SideIcon({ kind }: { kind: "people" | "change" | "story" | "rumor" | "mood" }) {
+  const common = {
+    width: 16,
+    height: 16,
+    viewBox: "0 0 16 16",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg",
+    "aria-hidden": true,
+  } as const;
+
+  if (kind === "people") return <svg {...common}><circle cx="5" cy="5" r="2.2" stroke="currentColor" strokeWidth="1.4"/><circle cx="11" cy="5.4" r="1.8" stroke="currentColor" strokeWidth="1.3"/><path d="M1.8 13c.4-3 2-4.5 3.7-4.5S8.8 10 9.2 13M9 12.8c.2-2.3 1.3-3.5 2.7-3.5 1.2 0 2.2.9 2.5 2.7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>;
+  if (kind === "change") return <svg {...common}><path d="M2 4h7M7 2l2 2-2 2M14 12H7m2-2-2 2 2 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+  if (kind === "story") return <svg {...common}><path d="M3 2.5h8.5A1.5 1.5 0 0 1 13 4v9H4.5A1.5 1.5 0 0 1 3 11.5v-9z" stroke="currentColor" strokeWidth="1.4"/><path d="M5.5 5h5M5.5 7.5h4M5.5 10h3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>;
+  if (kind === "rumor") return <svg {...common}><path d="M2.5 4.5h11v6h-6L4 13v-2.5H2.5v-6z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/><circle cx="5.5" cy="7.5" r=".7" fill="currentColor"/><circle cx="8" cy="7.5" r=".7" fill="currentColor"/><circle cx="10.5" cy="7.5" r=".7" fill="currentColor"/></svg>;
+  return <svg {...common}><path d="M2.5 10.5c2-2.8 3.7-2.8 5.5 0s3.5 2.8 5.5 0" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><path d="M2.5 6.5c2-2.8 3.7-2.8 5.5 0s3.5 2.8 5.5 0" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg>;
+}
+
 function TownSidePanel({
   state,
   dominantRumor,
@@ -1697,7 +1714,7 @@ function TownSidePanel({
     <aside className="town-side-panel">
       <section className="side-card">
         <div className="side-card-title">
-          <span>♟ このあたりの人たち</span>
+          <span><SideIcon kind="people" /> このあたりの人たち</span>
           <small className="side-card-more">顔なじみ</small>
         </div>
         <div className="nearby-list">
@@ -1745,7 +1762,7 @@ function TownSidePanel({
 
       {(recentActionItems.length > 0 || yesterdaySummary) && (
         <section className="side-card yesterday-card">
-          <div className="side-card-title"><span>▣ 昨日の行動 → 今日の変化</span></div>
+          <div className="side-card-title"><span><SideIcon kind="change" /> 昨日の行動 → 今日の変化</span></div>
           {recentActionItems.length > 0 ? (
             <ul className="action-change-list">
               {recentActionItems.map((item, index) => (
@@ -1763,7 +1780,7 @@ function TownSidePanel({
       )}
 
       <section className="side-card town-flavor-card">
-        <div className="side-card-title"><span>▤ この場所の小話</span></div>
+        <div className="side-card-title"><span><SideIcon kind="story" /> この場所の小話</span></div>
         <p>
           {AREAS[state.currentArea].flavor[
             Math.min(AREAS[state.currentArea].flavor.length - 1, Math.max(0, state.day - 1))
@@ -1772,11 +1789,11 @@ function TownSidePanel({
       </section>
 
       <section className="side-card rumor-card">
-        <div className="side-card-title"><span>☕ 今日のうわさ</span></div>
+        <div className="side-card-title"><span><SideIcon kind="rumor" /> 今日のうわさ</span></div>
         <ul className="rumor-list">
           {rumorItems.map((item, index) => (
             <li key={`${index}-${item}`}>
-              <span aria-hidden="true">{index === 0 ? "🐟" : index === 1 ? "🏮" : "🌸"}</span>
+              <span className={`rumor-marker rumor-marker-${index}`} aria-hidden="true" />
               <span>{item}</span>
             </li>
           ))}
@@ -1785,7 +1802,7 @@ function TownSidePanel({
       </section>
 
       <section className="side-card town-mood-card">
-        <div className="side-card-title"><span>⌁ 町の空気</span></div>
+        <div className="side-card-title"><span><SideIcon kind="mood" /> 町の空気</span></div>
         <div className="mood-list">
           {[
             ["衛生", state.town.hygiene],
