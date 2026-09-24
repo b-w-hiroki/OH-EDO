@@ -3764,3 +3764,35 @@ body::before {
     font-size: 10px;
   }
 }
+
+
+/* ── Illustrated area-nav icons ────────────────────── */
+.area-nav-icon {
+  color: #456b86;
+}
+
+.area-nav-icon svg {
+  display: block;
+  width: 34px;
+  height: 34px;
+}
+
+.reference-area-nav button.active .area-nav-icon {
+  color: #9b5b2e;
+  background: rgba(255,249,235,.82);
+}
+
+.reference-area-nav button.map-tab .area-nav-icon {
+  color: #765f45;
+}
+
+.reference-area-nav button:disabled .area-nav-icon {
+  color: #9fa6a8;
+}
+
+@media (max-width: 599px) {
+  .area-nav-icon svg {
+    width: 30px;
+    height: 30px;
+  }
+}
