@@ -53,6 +53,23 @@ function npcIdsForArea(state: GameState): NPCId[] {
   }
 }
 
+function displayName(npc: NPCId): string {
+  switch (npc) {
+    case "landlord":
+      return "おかみさん";
+    case "fishmonger":
+      return "熊さん";
+    case "child":
+      return "源太";
+    case "newsman":
+      return "瓦版屋";
+    case "firechief":
+      return "火消し頭";
+    default:
+      return NPCS[npc].name;
+  }
+}
+
 function characterClass(npc: NPCId): string {
   if (npc === "landlord") return "art-landlord";
   if (npc === "fishmonger") return "art-fishmonger";
@@ -123,13 +140,13 @@ export function TownPresentation({
         </div>
         <button
           className={`presentation-character presentation-npc presentation-primary ${characterClass(primary)} ${activeNpc === primary ? "is-speaking" : ""} ${selectedNpc === primary ? "is-selected" : ""}`}
-          aria-label={`${NPCS[primary].name}を選ぶ`}
+          aria-label={`${displayName(primary)}を選ぶ`}
           onClick={() => onSelect(primary)}
           onDoubleClick={() => onTalk(primary)}
           type="button"
         >
           {selectedNpc === primary && <span className="presentation-talk-ready">話せる</span>}
-          <span className="presentation-name">{NPCS[primary].name}</span>
+          <span className="presentation-name">{displayName(primary)}</span>
         </button>
         </>
       )}
@@ -138,13 +155,13 @@ export function TownPresentation({
         <button
           className={`presentation-character presentation-npc presentation-secondary ${characterClass(npc)} ${activeNpc === npc ? "is-speaking" : ""} ${selectedNpc === npc ? "is-selected" : ""}`}
           key={npc}
-          aria-label={`${NPCS[npc].name}を選ぶ`}
+          aria-label={`${displayName(npc)}を選ぶ`}
           onClick={() => onSelect(npc)}
           onDoubleClick={() => onTalk(npc)}
           type="button"
         >
           {selectedNpc === npc && <span className="presentation-talk-ready">話せる</span>}
-          <span className="presentation-name">{NPCS[npc].name}</span>
+          <span className="presentation-name">{displayName(npc)}</span>
         </button>
       ))}
 
