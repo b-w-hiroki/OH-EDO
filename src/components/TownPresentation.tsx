@@ -5,6 +5,7 @@ interface Props {
   state: GameState;
   onTalk: (npc: NPCId) => void;
   activeSpeaker?: string | null;
+  objective: string;
 }
 
 const AREA_BACKGROUND: Record<Exclude<AreaId, "room">, string> = {
@@ -55,7 +56,7 @@ function speakerToNpc(speaker?: string | null): NPCId | null {
   return null;
 }
 
-export function TownPresentation({ state, onTalk, activeSpeaker }: Props) {
+export function TownPresentation({ state, onTalk, activeSpeaker, objective }: Props) {
   const area = state.currentArea === "room" ? "nagaya" : state.currentArea;
   const npcs = npcIdsForArea(state);
   const primary = npcs[0];
@@ -76,7 +77,9 @@ export function TownPresentation({ state, onTalk, activeSpeaker }: Props) {
         <strong>{AREAS[state.currentArea].name}</strong>
       </div>
 
-      <aside className="presentation-hanging-note" aria-hidden="true">
+      <aside className="presentation-hanging-note">
+        <small>今日の目当て</small>
+        <strong>{objective}</strong>
         <span>{AREA_NOTE[area]}</span>
       </aside>
 
