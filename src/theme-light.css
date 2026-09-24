@@ -4801,3 +4801,9 @@ body::before {
       drop-shadow(0 6px 6px rgba(62, 43, 28, .12));
   }
 }
+
+
+/* ── Final scenic cleanup: keep character names out of the illustration ── */
+.presentation-name {
+  display: none !important;
+}
