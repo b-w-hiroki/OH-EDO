@@ -1502,6 +1502,25 @@ function npcDisplayName(npc: NPCId): string {
   }
 }
 
+function actionTagLabel(tag?: string): string {
+  switch (tag) {
+    case "helpful":
+      return "町の人を手伝った";
+    case "clean":
+      return "丁寧に仕事をした";
+    case "iki":
+      return "粋に立ち回った";
+    case "quick":
+      return "手早く片づけた";
+    case "funny":
+      return "町を笑わせた";
+    case "yabo":
+      return "少し不器用に動いた";
+    default:
+      return "町でひと仕事した";
+  }
+}
+
 function relationLabel(attitude: GameState["npcRelations"][NPCId]["attitude"]): string {
   switch (attitude) {
     case "friendly":
@@ -1532,6 +1551,16 @@ function TownSidePanel({
 }) {
   const areaNpcIds = sidePanelNpcIds(state);
   const areaFlavor = AREAS[state.currentArea].flavor;
+  const recentActionItems = state.playerActions
+    .slice(-3)
+    .reverse()
+    .map((action) => ({
+      label: actionTagLabel(action.tags?.[0]),
+      effect: action.tags?.[0]
+        ? `「#${action.tags[0]}」として町に残った`
+        : "町の人が覚えている",
+    }));
+
   const rumorItems = [
     areaEcho ?? "まだ大きな噂はない。",
     areaFlavor[(state.day + 1) % areaFlavor.length] ?? areaFlavor[0],
@@ -1569,10 +1598,22 @@ function TownSidePanel({
         </div>
       </section>
 
-      {yesterdaySummary && (
+      {(recentActionItems.length > 0 || yesterdaySummary) && (
         <section className="side-card yesterday-card">
           <div className="side-card-title"><span>▣ 昨日の行動 → 今日の変化</span></div>
-          <p>{yesterdaySummary}</p>
+          {recentActionItems.length > 0 ? (
+            <ul className="action-change-list">
+              {recentActionItems.map((item, index) => (
+                <li key={`${index}-${item.label}`}>
+                  <span>{item.label}</span>
+                  <b>→</b>
+                  <strong>{item.effect}</strong>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>{yesterdaySummary}</p>
+          )}
         </section>
       )}
 
