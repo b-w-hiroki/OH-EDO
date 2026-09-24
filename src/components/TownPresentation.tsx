@@ -167,11 +167,6 @@ export function TownPresentation({
           <span className="presentation-name">{displayName(npc)}</span>
         </button>
       ))}
-
-      <div className="presentation-scene-note">
-        <span>町のひとこと</span>
-        <strong>{AREAS[state.currentArea].flavor[0]}</strong>
-      </div>
     </section>
   );
 }
