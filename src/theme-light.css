@@ -4834,3 +4834,49 @@ body::before {
     height: 18px;
   }
 }
+
+
+/* ── Side-rail icon polish ─────────────────────────── */
+.side-card-title svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: #7d6f62;
+}
+
+.rumor-marker {
+  display: block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid rgba(91,119,138,.18);
+  background:
+    radial-gradient(circle at 35% 35%, rgba(255,255,255,.9) 0 18%, transparent 19%),
+    #e7f2f8;
+}
+
+.rumor-marker-1 {
+  background:
+    radial-gradient(circle at 35% 35%, rgba(255,255,255,.85) 0 18%, transparent 19%),
+    #f6e7ce;
+  border-color: rgba(171,111,51,.2);
+}
+
+.rumor-marker-2 {
+  background:
+    radial-gradient(circle at 35% 35%, rgba(255,255,255,.85) 0 18%, transparent 19%),
+    #f7e3e9;
+  border-color: rgba(180,94,119,.18);
+}
+
+@media (max-width: 599px) {
+  .side-card-title svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .rumor-marker {
+    width: 18px;
+    height: 18px;
+  }
+}
