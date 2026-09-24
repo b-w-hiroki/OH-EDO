@@ -153,7 +153,8 @@ export function TownPresentation({
           {NPC_GREETING[featuredNpc] ?? "今日はどうした？"}
         </div>
         <button
-          className={`presentation-character presentation-npc presentation-primary ${characterClass(featuredNpc)} ${activeNpc === featuredNpc ? "is-speaking" : ""} ${selectedNpc === featuredNpc ? "is-selected" : ""}`}
+          key={featuredNpc}
+          className={`presentation-character presentation-npc presentation-primary presentation-featured ${characterClass(featuredNpc)} ${activeNpc === featuredNpc ? "is-speaking" : ""} ${selectedNpc === featuredNpc ? "is-selected" : ""}`}
           aria-label={`${displayName(featuredNpc)}を選ぶ`}
           onClick={() => onSelect(featuredNpc)}
           onDoubleClick={() => onTalk(featuredNpc)}
