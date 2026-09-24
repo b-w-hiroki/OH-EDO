@@ -1760,24 +1760,26 @@ function TownSidePanel({
         </div>
       </section>
 
-      {(recentActionItems.length > 0 || yesterdaySummary) && (
-        <section className="side-card yesterday-card">
-          <div className="side-card-title"><span><SideIcon kind="change" /> 昨日の行動 → 今日の変化</span></div>
-          {recentActionItems.length > 0 ? (
-            <ul className="action-change-list">
-              {recentActionItems.map((item, index) => (
-                <li key={`${index}-${item.label}`}>
-                  <span>{item.label}</span>
-                  <b>→</b>
-                  <strong>{item.effect}</strong>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>{yesterdaySummary}</p>
-          )}
-        </section>
-      )}
+      <section
+        className={`side-card yesterday-card ${recentActionItems.length === 0 && !yesterdaySummary ? "is-empty" : ""}`}
+      >
+        <div className="side-card-title"><span><SideIcon kind="change" /> 昨日の行動 → 今日の変化</span></div>
+        {recentActionItems.length > 0 ? (
+          <ul className="action-change-list">
+            {recentActionItems.map((item, index) => (
+              <li key={`${index}-${item.label}`}>
+                <span>{item.label}</span>
+                <b>→</b>
+                <strong>{item.effect}</strong>
+              </li>
+            ))}
+          </ul>
+        ) : yesterdaySummary ? (
+          <p>{yesterdaySummary}</p>
+        ) : (
+          <p className="quiet-change">まだ昨日の変化はない。今日の行動が、明日の町に残っていく。</p>
+        )}
+      </section>
 
       <section className="side-card town-flavor-card">
         <div className="side-card-title"><span><SideIcon kind="story" /> この場所の小話</span></div>
