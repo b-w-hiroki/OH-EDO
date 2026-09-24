@@ -3299,3 +3299,77 @@ body::before {
     border-radius: 10px;
   }
 }
+
+
+/* ── Remove duplicate chrome; let the scenic screen breathe ─────────── */
+.logstrip {
+  display: none;
+}
+
+.reference-action-dock {
+  margin-top: 8px;
+  align-items: stretch;
+}
+
+.reference-area-nav button {
+  min-height: 82px;
+  border-width: 1.5px;
+  border-radius: 9px;
+  box-shadow: 0 3px 0 #7fafd0, 0 5px 10px rgba(69,91,109,.08);
+}
+
+.reference-area-nav button.active {
+  box-shadow: 0 3px 0 #d28c2d, 0 5px 10px rgba(139,88,31,.08);
+}
+
+.reference-area-nav button.map-tab {
+  box-shadow: 0 3px 0 #bba37d, 0 5px 10px rgba(94,76,52,.07);
+}
+
+.area-nav-icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: rgba(255,255,255,.55);
+  font-size: 22px;
+}
+
+.reference-talk-cta {
+  min-height: 82px;
+  border-radius: 12px;
+}
+
+.reference-talk-cta strong {
+  font-size: 26px;
+  letter-spacing: .06em;
+}
+
+.reference-talk-cta small {
+  font-size: 10px;
+  letter-spacing: .08em;
+}
+
+.next-lead {
+  margin-top: 8px;
+  border-radius: 10px;
+  box-shadow: 0 5px 12px rgba(111,83,44,.08);
+}
+
+@media (max-width: 599px) {
+  .reference-area-nav button {
+    min-height: 76px;
+  }
+
+  .area-nav-icon {
+    width: 34px;
+    height: 34px;
+    margin: 0 auto;
+    font-size: 20px;
+  }
+
+  .next-lead {
+    margin-bottom: 4px;
+  }
+}
