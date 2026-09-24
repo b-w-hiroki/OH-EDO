@@ -3148,3 +3148,154 @@ body::before {
     margin-top: 2px;
   }
 }
+
+
+/* ── Scene-note / side-rail fidelity pass ───────────── */
+.presentation-location-card {
+  top: 14px;
+  left: auto;
+  right: 14px;
+  min-width: 116px;
+  opacity: .92;
+}
+
+.presentation-hanging-note {
+  position: absolute;
+  left: 18px;
+  top: 78px;
+  z-index: 8;
+  width: 150px;
+  min-height: 138px;
+  display: grid;
+  place-items: center;
+  padding: 18px 16px;
+  border: 1px solid #c9ab7d;
+  background:
+    linear-gradient(rgba(255,250,236,.95), rgba(255,247,227,.95)),
+    url("/assets/edo/ui/ui-sheet.webp") 20% 20% / 520px auto;
+  color: #544435;
+  box-shadow:
+    0 9px 18px rgba(66,47,31,.14),
+    inset 0 0 0 4px rgba(255,255,255,.26);
+  font-family: var(--font-serif);
+  font-size: 14px;
+  line-height: 1.75;
+  text-align: center;
+  transform: rotate(-1.3deg);
+}
+
+.presentation-hanging-note::before {
+  content: "";
+  position: absolute;
+  top: -17px;
+  left: 50%;
+  width: 2px;
+  height: 18px;
+  background: #8f7355;
+  transform: translateX(-50%);
+}
+
+.presentation-hanging-note::after {
+  content: "⌁";
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  transform: translateX(-50%);
+  color: #9c8061;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.side-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.side-card-title > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.side-card-more {
+  margin-left: auto;
+  color: #927b68;
+  font-family: var(--font-ui);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.nearby-list {
+  display: grid;
+  gap: 6px;
+}
+
+.nearby-person {
+  grid-template-columns: 46px minmax(0, 1fr) auto;
+  min-height: 56px;
+  padding: 6px 7px;
+  border: 1px solid #e5d9c6;
+  background: rgba(255,253,247,.98);
+}
+
+.nearby-copy strong {
+  color: #44372e;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.relation-pill {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin-top: 3px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: #fff0ee;
+  color: #c15b60 !important;
+  font-size: 9px !important;
+  line-height: 1.2;
+}
+
+.nearby-person small::before {
+  content: none;
+}
+
+.nearby-talk {
+  min-width: 48px;
+  min-height: 28px;
+  padding: 3px 8px;
+  font-size: 10px;
+}
+
+@media (max-width: 899px) {
+  .presentation-hanging-note {
+    width: 124px;
+    min-height: 104px;
+    top: 60px;
+    padding: 13px 11px;
+    font-size: 11px;
+    line-height: 1.65;
+  }
+
+  .presentation-location-card {
+    right: 10px;
+  }
+}
+
+@media (max-width: 599px) {
+  .presentation-hanging-note {
+    display: none;
+  }
+
+  .presentation-location-card {
+    left: 8px;
+    right: auto;
+  }
+
+  .nearby-person {
+    border-radius: 10px;
+  }
+}
