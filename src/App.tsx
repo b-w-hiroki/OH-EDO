@@ -1361,7 +1361,7 @@ function App() {
 
         {inWorld && (
           <>
-          <div className="reference-action-dock">
+          <div className={`reference-action-dock ${state.screen === "dialog" ? "is-dialogue" : ""}`}>
             <AreaNav
               state={state}
               onMove={(area) => {
