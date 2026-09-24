@@ -3070,3 +3070,81 @@ body::before {
     font-size: 10px;
   }
 }
+
+
+/* ── Mobile card-density pass: mirror the approved portrait mock ── */
+@media (max-width: 599px) {
+  .town-side-panel {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .town-side-panel > .side-card:first-child,
+  .town-side-panel > .yesterday-card {
+    grid-column: 1 / -1;
+  }
+
+  .town-side-panel > .town-flavor-card,
+  .town-side-panel > .town-mood-card {
+    display: none;
+  }
+
+  .town-side-panel > .rumor-card {
+    grid-column: 1 / -1;
+  }
+
+  .town-side-panel .side-card:first-child .nearby-list {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+
+  .town-side-panel .side-card:first-child .nearby-person {
+    flex: 0 0 150px;
+    display: grid;
+    grid-template-columns: 52px minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    align-items: center;
+    min-height: 80px;
+    padding: 7px;
+  }
+
+  .town-side-panel .side-card:first-child .nearby-avatar {
+    grid-row: 1 / 3;
+    width: 52px;
+    height: 52px;
+  }
+
+  .town-side-panel .side-card:first-child .nearby-talk {
+    min-height: 25px;
+    padding: 2px 8px;
+    font-size: 9px;
+  }
+
+  .nearby-avatar.avatar-child {
+    background-image: none !important;
+    background: linear-gradient(180deg, #9fc97b, #6f9e55) !important;
+  }
+
+  .nearby-avatar.avatar-child span {
+    opacity: 1 !important;
+    color: #fff9eb;
+    font-family: var(--font-ui);
+    font-size: 18px;
+    font-weight: 900;
+  }
+
+  .rumor-card {
+    min-height: 96px;
+  }
+
+  .rumor-card p {
+    font-size: 12px;
+    line-height: 1.55;
+  }
+
+  .reference-talk-cta {
+    margin-top: 2px;
+  }
+}
