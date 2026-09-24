@@ -1530,7 +1530,7 @@ body::before {
 
 .reference-area-nav {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
   gap: 6px;
   margin: 0;
   padding: 0;
@@ -5023,4 +5023,11 @@ body::before {
   .presentation-character-image {
     transition: none !important;
   }
+}
+
+
+/* Keep the travel dock focused on places the player can actually visit.
+   Newly unlocked districts appear naturally as progression expands. */
+.reference-area-nav button:disabled {
+  display: none;
 }
