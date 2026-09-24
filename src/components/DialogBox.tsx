@@ -29,10 +29,12 @@ function speakerGlyph(speaker: string): string {
 
 export function DialogBox({ line, index, total, onNext }: Props) {
   const isLast = index === total - 1;
+  const speaker = speakerClass(line.speaker);
   return (
-    <section className="dialog mock-dialog" onClick={onNext}>
-      <div className={`dialog-portrait ${speakerClass(line.speaker)}`} aria-hidden="true">
-        {speakerGlyph(line.speaker)}
+    <section className={`dialog mock-dialog ${speaker}`} onClick={onNext}>
+      <div className={`dialog-cutin ${speaker}`} aria-hidden="true" />
+      <div className={`dialog-portrait ${speaker}`} aria-hidden="true">
+        <span>{speakerGlyph(line.speaker)}</span>
       </div>
       <div className="dialog-body">
         <div className="dialog-speaker">{line.speaker}</div>

@@ -1742,7 +1742,8 @@ function RoomView({ day, onClose }: { day: number; onClose: () => void }) {
   const room = AREAS.room;
   const flavor = room.flavor[Math.min(day - 1, room.flavor.length - 1)];
   return (
-    <section className="panel">
+    <section className="panel room-panel">
+      <div className="room-content">
       <h2>{room.name}</h2>
       <p className="panel-desc">{room.description}</p>
       <p className="muted">― {flavor}</p>
@@ -1751,6 +1752,7 @@ function RoomView({ day, onClose }: { day: number; onClose: () => void }) {
         <button className="primary" onClick={onClose}>
           町へ出る
         </button>
+      </div>
       </div>
     </section>
   );
