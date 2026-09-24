@@ -604,7 +604,15 @@ function App() {
   const [soundMuted, setSoundMuted] = useState(() => uiSound.isMuted());
   const [areaTransition, setAreaTransition] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [selectedNpcId, setSelectedNpcId] = useState<NPCId | null>(() => getAreaNpcIds(loadInitial())[0] ?? null);
   const dialogOpenRef = useRef(false);
+
+  useEffect(() => {
+    const local = getAreaNpcIds(state);
+    setSelectedNpcId((current) =>
+      current && local.includes(current) ? current : (local[0] ?? null)
+    );
+  }, [state.currentArea]);
 
   // Persist.
   useEffect(() => {
@@ -1099,6 +1107,11 @@ function App() {
   const nextLead = getNextLead(state);
   const currentObjective = getCurrentObjective(state);
   const yesterdaySummary = getYesterdaySummary(state);
+  const localNpcIds = getAreaNpcIds(state);
+  const activeTalkNpc =
+    selectedNpcId && localNpcIds.includes(selectedNpcId)
+      ? selectedNpcId
+      : (localNpcIds[0] ?? null);
 
   return (
     <div className="app">
@@ -1175,12 +1188,17 @@ function App() {
               <TownPresentation
                 state={state}
                 objective={currentObjective}
+                selectedNpc={activeTalkNpc}
                 activeSpeaker={
                   state.screen === "dialog" && state.dialog
                     ? state.dialog.lines[state.dialog.index]?.speaker
                     : null
                 }
-                onTalk={(npc) => EventBus.emit("npc-interact", npc)}
+                onSelect={setSelectedNpcId}
+                onTalk={(npc) => {
+                  setSelectedNpcId(npc);
+                  EventBus.emit("npc-interact", npc);
+                }}
               />
 
             {state.screen === "town" && (
@@ -1330,7 +1348,12 @@ function App() {
               dominantRumor={dominantRumor}
               areaEcho={areaEcho}
               yesterdaySummary={yesterdaySummary}
-              onTalk={(npc) => EventBus.emit("npc-interact", npc)}
+              selectedNpc={activeTalkNpc}
+              onSelect={setSelectedNpcId}
+              onTalk={(npc) => {
+                setSelectedNpcId(npc);
+                EventBus.emit("npc-interact", npc);
+              }}
             />
           </div>
         )}
@@ -1347,6 +1370,7 @@ function App() {
                 setAreaTransition(label);
                 window.setTimeout(() => setAreaTransition(null), 900);
                 setState((s) => ({ ...s, currentArea: area }));
+                setSelectedNpcId(null);
                 EventBus.emit("warp", area);
               }}
               onRoom={() =>
@@ -1360,14 +1384,14 @@ function App() {
             />
             <button
               className="reference-talk-cta"
+              disabled={!activeTalkNpc}
               onClick={() => {
-                const primary = getAreaNpcIds(state)[0];
-                if (primary) EventBus.emit("npc-interact", primary);
+                if (activeTalkNpc) EventBus.emit("npc-interact", activeTalkNpc);
               }}
             >
               <span className="talk-bubble">•••</span>
               <strong>話す</strong>
-              <small>この人と話す</small>
+              <small>{activeTalkNpc ? `${npcDisplayName(activeTalkNpc)}と話す` : "話す相手を選ぶ"}</small>
             </button>
           </div>
           <div className="logstrip">
@@ -1538,12 +1562,16 @@ function TownSidePanel({
   dominantRumor,
   areaEcho,
   yesterdaySummary,
+  selectedNpc,
+  onSelect,
   onTalk,
 }: {
   state: GameState;
   dominantRumor: ReturnType<typeof pickDominantRumor>;
   areaEcho: string | null;
   yesterdaySummary: string | null;
+  selectedNpc: NPCId | null;
+  onSelect: (npc: NPCId) => void;
   onTalk: (npc: NPCId) => void;
 }) {
   const areaNpcIds = sidePanelNpcIds(state);
@@ -1575,7 +1603,19 @@ function TownSidePanel({
         </div>
         <div className="nearby-list">
           {areaNpcIds.map((npcId) => (
-            <div className="nearby-person" key={npcId}>
+            <div
+              className={`nearby-person ${selectedNpc === npcId ? "selected" : ""}`}
+              key={npcId}
+              role="button"
+              tabIndex={0}
+              onClick={() => onSelect(npcId)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  onSelect(npcId);
+                }
+              }}
+            >
               <span className={`nearby-avatar avatar-${npcId}`}>
                 <span>{NPCS[npcId].name.slice(0, 1)}</span>
               </span>
@@ -1585,7 +1625,11 @@ function TownSidePanel({
               </div>
               <button
                 className="nearby-talk"
-                onClick={() => onTalk(npcId)}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onSelect(npcId);
+                  onTalk(npcId);
+                }}
                 aria-label={`${npcDisplayName(npcId)}と話す`}
               >
                 話す

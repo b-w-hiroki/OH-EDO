@@ -4,6 +4,8 @@ import { AREAS, NPCS } from "../data";
 interface Props {
   state: GameState;
   onTalk: (npc: NPCId) => void;
+  onSelect: (npc: NPCId) => void;
+  selectedNpc: NPCId | null;
   activeSpeaker?: string | null;
   objective: string;
 }
@@ -56,7 +58,14 @@ function speakerToNpc(speaker?: string | null): NPCId | null {
   return null;
 }
 
-export function TownPresentation({ state, onTalk, activeSpeaker, objective }: Props) {
+export function TownPresentation({
+  state,
+  onTalk,
+  onSelect,
+  selectedNpc,
+  activeSpeaker,
+  objective,
+}: Props) {
   const area = state.currentArea === "room" ? "nagaya" : state.currentArea;
   const npcs = npcIdsForArea(state);
   const primary = npcs[0];
@@ -91,23 +100,27 @@ export function TownPresentation({ state, onTalk, activeSpeaker, objective }: Pr
 
       {primary && (
         <button
-          className={`presentation-character presentation-npc presentation-primary ${characterClass(primary)} ${activeNpc === primary ? "is-speaking" : ""}`}
-          aria-label={`${NPCS[primary].name}と話す`}
-          onClick={() => onTalk(primary)}
+          className={`presentation-character presentation-npc presentation-primary ${characterClass(primary)} ${activeNpc === primary ? "is-speaking" : ""} ${selectedNpc === primary ? "is-selected" : ""}`}
+          aria-label={`${NPCS[primary].name}を選ぶ`}
+          onClick={() => onSelect(primary)}
+          onDoubleClick={() => onTalk(primary)}
           type="button"
         >
+          {selectedNpc === primary && <span className="presentation-talk-ready">話せる</span>}
           <span className="presentation-name">{NPCS[primary].name}</span>
         </button>
       )}
 
       {npcs.slice(1).map((npc) => (
         <button
-          className={`presentation-character presentation-npc presentation-secondary ${characterClass(npc)} ${activeNpc === npc ? "is-speaking" : ""}`}
+          className={`presentation-character presentation-npc presentation-secondary ${characterClass(npc)} ${activeNpc === npc ? "is-speaking" : ""} ${selectedNpc === npc ? "is-selected" : ""}`}
           key={npc}
-          aria-label={`${NPCS[npc].name}と話す`}
-          onClick={() => onTalk(npc)}
+          aria-label={`${NPCS[npc].name}を選ぶ`}
+          onClick={() => onSelect(npc)}
+          onDoubleClick={() => onTalk(npc)}
           type="button"
         >
+          {selectedNpc === npc && <span className="presentation-talk-ready">話せる</span>}
           <span className="presentation-name">{NPCS[npc].name}</span>
         </button>
       ))}
