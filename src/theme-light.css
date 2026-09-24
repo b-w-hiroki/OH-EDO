@@ -4454,3 +4454,34 @@ body::before {
     opacity: 0;
   }
 }
+
+
+/* portrait nav: match the five-tab mock when firehouse is still locked */
+@media (max-width: 599px) {
+  .reference-area-nav {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 4px;
+    overflow: visible;
+  }
+
+  .reference-area-nav button {
+    min-width: 0;
+    width: 100%;
+    flex: none;
+    padding: 6px 3px;
+  }
+
+  .reference-area-nav button:disabled {
+    display: none;
+  }
+
+  .reference-area-nav:has(button:not(:disabled)[aria-label*="火消し"]) {
+    overflow-x: auto;
+  }
+
+  .area-nav-copy strong {
+    font-size: 11px;
+    white-space: nowrap;
+  }
+}
