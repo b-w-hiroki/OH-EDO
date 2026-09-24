@@ -1383,15 +1383,19 @@ function App() {
               onMap={openStatus}
             />
             <button
-              className="reference-talk-cta"
+              className={`reference-talk-cta ${activeTalkNpc ? `talk-target-${activeTalkNpc}` : ""}`}
               disabled={!activeTalkNpc}
               onClick={() => {
                 if (activeTalkNpc) EventBus.emit("npc-interact", activeTalkNpc);
               }}
             >
-              <span className="talk-bubble">•••</span>
+              <span className="talk-bubble" aria-hidden="true"><span>•••</span></span>
               <strong>話す</strong>
-              <small>{activeTalkNpc ? `${npcDisplayName(activeTalkNpc)}と話す` : "話す相手を選ぶ"}</small>
+              <small>
+                {activeTalkNpc
+                  ? `${npcDisplayName(activeTalkNpc)}と話す`
+                  : "話す相手を選ぶ"}
+              </small>
             </button>
           </div>
           <div className="logstrip">
@@ -1594,6 +1598,23 @@ function npcDisplayName(npc: NPCId): string {
   }
 }
 
+function npcSubtitle(npc: NPCId): string {
+  switch (npc) {
+    case "landlord":
+      return "長屋のおかみさん";
+    case "fishmonger":
+      return "威勢のいい魚屋";
+    case "child":
+      return "よく遊ぶ子ども";
+    case "newsman":
+      return "町を駆ける瓦版屋";
+    case "firechief":
+      return "町火消しの頭";
+    default:
+      return NPCS[npc].name;
+  }
+}
+
 function actionTagLabel(tag?: string): string {
   switch (tag) {
     case "helpful":
@@ -1692,6 +1713,7 @@ function TownSidePanel({
               </span>
               <div className="nearby-copy">
                 <strong>{npcDisplayName(npcId)}</strong>
+                <span className="npc-subtitle">{npcSubtitle(npcId)}</span>
                 <small className="relation-pill">♥ {relationLabel(state.npcRelations[npcId].attitude)}</small>
               </div>
               <button
