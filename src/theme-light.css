@@ -4060,3 +4060,70 @@ body::before {
     min-height: 190px;
   }
 }
+
+
+/* ── Character-linked talk CTA and social subtitles ─────────────── */
+.npc-subtitle {
+  display: block;
+  margin-top: 1px;
+  color: #8a796b;
+  font-family: var(--font-ui);
+  font-size: 9px;
+  line-height: 1.25;
+}
+
+.reference-talk-cta .talk-bubble {
+  overflow: hidden;
+  background-repeat: no-repeat;
+  background-position: center 12%;
+  background-size: 145% auto;
+}
+
+.reference-talk-cta .talk-bubble > span {
+  opacity: 1;
+}
+
+.reference-talk-cta.talk-target-landlord .talk-bubble {
+  background-image: url("/assets/edo/characters/landlord.webp");
+  color: transparent;
+}
+
+.reference-talk-cta.talk-target-landlord .talk-bubble > span {
+  opacity: 0;
+}
+
+.reference-talk-cta.talk-target-fishmonger .talk-bubble,
+.reference-talk-cta.talk-target-child .talk-bubble,
+.reference-talk-cta.talk-target-newsman .talk-bubble,
+.reference-talk-cta.talk-target-firechief .talk-bubble {
+  background-image: url("/assets/edo/characters/characters-sheet.webp");
+  background-size: 590% auto;
+  color: transparent;
+}
+
+.reference-talk-cta.talk-target-fishmonger .talk-bubble { background-position: 40% 11%; }
+.reference-talk-cta.talk-target-child .talk-bubble { background-position: 60% 63%; }
+.reference-talk-cta.talk-target-newsman .talk-bubble { background-position: 81% 11%; }
+.reference-talk-cta.talk-target-firechief .talk-bubble { background-position: 100% 11%; }
+
+.reference-talk-cta.talk-target-fishmonger .talk-bubble > span,
+.reference-talk-cta.talk-target-child .talk-bubble > span,
+.reference-talk-cta.talk-target-newsman .talk-bubble > span,
+.reference-talk-cta.talk-target-firechief .talk-bubble > span {
+  opacity: 0;
+}
+
+.nearby-person.selected .npc-subtitle {
+  color: #b05b4c;
+}
+
+@media (max-width: 599px) {
+  .npc-subtitle {
+    font-size: 8px;
+  }
+
+  .reference-talk-cta .talk-bubble {
+    width: 52px;
+    height: 52px;
+  }
+}
