@@ -4127,3 +4127,48 @@ body::before {
     height: 52px;
   }
 }
+
+
+/* ── Dialogue composition: feature the person who is actually speaking ── */
+.town-presentation.is-dialogue .presentation-secondary {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px) scale(.96);
+}
+
+.town-presentation.area-nagaya .presentation-primary.art-child {
+  right: 9%;
+  width: 24%;
+  height: 56%;
+  bottom: 0;
+}
+
+.town-presentation.area-market .presentation-primary.art-newsman {
+  right: 7%;
+  width: 34%;
+  height: 86%;
+  bottom: -4%;
+}
+
+.town-presentation.area-market .presentation-secondary.art-fishmonger {
+  right: 36%;
+  width: 20%;
+  height: 50%;
+  bottom: 1%;
+}
+
+@media (max-width: 599px) {
+  .town-presentation.area-nagaya .presentation-primary.art-child {
+    right: -2%;
+    width: 45%;
+    height: 52%;
+    bottom: 0;
+  }
+
+  .town-presentation.area-market .presentation-primary.art-newsman {
+    right: -10%;
+    width: 63%;
+    height: 74%;
+    bottom: -4%;
+  }
+}
