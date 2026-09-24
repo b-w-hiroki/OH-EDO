@@ -4709,3 +4709,31 @@ body::before {
     font-size: 9px !important;
   }
 }
+
+
+/* keep the mobile objective note away from the noren and character face */
+@media (max-width: 599px) {
+  .presentation-hanging-note {
+    left: 8px !important;
+    right: auto !important;
+    top: 16px !important;
+    width: 108px !important;
+    min-height: 86px !important;
+    padding: 9px 8px !important;
+    transform: rotate(-1deg) !important;
+  }
+
+  .presentation-hanging-note small {
+    font-size: 8px !important;
+  }
+
+  .presentation-hanging-note strong {
+    font-size: 10px !important;
+    line-height: 1.38 !important;
+  }
+
+  .presentation-noren {
+    right: 4px !important;
+    top: 17% !important;
+  }
+}
