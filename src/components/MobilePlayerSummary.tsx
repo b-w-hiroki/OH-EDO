@@ -42,7 +42,7 @@ export function MobilePlayerSummary({ player, town }: Props) {
           <div className="mobile-skill-card" key={skill.label}>
             <span aria-hidden="true">{skill.icon}</span>
             <small>{skill.label}</small>
-            <strong>Lv.{Math.max(1, Math.ceil(skill.value / 5))}</strong>
+            <strong>Lv.{Math.min(5, Math.max(1, Math.ceil(skill.value / 10)))}</strong>
           </div>
         ))}
       </div>
