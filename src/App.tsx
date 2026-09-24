@@ -1103,7 +1103,10 @@ function App() {
     <div className="app">
       <header className="reference-header">
         <div className="reference-logo-wrap">
-          <span className="brand reference-logo">OH！EDO！</span>
+          <span className="reference-logo" aria-label="OH! EDO!">
+            <span className="logo-oh">OH!</span>
+            <strong className="logo-edo">EDO!</strong>
+          </span>
           <small>大江戸町</small>
         </div>
 
@@ -1117,6 +1120,12 @@ function App() {
             <span className="reference-location">⌖ {AREAS[state.currentArea].name}</span>
           )}
         </div>
+
+        {inWorld && (
+          <div className="desktop-header-status">
+            <StatusBar player={state.player} town={state.town} />
+          </div>
+        )}
 
         <div className="reference-header-actions">
           {state.screen !== "title" && (
@@ -1137,7 +1146,9 @@ function App() {
 
       {inWorld && (
         <div className="reference-hud-row">
-          <StatusBar player={state.player} town={state.town} />
+          <div className="mobile-status-wrap">
+            <StatusBar player={state.player} town={state.town} />
+          </div>
           <div className="objective-strip">
             <span>今日の目当て</span>
             <strong>{currentObjective}</strong>
