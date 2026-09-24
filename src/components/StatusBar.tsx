@@ -6,12 +6,12 @@ interface Props {
 }
 
 const STATS = [
-  { label: "銭", icon: "💰", key: "money" },
-  { label: "信用", icon: "🪭", key: "trust" },
-  { label: "粋", icon: "✥", key: "iki" },
-  { label: "人脈", icon: "👥", key: "network" },
-  { label: "腕前", icon: "⚔", key: "skill" },
-  { label: "衛生", icon: "🧹", key: "hygiene" },
+  { label: "銭", icon: "銭", key: "money" },
+  { label: "信用", icon: "信", key: "trust" },
+  { label: "粋", icon: "粋", key: "iki" },
+  { label: "人脈", icon: "縁", key: "network" },
+  { label: "腕前", icon: "腕", key: "skill" },
+  { label: "衛生", icon: "衛", key: "hygiene" },
 ] as const;
 
 export function StatusBar({ player, town }: Props) {
@@ -32,7 +32,9 @@ export function StatusBar({ player, town }: Props) {
       <div className="reference-stat-row">
         {STATS.map((stat) => (
           <span className="reference-stat" key={stat.key}>
-            <span className="reference-stat-icon" aria-hidden="true">{stat.icon}</span>
+            <span className={`reference-stat-icon stat-icon-${stat.key}`} aria-hidden="true">
+              {stat.icon}
+            </span>
             <span className="reference-stat-copy">
               <span className="reference-stat-key">{stat.label}</span>
               <strong>{values[stat.key]}</strong>
