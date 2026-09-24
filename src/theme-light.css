@@ -3933,3 +3933,52 @@ body::before {
     height: 76%;
   }
 }
+
+
+/* ── Independent background layer for crisper scenic art ────────── */
+.town-background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transform: scale(1.012);
+  filter: saturate(1.06) contrast(1.035) brightness(1.015);
+  transform-origin: center;
+  pointer-events: none;
+}
+
+.town-presentation.area-nagaya .town-background {
+  background-position: 50% 48%;
+}
+
+.town-presentation.area-market .town-background {
+  background-position: 52% 50%;
+}
+
+.town-presentation.area-well .town-background {
+  background-position: 49% 51%;
+}
+
+.town-presentation.area-firehouse .town-background {
+  background-position: 52% 50%;
+}
+
+@media (max-width: 599px) {
+  .town-presentation.area-nagaya .town-background {
+    background-position: 52% 50%;
+  }
+
+  .town-presentation.area-market .town-background {
+    background-position: 55% 50%;
+  }
+
+  .town-presentation.area-well .town-background {
+    background-position: 52% 50%;
+  }
+
+  .town-presentation.area-firehouse .town-background {
+    background-position: 55% 50%;
+  }
+}
