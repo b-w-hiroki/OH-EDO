@@ -14,9 +14,8 @@ for (const name of names) {
   const chunks = [];
   for (const file of files) chunks.push((await readFile(join(staging, file), "utf8")).trim());
   const buffer = Buffer.from(chunks.join(""), "base64");
-  if (buffer.subarray(0, 4).toString("ascii") !== "RIFF" || buffer.subarray(8, 12).toString("ascii") !== "WEBP") {
-    throw new Error(`invalid WebP payload for ${name}`);
-  }
-  await writeFile(join(outDir, name + ".webp"), buffer);
+  const brand = buffer.subarray(4, 12).toString("ascii");
+  if (!brand.includes("ftyp")) throw new Error(`invalid AVIF payload for ${name}`);
+  await writeFile(join(outDir, name + ".avif"), buffer);
   console.log(`${name}: ${buffer.length} bytes`);
 }
