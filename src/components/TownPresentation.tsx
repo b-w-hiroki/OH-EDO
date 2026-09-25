@@ -12,10 +12,10 @@ interface Props {
 }
 
 const AREA_BACKGROUND: Record<Exclude<AreaId, "room">, string> = {
-  nagaya: "/assets/edo/backgrounds/nagaya.webp",
-  well: "/assets/edo/backgrounds/well.webp",
-  market: "/assets/edo/backgrounds/market.webp",
-  firehouse: "/assets/edo/backgrounds/firehouse.webp",
+  nagaya: "/assets/edo/backgrounds/nagaya.avif",
+  well: "/assets/edo/backgrounds/well.avif",
+  market: "/assets/edo/backgrounds/market.avif",
+  firehouse: "/assets/edo/backgrounds/firehouse.avif",
 };
 
 const AREA_BANNER: Record<Exclude<AreaId, "room">, string> = {
