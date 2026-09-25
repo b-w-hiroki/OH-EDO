@@ -6473,3 +6473,37 @@ body::before {
     animation: none;
   }
 }
+
+
+/* ── Interaction polish: keep controls lively without adding UI ───── */
+.presentation-character-image {
+  transition: transform .16s ease, filter .16s ease;
+}
+
+.presentation-character.is-selected .presentation-character-image {
+  transform: translateY(-.5%) scale(1.018);
+}
+
+@keyframes talkCtaReady {
+  0% { transform: scale(.985); }
+  65% { transform: scale(1.012); }
+  100% { transform: scale(1); }
+}
+
+.reference-talk-cta {
+  animation: talkCtaReady .22s ease-out both;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .presentation-character.presentation-npc:hover .presentation-character-image {
+    transform: translateY(-1%) scale(1.025);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .presentation-character-image,
+  .reference-talk-cta {
+    transition: none !important;
+    animation: none !important;
+  }
+}
