@@ -52,8 +52,8 @@ async function freshStart(page) {
 }
 
 async function move(page, label) {
-  const button = page.getByRole("button", { name: new RegExp(label) }).first();
-  await button.click();
+  const button = page.locator(".reference-area-nav button").filter({ hasText: label }).first();
+  await button.click({ force: true });
   await page.waitForTimeout(180);
 }
 
