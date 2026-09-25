@@ -58,8 +58,10 @@ async function move(page, label) {
 }
 
 async function talk(page, name) {
-  const button = page.getByRole("button", { name: `${name}と話す` }).first();
-  await button.click({ force: true });
+  const card = page.locator(".nearby-person").filter({ hasText: name }).first();
+  await card.click({ force: true });
+  await page.waitForTimeout(80);
+  await page.locator(".reference-talk-cta:visible").click({ force: true });
   await page.waitForSelector(".mock-dialog:visible", { timeout: 5000 });
   await advanceDialogs(page);
 }
