@@ -1160,6 +1160,14 @@ function App() {
       </header>
 
       {inWorld && (
+        <div className="desktop-objective-strip" aria-label="今日の目当て">
+          <span className="desktop-objective-mark" aria-hidden="true">◎</span>
+          <strong>今日の目当て</strong>
+          <span>{currentObjective}</span>
+        </div>
+      )}
+
+      {inWorld && (
         <div className="reference-hud-row">
           <div className="mobile-status-wrap">
             <MobilePlayerSummary player={state.player} town={state.town} />
@@ -1187,6 +1195,7 @@ function App() {
           <div className="world-layout">
             <div className="stage presentation-stage">
               <TownPresentation
+                key={state.currentArea}
                 state={state}
                 objective={currentObjective}
                 selectedNpc={activeTalkNpc}
