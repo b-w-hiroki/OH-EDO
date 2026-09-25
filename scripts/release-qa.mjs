@@ -161,7 +161,7 @@ async function captureAreas(page, prefix) {
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.waitForTimeout(80);
   await page.screenshot({ path: `qa-artifacts/${prefix}-room.png`, fullPage: false });
-  await page.getByRole("button", { name: "町へ出る" }).click();
+  await page.getByRole("button", { name: "町へ出る" }).evaluate((el) => el.click());
 
   const areas = [
     ["長屋前", "nagaya"],
