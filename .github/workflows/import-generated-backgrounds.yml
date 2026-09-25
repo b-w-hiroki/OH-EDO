@@ -1,0 +1,39 @@
+name: import-generated-backgrounds
+
+on:
+  push:
+    branches: [assets/mock-backgrounds-20260925]
+    paths:
+      - ".asset-import/**"
+      - ".github/workflows/import-generated-backgrounds.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: assets/mock-backgrounds-20260925
+      - name: Import when staging is complete
+        shell: bash
+        run: |
+          if [ ! -f .asset-import/READY ]; then
+            echo "Background staging is not complete yet."
+            exit 0
+          fi
+
+          cat .asset-import/chunk-*.txt > /tmp/oh-edo-backgrounds.b64
+          base64 --decode /tmp/oh-edo-backgrounds.b64 > /tmp/oh-edo-backgrounds.zip
+          unzip -o /tmp/oh-edo-backgrounds.zip -d .
+
+          rm -rf .asset-import
+          git rm .github/workflows/import-generated-backgrounds.yml
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/assets/edo/backgrounds
+          git commit -m "art: replace Edo backgrounds with mock-aligned set"
+          git push origin HEAD:assets/mock-backgrounds-20260925
