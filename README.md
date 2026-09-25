@@ -84,3 +84,16 @@ Pages上ではサーバーAPIがないため、別途Jev Proxyを設定しない
 - `docs/RESPONSIVE_ART_GUIDE.md`
 - `docs/HISTORICAL_NOTES.md`
 - `docs/PROJECT_STATUS.md`
+
+
+## Release QA
+
+Release candidate QA is automated in `scripts/release-qa.mjs`.
+
+- Chromium desktop 1600×900: Day1→Day5 through-play + all area world/dialog captures
+- Chromium mobile 430×932: Day1→Day5 through-play + all area world/dialog captures
+- WebKit iPhone-class 430×932: safe-area, horizontal overflow, touch target, and dialog interaction checks
+- Save/progression flags, decision logs, and Jev/Local provider results are verified during the through-play
+- Background assets are already 1672×941, so the final pass keeps them near native resolution instead of upscaling/re-generating them
+
+The screenshot workflow uploads both the four baseline mock-comparison captures and release-QA captures.
