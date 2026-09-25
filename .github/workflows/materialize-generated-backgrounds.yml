@@ -1,0 +1,35 @@
+name: materialize-generated-backgrounds
+
+on:
+  push:
+    branches: [art/mock-background-pass-20260925]
+    paths:
+      - '.asset-staging/READY'
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: art/mock-background-pass-20260925
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/materialize-generated-backgrounds.mjs
+      - name: Commit generated backgrounds
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/assets/edo/backgrounds/nagaya.webp
+          git add public/assets/edo/backgrounds/well.webp
+          git add public/assets/edo/backgrounds/market.webp
+          git add public/assets/edo/backgrounds/firehouse.webp
+          git rm -r .asset-staging
+          git rm scripts/materialize-generated-backgrounds.mjs
+          git rm .github/workflows/materialize-generated-backgrounds.yml
+          git commit -m "art: materialize generated scenic backgrounds"
+          git push origin HEAD:art/mock-background-pass-20260925
