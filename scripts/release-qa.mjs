@@ -59,7 +59,7 @@ async function move(page, label) {
 
 async function talk(page, name) {
   const button = page.getByRole("button", { name: `${name}と話す` }).first();
-  await dispatchClick(button);
+  await button.click({ force: true });
   await page.waitForSelector(".mock-dialog:visible", { timeout: 5000 });
   await advanceDialogs(page);
 }
