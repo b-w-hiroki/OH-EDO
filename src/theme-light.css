@@ -6256,3 +6256,168 @@ body::before {
     width: 100%;
   }
 }
+
+
+/* ── Mock fidelity: desktop hierarchy + richer side rail ─────────── */
+.desktop-objective-strip {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .desktop-objective-strip {
+    display: grid;
+    grid-template-columns: 26px auto minmax(0, 1fr);
+    align-items: center;
+    gap: 8px;
+    width: min(620px, 48vw);
+    min-height: 34px;
+    margin: -2px 0 7px 194px;
+    padding: 4px 12px 4px 7px;
+    border: 1px solid #d9c29c;
+    border-radius: 8px;
+    background:
+      linear-gradient(180deg, rgba(255,253,246,.98), rgba(249,240,220,.98)),
+      url("/assets/edo/ui/ui-sheet.webp") center/cover;
+    box-shadow: 0 4px 10px rgba(74,55,37,.08);
+    color: #514338;
+    font-family: var(--font-ui);
+  }
+
+  .desktop-objective-mark {
+    display: grid;
+    place-items: center;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #d85f50;
+    color: #fff8ee;
+    font-size: 13px;
+    font-weight: 900;
+  }
+
+  .desktop-objective-strip strong {
+    color: #bd5146;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .desktop-objective-strip > span:last-child {
+    overflow: hidden;
+    font-size: 12px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Desktop mock puts the objective above the illustration, not over a face. */
+  .presentation-hanging-note {
+    display: none !important;
+  }
+
+  /* Restore the location-story card that is present in the approved desktop mock. */
+  .town-side-panel > .town-flavor-card {
+    display: block !important;
+  }
+
+  .town-side-panel {
+    gap: 6px !important;
+  }
+
+  .town-side-panel > .side-card:first-child {
+    min-height: 286px !important;
+  }
+
+  .town-side-panel > .town-flavor-card {
+    min-height: 88px !important;
+    padding: 9px 10px !important;
+  }
+
+  .town-side-panel > .yesterday-card {
+    min-height: 92px !important;
+    padding: 9px 10px !important;
+  }
+
+  .town-side-panel > .rumor-card {
+    min-height: 136px !important;
+    padding: 9px 10px !important;
+  }
+
+  .town-side-panel .side-card-title {
+    margin-bottom: 6px !important;
+  }
+
+  .town-flavor-card p,
+  .yesterday-card p {
+    margin: 0;
+    font-size: 10px;
+    line-height: 1.48;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-list {
+    gap: 5px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-person {
+    min-height: 58px !important;
+    grid-template-columns: 48px minmax(0,1fr) 47px !important;
+    padding: 5px 6px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-avatar {
+    width: 48px !important;
+    height: 48px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-talk {
+    min-height: 34px !important;
+  }
+
+  .rumor-list li {
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+    font-size: 10px !important;
+  }
+
+  .action-change-list li {
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+  }
+}
+
+@media (min-width: 1181px) {
+  .world-layout {
+    grid-template-columns: minmax(0, 1fr) 370px;
+  }
+
+  .presentation-stage {
+    aspect-ratio: 16 / 8.85;
+  }
+
+  .town-presentation.area-nagaya .presentation-player {
+    left: 6.5%;
+    width: 41%;
+    height: 104%;
+    bottom: -9%;
+  }
+
+  .town-presentation.area-nagaya .presentation-primary.art-landlord {
+    right: 4.5%;
+    width: 42%;
+    height: 99%;
+    bottom: -7%;
+  }
+
+  .presentation-speech-bubble {
+    top: 35%;
+  }
+
+  .reference-action-dock {
+    margin-top: 6px;
+  }
+}
+
+@media (max-width: 899px) {
+  .desktop-objective-strip {
+    display: none;
+  }
+}
