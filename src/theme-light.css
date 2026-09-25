@@ -6221,3 +6221,38 @@ body::before {
     font-size: 13.5px;
   }
 }
+
+
+/* ── Final portrait/dialog match corrections ─────────────────────── */
+.dialog-portrait img,
+.dialog-portrait.speaker-child img,
+.dialog-portrait.speaker-firechief img,
+.dialog-portrait.speaker-fishmonger img,
+.dialog-portrait.speaker-player img {
+  object-fit: cover;
+  object-position: 50% 8%;
+  transform: none;
+}
+
+@media (max-width: 599px) {
+  /* The approved portrait mock keeps the large talk affordance below social cards
+     even while dialogue occupies the lower part of the scene. */
+  .reference-action-dock.is-dialogue {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .reference-action-dock.is-dialogue .reference-talk-cta {
+    display: grid;
+    order: -1;
+    width: 64% !important;
+    min-height: 70px !important;
+    align-self: center;
+    pointer-events: none;
+  }
+
+  .reference-action-dock.is-dialogue .reference-area-nav {
+    width: 100%;
+  }
+}
