@@ -69,7 +69,11 @@ async function move(page, label) {
       return JSON.parse(raw).currentArea === area;
     }, { key: STORAGE_KEY, area: ids[label] });
   }
-  await page.waitForTimeout(120);
+  await page.waitForTimeout(80);
+  const transition = page.locator(".area-transition");
+  if (await transition.count()) {
+    await transition.waitFor({ state: "hidden", timeout: 1800 }).catch(() => {});
+  }
 }
 
 async function talk(page, name) {
