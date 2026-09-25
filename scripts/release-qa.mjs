@@ -146,6 +146,8 @@ async function captureAreas(page, prefix) {
   // Capture the room before extra Day5 conversations can alter transient UI.
   await move(page, "部屋");
   await page.waitForSelector(".room-panel", { timeout: 5000 });
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(80);
   await page.screenshot({ path: `qa-artifacts/${prefix}-room.png`, fullPage: false });
   await page.getByRole("button", { name: "町へ出る" }).click();
 
@@ -157,6 +159,8 @@ async function captureAreas(page, prefix) {
   ];
   for (const [label, slug] of areas) {
     await move(page, label);
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.waitForTimeout(80);
     await page.screenshot({ path: `qa-artifacts/${prefix}-${slug}-world.png`, fullPage: false });
     const talkButton = page.locator(".nearby-talk:visible").first();
     if (await talkButton.count()) {
