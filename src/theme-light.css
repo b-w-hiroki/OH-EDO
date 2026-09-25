@@ -1972,7 +1972,7 @@ body::before {
   padding: 0;
   background:
     linear-gradient(180deg, transparent 38%, rgba(48,34,24,.58)),
-    url("/assets/edo/backgrounds/room.webp") center/cover no-repeat;
+    url("/assets/edo/backgrounds/room.avif") center/cover no-repeat;
 }
 
 .room-content {
@@ -6360,7 +6360,7 @@ body::before {
   border-radius: 0;
   background:
     linear-gradient(180deg, rgba(40,28,20,.04), rgba(40,28,20,.18)),
-    url("/assets/edo/backgrounds/room.webp") center / cover no-repeat;
+    url("/assets/edo/backgrounds/room.avif") center / cover no-repeat;
   box-shadow: none;
 }
 
