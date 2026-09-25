@@ -6092,3 +6092,132 @@ body::before {
   object-position: 50% 6%;
   transform: scale(1.26);
 }
+
+
+/* ── Portrait mock geometry: fit scene → social → talk → nav in 430×932 ── */
+@media (max-width: 599px) {
+  .presentation-stage {
+    aspect-ratio: 1.38 / 1;
+  }
+
+  .town-presentation .presentation-player {
+    left: -7%;
+    width: 62%;
+    height: 118%;
+    bottom: -18%;
+  }
+
+  .town-presentation .presentation-primary {
+    right: -5%;
+    width: 60%;
+    height: 114%;
+    bottom: -15%;
+  }
+
+  .town-presentation.area-nagaya .presentation-player {
+    left: -6%;
+    width: 63%;
+    height: 120%;
+    bottom: -19%;
+  }
+
+  .town-presentation.area-nagaya .presentation-primary.art-landlord {
+    right: -4%;
+    width: 61%;
+    height: 116%;
+    bottom: -16%;
+  }
+
+  .town-presentation.area-market .presentation-primary.art-fishmonger,
+  .town-presentation.area-market .presentation-primary.art-newsman,
+  .town-presentation.area-firehouse .presentation-primary.art-firechief {
+    right: -5%;
+    width: 61%;
+    height: 116%;
+    bottom: -17%;
+  }
+
+  .town-presentation.area-well .presentation-player {
+    left: -8%;
+    width: 64%;
+    height: 118%;
+    bottom: -18%;
+  }
+
+  .town-presentation.area-well .presentation-primary.art-child {
+    right: 2%;
+    width: 43%;
+    height: 76%;
+    bottom: -7%;
+  }
+
+  .presentation-hanging-note {
+    top: 8px !important;
+    width: 88px !important;
+    min-height: 60px !important;
+  }
+
+  .presentation-noren {
+    top: 10% !important;
+    min-height: 118px;
+  }
+
+  .presentation-speech-bubble {
+    top: 31%;
+    right: 23%;
+  }
+
+  .town-side-panel > .side-card:first-child,
+  .town-side-panel > .rumor-card {
+    min-height: 148px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-person {
+    min-height: 104px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-avatar {
+    width: 54px !important;
+    height: 54px !important;
+  }
+
+  .rumor-list li {
+    padding: 5px 0 !important;
+    font-size: 8px !important;
+  }
+
+  .reference-talk-cta {
+    width: 64% !important;
+    min-height: 70px !important;
+    border-radius: 35px;
+  }
+
+  .reference-talk-cta strong {
+    font-size: 27px;
+  }
+
+  .reference-area-nav button {
+    min-height: 64px;
+  }
+
+  .reference-area-nav:not(:has(button:nth-child(4):not(:disabled))) .area-nav-icon {
+    width: 29px;
+    height: 29px;
+  }
+
+  .reference-area-nav:not(:has(button:nth-child(4):not(:disabled))) .area-nav-icon svg {
+    width: 25px;
+    height: 25px;
+  }
+
+  .dialogue-overlay .mock-dialog {
+    min-height: 132px;
+    padding-top: 14px;
+    padding-bottom: 9px;
+  }
+
+  .dialogue-overlay .mock-dialog .dialog-text {
+    min-height: 67px;
+    font-size: 13.5px;
+  }
+}
