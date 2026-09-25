@@ -52,16 +52,30 @@ async function freshStart(page) {
 }
 
 async function move(page, label) {
+  const ids = { "長屋前": "nagaya", "井戸端": "well", "商店通り": "market", "火消し小屋": "firehouse", "部屋": "room" };
   const button = page.locator(".reference-area-nav button").filter({ hasText: label }).first();
-  await button.click({ force: true });
-  await page.waitForTimeout(180);
+  await button.waitFor({ state: "visible", timeout: 5000 });
+  await page.waitForFunction((text) => {
+    const button = [...document.querySelectorAll(".reference-area-nav button")].find((el) => el.textContent?.includes(text));
+    return Boolean(button && !button.disabled);
+  }, label);
+  await button.click();
+  if (label !== "部屋") {
+    await page.waitForFunction(({ key, area }) => {
+      const raw = localStorage.getItem(key);
+      if (!raw) return false;
+      return JSON.parse(raw).currentArea === area;
+    }, { key: STORAGE_KEY, area: ids[label] });
+  }
+  await page.waitForTimeout(120);
 }
 
 async function talk(page, name) {
   const card = page.locator(".nearby-person").filter({ hasText: name }).first();
-  await card.click({ force: true });
+  await card.waitFor({ state: "visible", timeout: 5000 });
+  await card.click();
   await page.waitForTimeout(80);
-  await page.locator(".reference-talk-cta:visible").click({ force: true });
+  await page.locator(".reference-talk-cta:visible").click();
   await page.waitForSelector(".mock-dialog:visible", { timeout: 5000 });
   await advanceDialogs(page);
 }
