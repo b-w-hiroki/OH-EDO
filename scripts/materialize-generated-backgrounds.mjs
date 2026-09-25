@@ -5,7 +5,7 @@ const staging = ".asset-staging";
 const outDir = "public/assets/edo/backgrounds";
 await mkdir(outDir, { recursive: true });
 
-const names = ["nagaya", "well", "market", "firehouse"];
+const names = ["nagaya", "well", "market", "firehouse", "room"];
 for (const name of names) {
   const files = (await readdir(staging))
     .filter((file) => file.startsWith(name + ".part"))
