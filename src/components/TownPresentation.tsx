@@ -158,9 +158,16 @@ export function TownPresentation({
         <button
           key={featuredNpc}
           className={`presentation-character presentation-npc presentation-primary presentation-featured ${characterClass(featuredNpc)} ${activeNpc === featuredNpc ? "is-speaking" : ""} ${selectedNpc === featuredNpc ? "is-selected" : ""}`}
-          aria-label={`${displayName(featuredNpc)}を選ぶ`}
-          onClick={() => onSelect(featuredNpc)}
-          onDoubleClick={() => onTalk(featuredNpc)}
+          aria-label={
+            selectedNpc === featuredNpc
+              ? `${displayName(featuredNpc)}と話す`
+              : `${displayName(featuredNpc)}を選ぶ`
+          }
+          aria-pressed={selectedNpc === featuredNpc}
+          onClick={() => {
+            if (selectedNpc === featuredNpc) onTalk(featuredNpc);
+            else onSelect(featuredNpc);
+          }}
           type="button"
         >
           <CharacterImage id={featuredNpc} />
