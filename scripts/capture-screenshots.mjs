@@ -47,7 +47,10 @@ async function capture(name, viewport, mobile = false) {
 
   const talk = page.locator(".nearby-talk:visible").first();
   if (await talk.count()) {
-    await talk.click();
+    // Dispatch directly so viewport screenshots stay anchored to the top.
+    await talk.evaluate((el) =>
+      el.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }))
+    );
     await page.waitForSelector(".mock-dialog:visible", { timeout: 5000 });
     await page.waitForTimeout(300);
     await page.screenshot({ path: `screenshots/${name}-dialog.png`, fullPage: false });

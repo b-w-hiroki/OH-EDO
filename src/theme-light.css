@@ -5226,3 +5226,257 @@ body::before {
     font-size: 8px;
   }
 }
+
+
+/* ── Approved-mock final fidelity pass ───────────────────────────── */
+@media (min-width: 1181px) {
+  .town-presentation.area-nagaya .presentation-player {
+    left: 5.5%;
+    width: 39%;
+    height: 99%;
+    bottom: -7%;
+  }
+
+  .town-presentation.area-nagaya .presentation-primary.art-landlord {
+    right: 6%;
+    width: 39%;
+    height: 94%;
+    bottom: -4%;
+  }
+
+  .dialogue-overlay {
+    padding: 0 20px 12px;
+    background: linear-gradient(180deg, transparent 0%, transparent 64%, rgba(41,28,20,.055) 82%, rgba(41,28,20,.105) 100%);
+  }
+
+  .dialogue-overlay .mock-dialog {
+    width: min(940px, 82%);
+    min-height: 144px;
+    margin-left: 1.5%;
+    padding: 20px 24px 15px;
+  }
+
+  .dialogue-overlay .mock-dialog .dialog-text {
+    min-height: 64px;
+    font-size: 18px;
+    line-height: 1.62;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-person {
+    min-height: 64px;
+    grid-template-columns: 50px minmax(0, 1fr) auto;
+    padding: 7px 8px;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-avatar {
+    width: 50px;
+    height: 50px;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-copy strong {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 599px) {
+  .app { padding-top: 6px; }
+
+  .reference-header {
+    grid-template-columns: 82px minmax(0, 1fr) 42px;
+    gap: 6px;
+    margin-bottom: 5px;
+  }
+
+  .reference-logo-wrap { min-height: 56px; }
+  .reference-logo { min-width: 78px; min-height: 44px; }
+  .reference-logo::before { width: 43px; height: 43px; }
+  .logo-oh { font-size: 11px; }
+  .logo-edo { margin-left: -6px; font-size: 21px; }
+
+  .reference-day-card {
+    min-height: 68px;
+    padding: 7px 10px;
+    row-gap: 2px;
+  }
+
+  .reference-header-actions .ghost:not(.sound-toggle):not(.reset-compact) {
+    min-width: 40px;
+    width: 40px;
+    min-height: 48px;
+    padding: 4px;
+    overflow: hidden;
+    font-size: 0;
+  }
+
+  .reference-header-actions .ghost:not(.sound-toggle):not(.reset-compact)::before {
+    content: "☰";
+    font-size: 22px;
+  }
+
+  .sound-toggle,
+  .reset-compact { display: none; }
+
+  .reference-hud-row { margin-bottom: 5px; }
+
+  .mobile-player-summary {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.55fr);
+    align-items: stretch;
+    gap: 5px !important;
+    padding: 6px !important;
+  }
+
+  .mobile-player-main {
+    grid-template-columns: 43px minmax(0, 1fr) !important;
+    gap: 6px !important;
+    align-items: center;
+  }
+
+  .mobile-player-portrait {
+    width: 43px !important;
+    height: 43px !important;
+    border-width: 2px;
+  }
+
+  .mobile-player-name {
+    margin-bottom: 1px !important;
+    font-size: 13px !important;
+  }
+
+  .mobile-profile-row {
+    grid-template-columns: 24px minmax(0, 1fr) 16px;
+    gap: 3px;
+    margin: 1px 0 !important;
+    font-size: 8px;
+  }
+
+  .mobile-profile-meter { height: 5px; }
+
+  .mobile-money {
+    margin-top: 1px !important;
+    font-size: 8px;
+  }
+
+  .mobile-money strong {
+    margin-left: 2px;
+    font-size: 10px !important;
+  }
+
+  .mobile-skill-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 3px;
+  }
+
+  .mobile-skill-card {
+    min-height: 58px !important;
+    padding: 3px 1px !important;
+  }
+
+  .mobile-skill-card > span {
+    width: 23px !important;
+    height: 23px !important;
+    border-radius: 7px;
+    font-size: 9px !important;
+  }
+
+  .mobile-skill-card small {
+    margin-top: 1px !important;
+    font-size: 6.5px !important;
+    line-height: 1.1;
+  }
+
+  .mobile-skill-card strong {
+    margin-top: 0 !important;
+    font-size: 8px !important;
+  }
+
+  .presentation-stage { aspect-ratio: 1 / 1.08; }
+
+  .town-presentation.area-nagaya .presentation-player {
+    left: -12%;
+    width: 65%;
+    height: 87%;
+    bottom: -7%;
+  }
+
+  .town-presentation.area-nagaya .presentation-primary.art-landlord {
+    right: -10%;
+    width: 62%;
+    height: 84%;
+    bottom: -5%;
+  }
+
+  .presentation-hanging-note {
+    top: 12px !important;
+    left: 7px !important;
+    width: 96px !important;
+    min-height: 76px !important;
+    padding: 7px !important;
+  }
+
+  .presentation-hanging-note strong {
+    font-size: 9px !important;
+    line-height: 1.3 !important;
+  }
+
+  .presentation-noren {
+    top: 15% !important;
+    min-height: 132px;
+  }
+
+  .presentation-speech-bubble {
+    right: 23%;
+    top: 42%;
+  }
+
+  .dialogue-overlay {
+    padding: 0 8px 8px;
+    background: linear-gradient(180deg, transparent 0%, transparent 66%, rgba(41,28,20,.06) 86%, rgba(41,28,20,.10) 100%);
+  }
+
+  .dialogue-overlay .mock-dialog {
+    width: 100%;
+    min-height: 122px;
+    padding: 13px 13px 9px;
+  }
+
+  .dialogue-overlay .mock-dialog .dialog-speaker { margin-top: -24px; }
+
+  .dialogue-overlay .mock-dialog .dialog-text {
+    min-height: 58px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-person {
+    min-height: 68px !important;
+    grid-template-columns: 46px minmax(0, 1fr) !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-avatar {
+    width: 46px !important;
+    height: 46px !important;
+  }
+
+  .town-side-panel { gap: 6px !important; }
+
+  .town-side-panel > .side-card:first-child,
+  .town-side-panel > .rumor-card {
+    padding: 7px 8px !important;
+  }
+
+  .reference-action-dock {
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .reference-area-nav button {
+    min-height: 68px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+
+  .area-nav-icon { width: 31px; height: 31px; }
+  .area-nav-icon svg { width: 27px; height: 27px; }
+
+  .reference-talk-cta { min-height: 66px !important; }
+}
