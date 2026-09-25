@@ -5480,3 +5480,26 @@ body::before {
 
   .reference-talk-cta { min-height: 66px !important; }
 }
+
+
+/* ── Release QA: native-resolution scenery + iPhone safe areas ───── */
+.town-background {
+  transform: none;
+  filter: saturate(1.045) contrast(1.025) brightness(1.01);
+}
+
+@media (max-width: 599px) {
+  .app {
+    padding-left: max(8px, env(safe-area-inset-left));
+    padding-right: max(8px, env(safe-area-inset-right));
+    padding-bottom: max(28px, env(safe-area-inset-bottom));
+  }
+
+  .reference-header {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .reference-action-dock {
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  }
+}
