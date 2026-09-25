@@ -6421,3 +6421,55 @@ body::before {
     display: none;
   }
 }
+
+
+/* ── Scenic motion polish: make travel feel like entering another place ── */
+@keyframes edoSceneArrive {
+  from {
+    opacity: .72;
+    transform: translateY(5px) scale(.994);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.town-presentation {
+  animation: edoSceneArrive .24s ease-out both;
+}
+
+.nearby-person,
+.reference-talk-cta,
+.reference-area-nav button {
+  transition:
+    transform .12s ease,
+    box-shadow .14s ease,
+    border-color .14s ease,
+    background .14s ease;
+}
+
+.nearby-person:hover,
+.nearby-person:focus-within {
+  transform: translateY(-1px);
+}
+
+.reference-talk-cta:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 #8b312b, 0 12px 22px rgba(128,51,42,.20);
+}
+
+.reference-talk-cta:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 2px 0 #8b312b, 0 5px 10px rgba(128,51,42,.16);
+}
+
+.reference-area-nav button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .town-presentation {
+    animation: none;
+  }
+}
