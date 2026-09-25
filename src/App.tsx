@@ -1195,6 +1195,7 @@ function App() {
           <div className="world-layout">
             <div className="stage presentation-stage">
               <TownPresentation
+                key={state.currentArea}
                 state={state}
                 objective={currentObjective}
                 selectedNpc={activeTalkNpc}
