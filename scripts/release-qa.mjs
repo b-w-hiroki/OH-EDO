@@ -198,6 +198,23 @@ async function runDesktop() {
   return { day: finalState.day, provider: finalState.fireAftermath?.provider ?? finalState.lastDecision?.provider };
 }
 
+async function runMobileChromium() {
+  const browser = await chromium.launch({ headless: true });
+  const context = await browser.newContext({
+    viewport: { width: 430, height: 932 },
+    screen: { width: 430, height: 932 },
+    deviceScaleFactor: 1,
+    isMobile: true,
+    hasTouch: true,
+  });
+  const page = await context.newPage();
+  const finalState = await completeDay1ToDay5(page);
+  const layout = await assertMobileLayout(page);
+  await captureAreas(page, "mobile-430");
+  await browser.close();
+  return { day: finalState.day, provider: finalState.fireAftermath?.provider ?? finalState.lastDecision?.provider, layout };
+}
+
 async function runIPhoneWebKit() {
   const browser = await webkit.launch({ headless: true });
   const iphone = devices["iPhone 16 Pro Max"] ?? devices["iPhone 15 Pro Max"] ?? devices["iPhone 14 Pro Max"];
@@ -207,13 +224,20 @@ async function runIPhoneWebKit() {
     screen: { width: 430, height: 932 },
   });
   const page = await context.newPage();
-  const finalState = await completeDay1ToDay5(page);
+  await freshStart(page);
   const layout = await assertMobileLayout(page);
-  await captureAreas(page, "iphone-webkit-430");
+  await page.screenshot({ path: "qa-artifacts/iphone-webkit-430-world.png", fullPage: false });
+  await page.locator(".reference-talk-cta:visible").click();
+  await page.waitForSelector(".mock-dialog:visible", { timeout: 5000 });
+  await page.screenshot({ path: "qa-artifacts/iphone-webkit-430-dialog.png", fullPage: false });
+  await advanceDialogs(page);
+  const s = await state(page);
+  assert(s?.screen === "town", "WebKit conversation did not return to town");
   await browser.close();
-  return { day: finalState.day, provider: finalState.fireAftermath?.provider ?? finalState.lastDecision?.provider, layout };
+  return { day: s.day, layout };
 }
 
 const desktop = await runDesktop();
+const mobile = await runMobileChromium();
 const iphone = await runIPhoneWebKit();
-console.log(JSON.stringify({ ok: true, desktop, iphone }, null, 2));
+console.log(JSON.stringify({ ok: true, desktop, mobile, iphone }, null, 2));
