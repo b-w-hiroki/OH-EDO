@@ -22,7 +22,7 @@ jobs:
       - run: npm ci
       - run: npm run verify
       - run: npm install --no-save playwright@1.55.0
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install --with-deps chromium webkit
       - name: Start preview
         run: |
           npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/oh-edo-preview.log 2>&1 &
@@ -33,8 +33,12 @@ jobs:
           cat /tmp/oh-edo-preview.log
           exit 1
       - run: node scripts/capture-screenshots.mjs
+      - run: node scripts/release-qa.mjs
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: actual-ui-screenshots
-          path: screenshots/
+          path: |
+            screenshots/
+            qa-artifacts/
           retention-days: 7
