@@ -112,8 +112,16 @@ async function completeDay1ToDay5(page) {
   await page.getByRole("button", { name: "騒ぎを見に行く" }).click();
   await advanceDialogs(page);
   await page.waitForSelector(".fire-choice-list", { timeout: 5000 });
+  await page.waitForFunction((key) => {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw).screen === "fire_choice" : false;
+  }, STORAGE_KEY);
   await page.locator(".fire-choice").first().evaluate((el) => el.click());
-  await page.waitForSelector(".fire-aftermath", { timeout: 30000 });
+  await page.waitForFunction((key) => {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw).screen === "fire_result" : false;
+  }, STORAGE_KEY, { timeout: 30000 });
+  await page.waitForSelector(".fire-aftermath", { timeout: 5000 });
   await page.getByRole("button", { name: "三日目へ" }).click();
 
   s = await state(page);
