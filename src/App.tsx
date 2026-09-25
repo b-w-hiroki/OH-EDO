@@ -1393,6 +1393,7 @@ function App() {
               onMap={openStatus}
             />
             <button
+              key={activeTalkNpc ?? "no-talk-target"}
               className={`reference-talk-cta ${activeTalkNpc ? `talk-target-${activeTalkNpc}` : ""}`}
               disabled={!activeTalkNpc}
               onClick={() => {
