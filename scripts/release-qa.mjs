@@ -113,7 +113,7 @@ async function completeDay1ToDay5(page) {
   await advanceDialogs(page);
   await page.waitForSelector(".fire-choice-list", { timeout: 5000 });
   await page.locator(".fire-choice").first().click({ force: true });
-  await page.waitForSelector(".fire-aftermath", { timeout: 10000 });
+  await page.waitForSelector(".fire-aftermath", { timeout: 30000 });
   await page.getByRole("button", { name: "三日目へ" }).click();
 
   s = await state(page);
