@@ -136,6 +136,12 @@ async function completeDay1ToDay5(page) {
 }
 
 async function captureAreas(page, prefix) {
+  // Capture the room before extra Day5 conversations can alter transient UI.
+  await move(page, "部屋");
+  await page.waitForSelector(".room-panel", { timeout: 5000 });
+  await page.screenshot({ path: `qa-artifacts/${prefix}-room.png`, fullPage: false });
+  await page.getByRole("button", { name: "町へ出る" }).click();
+
   const areas = [
     ["長屋前", "nagaya"],
     ["井戸端", "well"],
@@ -154,11 +160,6 @@ async function captureAreas(page, prefix) {
       await advanceDialogs(page);
     }
   }
-
-  await move(page, "部屋");
-  await page.waitForSelector(".room-panel", { timeout: 5000 });
-  await page.screenshot({ path: `qa-artifacts/${prefix}-room.png`, fullPage: false });
-  await page.getByRole("button", { name: "町へ出る" }).click();
 }
 
 async function assertMobileLayout(page) {
