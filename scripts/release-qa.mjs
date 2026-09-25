@@ -47,8 +47,10 @@ async function freshStart(page) {
     const raw = localStorage.getItem(key);
     if (!raw) return false;
     const s = JSON.parse(raw);
-    return s.screen === "town" && s.flags?.met_landlord;
+    return Boolean(s.flags?.intro_done);
   }, STORAGE_KEY);
+  await page.waitForTimeout(180);
+  await advanceDialogs(page);
 }
 
 async function move(page, label) {
@@ -82,6 +84,11 @@ async function talk(page, name) {
 
 async function completeDay1ToDay5(page) {
   await freshStart(page);
+
+  let initial = await state(page);
+  if (!initial?.flags?.met_landlord) {
+    await talk(page, "おかみさん");
+  }
 
   await move(page, "商店通り");
   await talk(page, "熊さん");
@@ -227,8 +234,10 @@ async function runIPhoneWebKit() {
   await freshStart(page);
   const layout = await assertMobileLayout(page);
   await page.screenshot({ path: "qa-artifacts/iphone-webkit-430-world.png", fullPage: false });
-  await page.locator(".reference-talk-cta:visible").click();
-  await page.waitForSelector(".mock-dialog:visible", { timeout: 5000 });
+  if (!(await page.locator(".mock-dialog:visible").count())) {
+    await page.locator(".reference-talk-cta:visible").click();
+    await page.waitForSelector(".mock-dialog:visible", { timeout: 5000 });
+  }
   await page.screenshot({ path: "qa-artifacts/iphone-webkit-430-dialog.png", fullPage: false });
   await advanceDialogs(page);
   const s = await state(page);
