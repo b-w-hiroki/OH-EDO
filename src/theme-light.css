@@ -6507,3 +6507,65 @@ body::before {
     animation: none !important;
   }
 }
+
+
+/* ── New-background staging pass: preserve the mock's mobile flow ─── */
+@media (min-width: 1181px) {
+  .town-presentation.area-market .presentation-player {
+    left: 2.5%;
+    width: 41%;
+    height: 106%;
+    bottom: -9%;
+  }
+
+  .town-presentation.area-firehouse .presentation-player {
+    left: 3%;
+    width: 40%;
+    height: 104%;
+    bottom: -8%;
+  }
+
+  .town-presentation.area-firehouse .presentation-primary.art-firechief {
+    right: 4%;
+    width: 39%;
+    height: 98%;
+    bottom: -6%;
+  }
+}
+
+@media (max-width: 599px) {
+  /* The approved portrait mock does not spend vertical space on this card.
+     Keep the core flow: scene → people/rumor → talk → travel. */
+  .town-side-panel > .yesterday-card {
+    display: none !important;
+  }
+
+  .town-side-panel > .side-card:first-child {
+    grid-column: 1 !important;
+  }
+
+  .town-side-panel > .rumor-card {
+    grid-column: 2 !important;
+  }
+
+  .town-presentation.area-market .presentation-player {
+    left: -10%;
+    width: 69%;
+    height: 124%;
+    bottom: -20%;
+  }
+
+  .town-presentation.area-firehouse .presentation-player {
+    left: -10%;
+    width: 68%;
+    height: 122%;
+    bottom: -19%;
+  }
+
+  .town-presentation.area-firehouse .presentation-primary.art-firechief {
+    right: -4%;
+    width: 60%;
+    height: 110%;
+    bottom: -14%;
+  }
+}
