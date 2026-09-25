@@ -1161,6 +1161,10 @@ function App() {
 
       {inWorld && (
         <div className="reference-hud-row">
+          <div className="desktop-objective-strip" aria-label="今日の目当て">
+            <span>◎ 今日の目当て</span>
+            <strong>{currentObjective}</strong>
+          </div>
           <div className="mobile-status-wrap">
             <MobilePlayerSummary player={state.player} town={state.town} />
           </div>
