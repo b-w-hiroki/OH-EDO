@@ -45,13 +45,18 @@ async function capture(name, viewport, mobile = false) {
   await startToTown(page);
   await page.screenshot({ path: `screenshots/${name}-world.png`, fullPage: false });
 
-  const talk = page.locator(".nearby-talk:visible").first();
-  if (await talk.count()) {
+  const rowTalk = page.locator(".nearby-talk:visible").first();
+  const mainTalk = page.locator(".reference-talk-cta:visible").first();
+  if (await rowTalk.count()) {
     // Dispatch directly so viewport screenshots stay anchored to the top.
-    await talk.evaluate((el) =>
+    await rowTalk.evaluate((el) =>
       el.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }))
     );
-    await page.waitForSelector(".mock-dialog:visible", { timeout: 5000 });
+  } else if (await mainTalk.count()) {
+    await mainTalk.click();
+    await page.evaluate(() => window.scrollTo(0, 0));
+  }
+  if (await page.locator(".mock-dialog:visible").count()) {
     await page.waitForTimeout(300);
     await page.screenshot({ path: `screenshots/${name}-dialog.png`, fullPage: false });
   }
