@@ -112,7 +112,7 @@ async function completeDay1ToDay5(page) {
   await page.getByRole("button", { name: "騒ぎを見に行く" }).click();
   await advanceDialogs(page);
   await page.waitForSelector(".fire-choice-list", { timeout: 5000 });
-  await page.locator(".fire-choice").first().click({ force: true });
+  await page.locator(".fire-choice").first().evaluate((el) => el.click());
   await page.waitForSelector(".fire-aftermath", { timeout: 30000 });
   await page.getByRole("button", { name: "三日目へ" }).click();
 
@@ -124,7 +124,7 @@ async function completeDay1ToDay5(page) {
   await talk(page, "火消し頭");
   await talk(page, "火消し頭");
   await page.waitForSelector(".fire-choice-list", { timeout: 5000 });
-  await page.locator(".fire-choice").first().click({ force: true });
+  await page.locator(".fire-choice").first().evaluate((el) => el.click());
   await page.getByRole("button", { name: "四日目へ" }).click();
 
   s = await state(page);
@@ -134,7 +134,7 @@ async function completeDay1ToDay5(page) {
   await talk(page, "瓦版屋");
   await talk(page, "瓦版屋");
   await page.waitForSelector(".festival-panel", { timeout: 5000 });
-  await page.locator(".fire-choice").first().click({ force: true });
+  await page.locator(".fire-choice").first().evaluate((el) => el.click());
   await page.getByRole("button", { name: "五日目へ" }).click();
 
   s = await state(page);
