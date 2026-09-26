@@ -2015,6 +2015,12 @@ function PatrolResultView({
   );
 }
 
+function rumorReachLabel(strength: number): string {
+  if (strength >= 3) return "町じゅうの話題";
+  if (strength >= 2) return "町内で広がる噂";
+  return "近所の小さな噂";
+}
+
 function FireAftermathView({
   aftermath,
   onNext,
@@ -2039,7 +2045,7 @@ function FireAftermathView({
         <p>{aftermath.townSummary}</p>
       </div>
       <p className="muted">
-        判断: {aftermath.provider} / 噂強度 {aftermath.rumorStrength.toFixed(1)}
+        町への広がり：{rumorReachLabel(aftermath.rumorStrength)}
       </p>
       <div className="panel-actions">
         <button className="primary" onClick={onNext}>三日目へ</button>
