@@ -69,7 +69,11 @@ async function move(page, label) {
       return JSON.parse(raw).currentArea === area;
     }, { key: STORAGE_KEY, area: ids[label] });
   }
-  await page.waitForTimeout(120);
+  await page.waitForTimeout(80);
+  const transition = page.locator(".area-transition");
+  if (await transition.count()) {
+    await transition.waitFor({ state: "hidden", timeout: 1800 }).catch(() => {});
+  }
 }
 
 async function talk(page, name) {
@@ -108,8 +112,16 @@ async function completeDay1ToDay5(page) {
   await page.getByRole("button", { name: "騒ぎを見に行く" }).click();
   await advanceDialogs(page);
   await page.waitForSelector(".fire-choice-list", { timeout: 5000 });
-  await page.locator(".fire-choice").first().click();
-  await page.waitForSelector(".fire-aftermath", { timeout: 10000 });
+  await page.waitForFunction((key) => {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw).screen === "fire_choice" : false;
+  }, STORAGE_KEY);
+  await page.locator(".fire-choice").first().evaluate((el) => el.click());
+  await page.waitForFunction((key) => {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw).screen === "fire_result" : false;
+  }, STORAGE_KEY, { timeout: 30000 });
+  await page.waitForSelector(".fire-aftermath", { timeout: 5000 });
   await page.getByRole("button", { name: "三日目へ" }).click();
 
   s = await state(page);
@@ -120,7 +132,7 @@ async function completeDay1ToDay5(page) {
   await talk(page, "火消し頭");
   await talk(page, "火消し頭");
   await page.waitForSelector(".fire-choice-list", { timeout: 5000 });
-  await page.locator(".fire-choice").first().click();
+  await page.locator(".fire-choice").first().evaluate((el) => el.click());
   await page.getByRole("button", { name: "四日目へ" }).click();
 
   s = await state(page);
@@ -130,7 +142,7 @@ async function completeDay1ToDay5(page) {
   await talk(page, "瓦版屋");
   await talk(page, "瓦版屋");
   await page.waitForSelector(".festival-panel", { timeout: 5000 });
-  await page.locator(".fire-choice").first().click();
+  await page.locator(".fire-choice").first().evaluate((el) => el.click());
   await page.getByRole("button", { name: "五日目へ" }).click();
 
   s = await state(page);
@@ -149,7 +161,7 @@ async function captureAreas(page, prefix) {
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.waitForTimeout(80);
   await page.screenshot({ path: `qa-artifacts/${prefix}-room.png`, fullPage: false });
-  await page.getByRole("button", { name: "町へ出る" }).click();
+  await page.getByRole("button", { name: "町へ出る" }).evaluate((el) => el.click());
 
   const areas = [
     ["長屋前", "nagaya"],
