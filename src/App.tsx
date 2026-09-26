@@ -738,7 +738,7 @@ function App() {
 
   const chooseJob = useCallback((choice: JobChoice) => {
     uiSound.select();
-    setToast("行動が町の評判に影響した");
+    setToast(`${actionTagLabel(choice.rumorTags[0])} → 明日の町に残る`);
     window.setTimeout(() => setToast(null), 1800);
     setState((s) => (s.screen === "job" ? applyJobChoice(s, choice) : s));
   }, []);
@@ -922,13 +922,13 @@ function App() {
       return next;
     });
     uiSound.result();
-    setToast("評判がイベントの結果に反映された");
+    setToast(`${actionTagLabel(choice.rumorTags[0])} → 春祭り後の評判へ`);
     window.setTimeout(() => setToast(null), 2200);
   }, []);
 
   const choosePatrol = useCallback((choice: PatrolChoice) => {
     uiSound.select();
-    setToast("見回りの結果が町に残った");
+    setToast(`${actionTagLabel(choice.rumorTags[0])} → 町の人が覚えている`);
     window.setTimeout(() => setToast(null), 1800);
     setState((s) => {
       if (s.screen !== "patrol_choice") return s;
