@@ -6750,3 +6750,126 @@ body::before {
     bottom: -13%;
   }
 }
+
+
+/* ── Day-change feedback: make yesterday → today feel tangible ───── */
+.day-transition {
+  position: fixed;
+  left: 50%;
+  top: 112px;
+  z-index: 4400;
+  width: min(560px, calc(100vw - 32px));
+  transform: translateX(-50%);
+  padding: 12px 18px 13px;
+  border: 1px solid #cfb17e;
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(255,253,244,.98), rgba(244,230,202,.98)),
+    url("/assets/edo/ui/ui-sheet.webp") center/cover;
+  color: #4d3c2e;
+  box-shadow: 0 14px 34px rgba(67,48,31,.20);
+  font-family: var(--font-ui);
+  text-align: center;
+  pointer-events: none;
+  animation: dayTransitionIn 1.9s ease both;
+}
+
+.day-transition::before,
+.day-transition::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 48px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #c45b4b);
+  opacity: .7;
+}
+
+.day-transition::before {
+  left: 16px;
+}
+
+.day-transition::after {
+  right: 16px;
+  transform: rotate(180deg);
+}
+
+.day-transition small,
+.day-transition span {
+  display: block;
+}
+
+.day-transition small {
+  margin-bottom: 2px;
+  color: #a55347;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.day-transition strong {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 25px;
+  line-height: 1.15;
+  letter-spacing: .08em;
+}
+
+.day-transition span {
+  margin-top: 4px;
+  color: #74604d;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+@keyframes dayTransitionIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -10px) scale(.98);
+  }
+  12% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  78% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -5px) scale(.995);
+  }
+}
+
+.logstrip-rumors,
+.rumor-chip {
+  letter-spacing: .01em;
+}
+
+@media (max-width: 599px) {
+  .day-transition {
+    top: 92px;
+    width: calc(100vw - 24px);
+    padding: 10px 12px 11px;
+    border-radius: 9px;
+  }
+
+  .day-transition::before,
+  .day-transition::after {
+    width: 24px;
+  }
+
+  .day-transition strong {
+    font-size: 21px;
+  }
+
+  .day-transition span {
+    font-size: 9px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .day-transition {
+    animation: none;
+  }
+}

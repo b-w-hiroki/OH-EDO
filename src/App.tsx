@@ -564,7 +564,7 @@ function getYesterdaySummary(state: GameState): string | null {
   if (!yesterday) return state.lastDecision ? "昨日の行動が町の噂になっている。" : null;
   const tag = yesterday.tags?.[0];
   return tag
-    ? `昨日の行動が「#${tag}」として町に残っている。`
+    ? `昨日の行動が「${rumorLabel(tag)}」として町に残っている。`
     : "昨日の行動を町の人たちが覚えている。";
 }
 
@@ -605,8 +605,10 @@ function App() {
   const [soundMuted, setSoundMuted] = useState(() => uiSound.isMuted());
   const [areaTransition, setAreaTransition] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [dayTransition, setDayTransition] = useState<number | null>(null);
   const [selectedNpcId, setSelectedNpcId] = useState<NPCId | null>(() => getAreaNpcIds(loadInitial())[0] ?? null);
   const dialogOpenRef = useRef(false);
+  const previousDayRef = useRef(state.day);
 
   useEffect(() => {
     const local = getAreaNpcIds(state);
@@ -623,6 +625,16 @@ function App() {
       // ignore quota / privacy mode
     }
   }, [state]);
+
+  // A new day is the core reward loop: briefly surface it without blocking play.
+  useEffect(() => {
+    if (state.day <= previousDayRef.current) return;
+    previousDayRef.current = state.day;
+    uiSound.result();
+    setDayTransition(state.day);
+    const timer = window.setTimeout(() => setDayTransition(null), 1900);
+    return () => window.clearTimeout(timer);
+  }, [state.day]);
 
   // Auto-triggers when standing on the town with no dialog open.
   useEffect(() => {
@@ -727,7 +739,7 @@ function App() {
 
   const chooseJob = useCallback((choice: JobChoice) => {
     uiSound.select();
-    setToast("行動が町の評判に影響した");
+    setToast(`${actionTagLabel(choice.rumorTags[0])} → 明日の町に残る`);
     window.setTimeout(() => setToast(null), 1800);
     setState((s) => (s.screen === "job" ? applyJobChoice(s, choice) : s));
   }, []);
@@ -845,7 +857,9 @@ function App() {
       log: appendLog(
         provisional.log,
         state.day,
-        `小火の翌日判断：#${decidedRumor ?? "none"} / ${outcome.result.provider}`
+        decidedRumor
+          ? `小火のあと、「${rumorLabel(decidedRumor)}」という評判が町に広がった。`
+          : "小火の騒ぎは収まり、町は少し落ち着きを取り戻した。"
       ),
     }));
   }, [state]);
@@ -909,13 +923,13 @@ function App() {
       return next;
     });
     uiSound.result();
-    setToast("評判がイベントの結果に反映された");
+    setToast(`${actionTagLabel(choice.rumorTags[0])} → 春祭り後の評判へ`);
     window.setTimeout(() => setToast(null), 2200);
   }, []);
 
   const choosePatrol = useCallback((choice: PatrolChoice) => {
     uiSound.select();
-    setToast("見回りの結果が町に残った");
+    setToast(`${actionTagLabel(choice.rumorTags[0])} → 町の人が覚えている`);
     window.setTimeout(() => setToast(null), 1800);
     setState((s) => {
       if (s.screen !== "patrol_choice") return s;
@@ -978,14 +992,9 @@ function App() {
     );
 
     setState((current) => {
-      const providerLabel =
-        outcome.result.provider === "jev" ? "Jev" : "Local";
       const rumorText = decidedRumor
-        ? `#${decidedRumor}（強さ ${outcome.result.rumor.strength.toFixed(1)}）`
-        : "大きな噂なし";
-      const fallbackText = outcome.fallbackReason
-        ? ` / fallback: ${outcome.fallbackReason}`
-        : "";
+        ? `「${rumorLabel(decidedRumor)}」という話が町に広がり始めた。`
+        : "大きな噂は立たず、町はいつもの朝を迎えた。";
 
       const targetNpcId = context.targetNpcId;
       const currentRelation = current.npcRelations[targetNpcId];
@@ -1037,10 +1046,10 @@ function App() {
           appendLog(
             current.log,
             current.day,
-            `翌日の町判断：${rumorText} / ${providerLabel}${fallbackText}`
+            rumorText
           ),
           current.day,
-          `大家の態度：${outcome.result.npc.attitude} / 好意 ${outcome.result.npc.affinityDelta >= 0 ? "+" : ""}${outcome.result.npc.affinityDelta}`
+          `おかみさんの反応：${relationLabel(outcome.result.npc.attitude)}`
         ),
       };
       return startDialogInState(withDecision, "night", NIGHT_LINES);
@@ -1422,7 +1431,7 @@ function App() {
             </span>
             {state.activeRumors.length > 0 && (
               <span className="logstrip-rumors">
-                {state.activeRumors.map((r) => `#${r}`).join(" ")}
+                {state.activeRumors.map((r) => `「${rumorLabel(r)}」`).join("  ")}
               </span>
             )}
           </div>
@@ -1442,6 +1451,13 @@ function App() {
         <div className="area-transition" aria-live="polite">
           <span>場所を移動</span>
           <strong>{areaTransition}</strong>
+        </div>
+      )}
+      {dayTransition && (
+        <div className="day-transition" aria-live="polite">
+          <small>昨日の行動が、今日の町へ</small>
+          <strong>{dayTransition}日目の朝</strong>
+          {yesterdaySummary && <span>{yesterdaySummary}</span>}
         </div>
       )}
       {toast && <div className="game-toast" aria-live="polite">{toast}</div>}
@@ -1632,6 +1648,25 @@ function npcSubtitle(npc: NPCId): string {
   }
 }
 
+function rumorLabel(tag?: string): string {
+  switch (tag) {
+    case "helpful":
+      return "人助け";
+    case "clean":
+      return "丁寧な仕事";
+    case "iki":
+      return "粋な立ち回り";
+    case "quick":
+      return "手際がいい";
+    case "funny":
+      return "愉快なやつ";
+    case "yabo":
+      return "ちょっと野暮";
+    default:
+      return "町の話題";
+  }
+}
+
 function actionTagLabel(tag?: string): string {
   switch (tag) {
     case "helpful":
@@ -1708,7 +1743,7 @@ function TownSidePanel({
     .map((action) => ({
       label: actionTagLabel(action.tags?.[0]),
       effect: action.tags?.[0]
-        ? `「#${action.tags[0]}」として町に残った`
+        ? `「${rumorLabel(action.tags[0])}」として町に残った`
         : "町の人が覚えている",
     }));
 
@@ -1716,7 +1751,7 @@ function TownSidePanel({
     areaEcho ?? "まだ大きな噂はない。",
     areaFlavor[(state.day + 1) % areaFlavor.length] ?? areaFlavor[0],
     dominantRumor
-      ? `町では「#${dominantRumor}」の話が少しずつ広がっている。`
+      ? `町では「${rumorLabel(dominantRumor)}」の話が少しずつ広がっている。`
       : "商店通りでは、朝から新しい話題を探す声が聞こえる。",
   ];
 
@@ -1810,7 +1845,7 @@ function TownSidePanel({
             </li>
           ))}
         </ul>
-        {dominantRumor && <span className="rumor-chip">#{dominantRumor}</span>}
+        {dominantRumor && <span className="rumor-chip">{rumorLabel(dominantRumor)}</span>}
       </section>
 
       <section className="side-card town-mood-card">
@@ -1981,6 +2016,12 @@ function PatrolResultView({
   );
 }
 
+function rumorReachLabel(strength: number): string {
+  if (strength >= 3) return "町じゅうの話題";
+  if (strength >= 2) return "町内で広がる噂";
+  return "近所の小さな噂";
+}
+
 function FireAftermathView({
   aftermath,
   onNext,
@@ -2005,7 +2046,7 @@ function FireAftermathView({
         <p>{aftermath.townSummary}</p>
       </div>
       <p className="muted">
-        判断: {aftermath.provider} / 噂強度 {aftermath.rumorStrength.toFixed(1)}
+        町への広がり：{rumorReachLabel(aftermath.rumorStrength)}
       </p>
       <div className="panel-actions">
         <button className="primary" onClick={onNext}>三日目へ</button>
@@ -2139,7 +2180,7 @@ function StatusPanel({
           ) : (
             <ul>
               {state.activeRumors.map((r) => (
-                <li key={r}>#{r}</li>
+                <li key={r}>{rumorLabel(r)}</li>
               ))}
             </ul>
           )}
@@ -2152,7 +2193,7 @@ function StatusPanel({
       ) : (
         <ul>
           {[...state.rumorHistory].slice(-6).reverse().map((r) => (
-            <li key={r.id}>Day{r.createdDay} #{r.tag} / 強さ {r.strength.toFixed(1)}</li>
+            <li key={r.id}>Day{r.createdDay} {rumorLabel(r.tag)} / 強さ {r.strength.toFixed(1)}</li>
           ))}
         </ul>
       )}
