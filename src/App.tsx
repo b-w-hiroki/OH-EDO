@@ -856,7 +856,9 @@ function App() {
       log: appendLog(
         provisional.log,
         state.day,
-        `小火の翌日判断：#${decidedRumor ?? "none"} / ${outcome.result.provider}`
+        decidedRumor
+          ? `小火のあと、「${rumorLabel(decidedRumor)}」という評判が町に広がった。`
+          : "小火の騒ぎは収まり、町は少し落ち着きを取り戻した。"
       ),
     }));
   }, [state]);
@@ -989,14 +991,9 @@ function App() {
     );
 
     setState((current) => {
-      const providerLabel =
-        outcome.result.provider === "jev" ? "Jev" : "Local";
       const rumorText = decidedRumor
-        ? `#${decidedRumor}（強さ ${outcome.result.rumor.strength.toFixed(1)}）`
-        : "大きな噂なし";
-      const fallbackText = outcome.fallbackReason
-        ? ` / fallback: ${outcome.fallbackReason}`
-        : "";
+        ? `「${rumorLabel(decidedRumor)}」という話が町に広がり始めた。`
+        : "大きな噂は立たず、町はいつもの朝を迎えた。";
 
       const targetNpcId = context.targetNpcId;
       const currentRelation = current.npcRelations[targetNpcId];
@@ -1048,10 +1045,10 @@ function App() {
           appendLog(
             current.log,
             current.day,
-            `翌日の町判断：${rumorText} / ${providerLabel}${fallbackText}`
+            rumorText
           ),
           current.day,
-          `大家の態度：${outcome.result.npc.attitude} / 好意 ${outcome.result.npc.affinityDelta >= 0 ? "+" : ""}${outcome.result.npc.affinityDelta}`
+          `おかみさんの反応：${relationLabel(outcome.result.npc.attitude)}`
         ),
       };
       return startDialogInState(withDecision, "night", NIGHT_LINES);
