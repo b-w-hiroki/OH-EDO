@@ -630,6 +630,7 @@ function App() {
   useEffect(() => {
     if (state.day <= previousDayRef.current) return;
     previousDayRef.current = state.day;
+    uiSound.result();
     setDayTransition(state.day);
     const timer = window.setTimeout(() => setDayTransition(null), 1900);
     return () => window.clearTimeout(timer);
