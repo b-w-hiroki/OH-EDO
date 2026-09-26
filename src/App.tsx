@@ -564,7 +564,7 @@ function getYesterdaySummary(state: GameState): string | null {
   if (!yesterday) return state.lastDecision ? "昨日の行動が町の噂になっている。" : null;
   const tag = yesterday.tags?.[0];
   return tag
-    ? `昨日の行動が「#${tag}」として町に残っている。`
+    ? `昨日の行動が「${rumorLabel(tag)}」として町に残っている。`
     : "昨日の行動を町の人たちが覚えている。";
 }
 
@@ -605,8 +605,10 @@ function App() {
   const [soundMuted, setSoundMuted] = useState(() => uiSound.isMuted());
   const [areaTransition, setAreaTransition] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [dayTransition, setDayTransition] = useState<number | null>(null);
   const [selectedNpcId, setSelectedNpcId] = useState<NPCId | null>(() => getAreaNpcIds(loadInitial())[0] ?? null);
   const dialogOpenRef = useRef(false);
+  const previousDayRef = useRef(state.day);
 
   useEffect(() => {
     const local = getAreaNpcIds(state);
@@ -623,6 +625,15 @@ function App() {
       // ignore quota / privacy mode
     }
   }, [state]);
+
+  // A new day is the core reward loop: briefly surface it without blocking play.
+  useEffect(() => {
+    if (state.day <= previousDayRef.current) return;
+    previousDayRef.current = state.day;
+    setDayTransition(state.day);
+    const timer = window.setTimeout(() => setDayTransition(null), 1900);
+    return () => window.clearTimeout(timer);
+  }, [state.day]);
 
   // Auto-triggers when standing on the town with no dialog open.
   useEffect(() => {
@@ -1422,7 +1433,7 @@ function App() {
             </span>
             {state.activeRumors.length > 0 && (
               <span className="logstrip-rumors">
-                {state.activeRumors.map((r) => `#${r}`).join(" ")}
+                {state.activeRumors.map((r) => `「${rumorLabel(r)}」`).join("  ")}
               </span>
             )}
           </div>
@@ -1442,6 +1453,13 @@ function App() {
         <div className="area-transition" aria-live="polite">
           <span>場所を移動</span>
           <strong>{areaTransition}</strong>
+        </div>
+      )}
+      {dayTransition && (
+        <div className="day-transition" aria-live="polite">
+          <small>昨日の行動が、今日の町へ</small>
+          <strong>{dayTransition}日目の朝</strong>
+          {yesterdaySummary && <span>{yesterdaySummary}</span>}
         </div>
       )}
       {toast && <div className="game-toast" aria-live="polite">{toast}</div>}
@@ -1632,6 +1650,25 @@ function npcSubtitle(npc: NPCId): string {
   }
 }
 
+function rumorLabel(tag?: string): string {
+  switch (tag) {
+    case "helpful":
+      return "人助け";
+    case "clean":
+      return "丁寧な仕事";
+    case "iki":
+      return "粋な立ち回り";
+    case "quick":
+      return "手際がいい";
+    case "funny":
+      return "愉快なやつ";
+    case "yabo":
+      return "ちょっと野暮";
+    default:
+      return "町の話題";
+  }
+}
+
 function actionTagLabel(tag?: string): string {
   switch (tag) {
     case "helpful":
@@ -1708,7 +1745,7 @@ function TownSidePanel({
     .map((action) => ({
       label: actionTagLabel(action.tags?.[0]),
       effect: action.tags?.[0]
-        ? `「#${action.tags[0]}」として町に残った`
+        ? `「${rumorLabel(action.tags[0])}」として町に残った`
         : "町の人が覚えている",
     }));
 
@@ -1716,7 +1753,7 @@ function TownSidePanel({
     areaEcho ?? "まだ大きな噂はない。",
     areaFlavor[(state.day + 1) % areaFlavor.length] ?? areaFlavor[0],
     dominantRumor
-      ? `町では「#${dominantRumor}」の話が少しずつ広がっている。`
+      ? `町では「${rumorLabel(dominantRumor)}」の話が少しずつ広がっている。`
       : "商店通りでは、朝から新しい話題を探す声が聞こえる。",
   ];
 
@@ -1810,7 +1847,7 @@ function TownSidePanel({
             </li>
           ))}
         </ul>
-        {dominantRumor && <span className="rumor-chip">#{dominantRumor}</span>}
+        {dominantRumor && <span className="rumor-chip">{rumorLabel(dominantRumor)}</span>}
       </section>
 
       <section className="side-card town-mood-card">
@@ -2139,7 +2176,7 @@ function StatusPanel({
           ) : (
             <ul>
               {state.activeRumors.map((r) => (
-                <li key={r}>#{r}</li>
+                <li key={r}>{rumorLabel(r)}</li>
               ))}
             </ul>
           )}
@@ -2152,7 +2189,7 @@ function StatusPanel({
       ) : (
         <ul>
           {[...state.rumorHistory].slice(-6).reverse().map((r) => (
-            <li key={r.id}>Day{r.createdDay} #{r.tag} / 強さ {r.strength.toFixed(1)}</li>
+            <li key={r.id}>Day{r.createdDay} {rumorLabel(r.tag)} / 強さ {r.strength.toFixed(1)}</li>
           ))}
         </ul>
       )}
