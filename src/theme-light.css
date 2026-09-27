@@ -6968,3 +6968,134 @@ body::before {
     animation: none;
   }
 }
+
+
+/* ── Five-day finale: festival atmosphere + compact payoff card ─── */
+.town-presentation.is-festival-prep .town-background {
+  filter: saturate(1.09) contrast(1.025) brightness(1.025);
+}
+
+.town-presentation.is-festival-after .town-background {
+  filter: saturate(1.08) contrast(1.02) brightness(1.035);
+}
+
+.town-presentation.is-festival-prep .scene-petals,
+.town-presentation.is-festival-after .scene-petals {
+  opacity: 1;
+}
+
+.town-presentation.is-festival-prep .scene-petals i,
+.town-presentation.is-festival-after .scene-petals i {
+  animation-duration: 10.5s;
+}
+
+.town-finale-card {
+  border-color: #d6ad72 !important;
+  background:
+    linear-gradient(180deg, rgba(255,248,226,.98), rgba(247,232,202,.98)),
+    url("/assets/edo/ui/ui-sheet.webp") center/cover !important;
+  box-shadow: 0 8px 20px rgba(98,67,31,.14) !important;
+}
+
+.town-finale-rank {
+  display: block;
+  color: #7f4f2f;
+  font-family: var(--font-serif);
+  font-size: 21px;
+  line-height: 1.12;
+  letter-spacing: .05em;
+}
+
+.town-finale-memory {
+  display: block;
+  margin-top: 3px;
+  color: #8b7259;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.town-finale-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+  margin: 8px 0 7px;
+}
+
+.town-finale-stats span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  min-width: 0;
+  padding: 5px 7px;
+  border: 1px solid rgba(196,158,107,.5);
+  border-radius: 7px;
+  background: rgba(255,255,255,.46);
+  color: #75604d;
+  font-size: 9px;
+}
+
+.town-finale-stats b {
+  overflow: hidden;
+  color: #a14f3f;
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.town-finale-card p {
+  margin: 0;
+  color: #5d4b3a;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.festival-town-response {
+  margin: 10px 0 6px;
+  padding: 10px 12px;
+  border-left: 3px solid #d56655;
+  border-radius: 6px;
+  background: #fff6e8;
+  color: #624936;
+  font-weight: 700;
+  line-height: 1.65;
+}
+
+@media (min-width: 900px) {
+  .town-side-panel:has(.town-finale-card) > .town-mood-card {
+    display: none !important;
+  }
+
+  .town-side-panel:has(.town-finale-card) > .town-flavor-card {
+    min-height: 72px !important;
+  }
+
+  .town-finale-card {
+    padding: 9px 10px !important;
+  }
+}
+
+@media (max-width: 599px) {
+  .town-finale-card {
+    grid-column: 1 / -1 !important;
+    padding: 8px 9px !important;
+  }
+
+  .town-finale-rank {
+    font-size: 18px;
+  }
+
+  .town-finale-card p {
+    font-size: 9px;
+  }
+
+  .town-side-panel:has(.town-finale-card) > .town-mood-card {
+    display: none !important;
+  }
+
+  .festival-town-response {
+    margin-top: 7px;
+    padding: 8px 9px;
+    font-size: 11px;
+  }
+}
