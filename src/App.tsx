@@ -1781,14 +1781,6 @@ function fiveDayHook(state: GameState): string {
   return "五日で町はずいぶん近くなった。明日もまた、誰かがこちらを呼び止めそうだ。";
 }
 
-function fiveDayMemoryText(state: GameState): string {
-  const known = (Object.entries(state.npcRelations) as [NPCId, GameState["npcRelations"][NPCId]][])
-    .filter(([npc]) => npc !== "kumitori_master")
-    .filter(([, relation]) => relation.familiarity >= 3).length;
-  const rep = state.reputationTags[0] ?? "まだ決まらない評判";
-  return `${known}人の顔なじみ / ${rep}`;
-}
-
 function festivalClosingLine(choiceId: NonNullable<GameState["lastFestivalResult"]>["choiceId"]): string {
   switch (choiceId) {
     case "festival_stalls":
@@ -1800,9 +1792,31 @@ function festivalClosingLine(choiceId: NonNullable<GameState["lastFestivalResult
   }
 }
 
-function relationMemoryLabel(relation: GameState["npcRelations"][NPCId]): string {
+function hasMetNpc(state: GameState, npc: NPCId): boolean {
+  switch (npc) {
+    case "landlord": return state.flags.met_landlord;
+    case "fishmonger": return state.flags.met_fishmonger;
+    case "child": return state.flags.met_child;
+    case "newsman": return state.flags.met_newsman;
+    case "firechief": return state.flags.met_firechief;
+    default: return false;
+  }
+}
+
+function isNpcKnown(state: GameState, npc: NPCId): boolean {
+  const relation = state.npcRelations[npc];
+  return relation.familiarity >= 3 ||
+    relation.affinity >= 2 ||
+    relation.attitude === "friendly" ||
+    relation.attitude === "impressed" ||
+    (state.day >= 5 && hasMetNpc(state, npc));
+}
+
+function relationMemoryLabel(state: GameState, npc: NPCId): string {
+  const relation = state.npcRelations[npc];
+  if (state.day >= 5 && hasMetNpc(state, npc)) return "顔なじみ";
   if (relation.familiarity >= 5 || relation.affinity >= 5) return "町の顔なじみ";
-  if (relation.familiarity >= 3) return "覚えられてる";
+  if (isNpcKnown(state, npc)) return "覚えられてる";
   return relationLabel(relation.attitude);
 }
 
@@ -1856,12 +1870,10 @@ function TownSidePanel({
   onTalk: (npc: NPCId) => void;
 }) {
   const areaNpcIds = sidePanelNpcIds(state);
-  const knownCount = areaNpcIds.filter(
-    (npcId) => state.npcRelations[npcId].familiarity >= 3
-  ).length;
-  const totalKnownCount = (Object.entries(state.npcRelations) as [NPCId, GameState["npcRelations"][NPCId]][])
-    .filter(([npc]) => npc !== "kumitori_master")
-    .filter(([, relation]) => relation.familiarity >= 3).length;
+  const knownCount = areaNpcIds.filter((npcId) => isNpcKnown(state, npcId)).length;
+  const totalKnownCount = (Object.keys(state.npcRelations) as NPCId[])
+    .filter((npc) => npc !== "kumitori_master")
+    .filter((npc) => isNpcKnown(state, npc)).length;
   const finaleReady = state.day >= 5 && state.flags.festival_done;
   const areaFlavor = AREAS[state.currentArea].flavor;
   const recentActionItems = state.playerActions
@@ -1916,7 +1928,7 @@ function TownSidePanel({
               <div className="nearby-copy">
                 <strong>{npcDisplayName(npcId)}</strong>
                 <span className="npc-subtitle">{npcSubtitle(npcId)}</span>
-                <small className={`relation-pill ${state.npcRelations[npcId].familiarity >= 3 ? "is-known" : ""}`}>♥ {relationMemoryLabel(state.npcRelations[npcId])}</small>
+                <small className={`relation-pill ${isNpcKnown(state, npcId) ? "is-known" : ""}`}>♥ {relationMemoryLabel(state, npcId)}</small>
               </div>
               <button
                 className="nearby-talk"
@@ -1938,7 +1950,6 @@ function TownSidePanel({
         <section className="side-card town-finale-card">
           <div className="side-card-title"><span><SideIcon kind="story" /> 五日間の歩み</span></div>
           <strong className="town-finale-rank">{state.player.rankName}</strong>
-          <small className="town-finale-memory">{fiveDayMemoryText(state)}</small>
           <div className="town-finale-stats">
             <span>顔なじみ <b>{totalKnownCount}人</b></span>
             <span>評判 <b>{state.reputationTags[0] ?? "これから"}</b></span>
