@@ -12,7 +12,9 @@ function assert(condition, message) {
 async function state(page) {
   return page.evaluate((key) => {
     const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : null;
+    if (!raw) return null;
+    const decoded = JSON.parse(raw);
+    return decoded?.state ?? decoded;
   }, STORAGE_KEY);
 }
 
@@ -46,7 +48,8 @@ async function freshStart(page) {
   await page.waitForFunction((key) => {
     const raw = localStorage.getItem(key);
     if (!raw) return false;
-    const s = JSON.parse(raw);
+    const decoded = JSON.parse(raw);
+    const s = decoded?.state ?? decoded;
     return Boolean(s.flags?.intro_done);
   }, STORAGE_KEY);
   await page.waitForTimeout(180);
@@ -66,7 +69,9 @@ async function move(page, label) {
     await page.waitForFunction(({ key, area }) => {
       const raw = localStorage.getItem(key);
       if (!raw) return false;
-      return JSON.parse(raw).currentArea === area;
+      const decoded = JSON.parse(raw);
+      const s = decoded?.state ?? decoded;
+      return s.currentArea === area;
     }, { key: STORAGE_KEY, area: ids[label] });
   }
   await page.waitForTimeout(80);
@@ -114,12 +119,18 @@ async function completeDay1ToDay5(page, prefix) {
   await page.waitForSelector(".fire-choice-list", { timeout: 5000 });
   await page.waitForFunction((key) => {
     const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw).screen === "fire_choice" : false;
+    if (!raw) return false;
+    const decoded = JSON.parse(raw);
+    const s = decoded?.state ?? decoded;
+    return s.screen === "fire_choice";
   }, STORAGE_KEY);
   await page.locator(".fire-choice").first().evaluate((el) => el.click());
   await page.waitForFunction((key) => {
     const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw).screen === "fire_result" : false;
+    if (!raw) return false;
+    const decoded = JSON.parse(raw);
+    const s = decoded?.state ?? decoded;
+    return s.screen === "fire_result";
   }, STORAGE_KEY, { timeout: 30000 });
   await page.waitForSelector(".fire-aftermath", { timeout: 5000 });
   await page.getByRole("button", { name: "三日目へ" }).click();
