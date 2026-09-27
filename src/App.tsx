@@ -2081,6 +2081,33 @@ function TitleView({
   );
 }
 
+function choiceImpactChips(effects: Record<string, number | undefined>): string[] {
+  const labels: Record<string, string> = {
+    money: "銭",
+    trust: "信用",
+    iki: "粋",
+    network: "人脈",
+    skill: "腕前",
+    hygiene: "衛生",
+    safety: "治安",
+    trend: "流行",
+    economy: "景気",
+  };
+  return Object.entries(effects)
+    .filter(([, value]) => typeof value === "number" && value !== 0)
+    .map(([key, value]) => `${labels[key] ?? key} ${Number(value) > 0 ? "+" : ""}${value}`);
+}
+
+function ChoiceImpact({ effects }: { effects: Record<string, number | undefined> }) {
+  const chips = choiceImpactChips(effects);
+  if (chips.length === 0) return null;
+  return (
+    <span className="choice-impact" aria-label={`変化：${chips.join("、")}`}>
+      {chips.map((chip) => <small key={chip}>{chip}</small>)}
+    </span>
+  );
+}
+
 function FestivalChoiceView({
   choices,
   onChoose,
@@ -2097,6 +2124,7 @@ function FestivalChoiceView({
           <button className="fire-choice" key={choice.id} onClick={() => onChoose(choice)}>
             <strong>{choice.label}</strong>
             <span>{choice.description}</span>
+            <ChoiceImpact effects={choice.effects} />
             {choice.favoredReputation && (
               <small className="favored-reputation">相性：{choice.favoredReputation}</small>
             )}
@@ -2144,6 +2172,7 @@ function PatrolChoiceView({
           <button className="fire-choice" key={choice.id} onClick={() => onChoose(choice)}>
             <strong>{choice.label}</strong>
             <span>{choice.description}</span>
+            <ChoiceImpact effects={choice.effects} />
           </button>
         ))}
       </div>
@@ -2231,6 +2260,7 @@ function FireChoiceView({
           >
             <strong>{choice.label}</strong>
             <span>{choice.description}</span>
+            <ChoiceImpact effects={choice.effects} />
           </button>
         ))}
       </div>
@@ -2293,27 +2323,27 @@ function StatusPanel({
           <h3>町の人との関係</h3>
           <ul>
             <li>
-              大家：{state.npcRelations.landlord.attitude}
+              大家：{relationLabel(state.npcRelations.landlord.attitude)}
               （好意 {state.npcRelations.landlord.affinity >= 0 ? "+" : ""}
               {state.npcRelations.landlord.affinity}）
             </li>
             <li>
-              魚屋：{state.npcRelations.fishmonger.attitude}
+              魚屋：{relationLabel(state.npcRelations.fishmonger.attitude)}
               （好意 {state.npcRelations.fishmonger.affinity >= 0 ? "+" : ""}
               {state.npcRelations.fishmonger.affinity}）
             </li>
             <li>
-              長屋の子ども：{state.npcRelations.child.attitude}
+              長屋の子ども：{relationLabel(state.npcRelations.child.attitude)}
               （好意 {state.npcRelations.child.affinity >= 0 ? "+" : ""}
               {state.npcRelations.child.affinity}）
             </li>
             <li>
-              瓦版屋：{state.npcRelations.newsman.attitude}
+              瓦版屋：{relationLabel(state.npcRelations.newsman.attitude)}
               （好意 {state.npcRelations.newsman.affinity >= 0 ? "+" : ""}
               {state.npcRelations.newsman.affinity}）
             </li>
             <li>
-              火消し頭：{state.npcRelations.firechief.attitude}
+              火消し頭：{relationLabel(state.npcRelations.firechief.attitude)}
               （好意 {state.npcRelations.firechief.affinity >= 0 ? "+" : ""}
               {state.npcRelations.firechief.affinity}）
             </li>
