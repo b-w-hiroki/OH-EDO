@@ -7,6 +7,7 @@ import type {
   FireChoice,
   PatrolChoice,
   FestivalChoice,
+  ChapterEventChoice,
   NPCId,
   AreaId,
 } from "./types";
@@ -44,6 +45,7 @@ import { MobilePlayerSummary } from "./components/MobilePlayerSummary";
 import { JobView } from "./components/JobView";
 import { ResultView } from "./components/ResultView";
 import { TownPresentation } from "./components/TownPresentation";
+import { ChapterEventChoiceView, ChapterEventResultView } from "./components/ChapterEventView";
 import { EventBus } from "./game/EventBus";
 import { uiSound } from "./game/uiSound";
 import { characterArtPath } from "./characterArt";
@@ -54,6 +56,7 @@ import {
 } from "./decision/DecisionService";
 import { clearGameState, loadGameState, saveGameState } from "./saveState";
 import { recordMetric } from "./game/metrics";
+import { eventById, eventForDay, makeChapterResult } from "./events/chapterTwo";
 
 const decisionService = createDecisionService();
 
