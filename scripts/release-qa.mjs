@@ -91,7 +91,7 @@ async function talk(page, name) {
   await advanceDialogs(page);
 }
 
-async function completeDay1ToDay5(page, prefix) {
+async function completeDay1ToDay6(page, prefix) {
   await freshStart(page);
 
   let initial = await state(page);
@@ -162,9 +162,22 @@ async function completeDay1ToDay5(page, prefix) {
   await page.waitForTimeout(2300);
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.screenshot({ path: `qa-artifacts/${prefix}-day5-finale.png`, fullPage: false });
+
+  await page.getByRole("button", { name: "六日目へ" }).click();
+  await page.waitForSelector(".town-event-panel", { timeout: 5000 });
+  s = await state(page);
+  assert(s?.day === 6 && s.flags?.day6_started, "Day6 did not start");
+  assert(s.activeTownEventId === "day6_festival_cleanup", "Day6 cleanup event missing");
+  await page.locator(".town-event-panel .fire-choice").first().evaluate((el) => el.click());
+  await page.waitForSelector(".town-event-result", { timeout: 5000 });
+  await page.getByRole("button", { name: "町へ戻る" }).click();
+  s = await state(page);
+  assert(s?.day === 6 && s.flags?.day6_cleanup_done, "Day6 cleanup did not complete");
+  await page.screenshot({ path: `qa-artifacts/${prefix}-day6-world.png`, fullPage: false });
+
   assert(s.flags?.room_unlocked, "room unlock regressed");
   assert(s.flags?.firehouse_unlocked, "firehouse unlock regressed");
-  assert(Array.isArray(s.playerActions) && s.playerActions.length >= 3, "player action history missing");
+  assert(Array.isArray(s.playerActions) && s.playerActions.length >= 4, "player action history missing");
   assert(Array.isArray(s.decisionLogs) && s.decisionLogs.length >= 2, "decision logs missing");
   return s;
 }
@@ -228,7 +241,7 @@ async function assertMobileLayout(page) {
 
 async function verifyLegacySaveMigration(page) {
   const current = await state(page);
-  assert(current?.day === 5, "migration fixture requires completed Day5 state");
+  assert(current?.day === 6, "migration fixture requires completed Day6 state");
   await page.evaluate(({ key, legacy }) => {
     localStorage.setItem(key, JSON.stringify(legacy));
   }, { key: STORAGE_KEY, legacy: current });
@@ -238,17 +251,17 @@ async function verifyLegacySaveMigration(page) {
     const raw = localStorage.getItem(key);
     if (!raw) return false;
     const decoded = JSON.parse(raw);
-    return decoded?.schemaVersion === 1 && decoded?.state?.day === 5;
+    return decoded?.schemaVersion === 1 && decoded?.state?.day === 6;
   }, STORAGE_KEY);
   const migrated = await state(page);
-  assert(migrated?.day === 5 && migrated.flags?.festival_done, "legacy save migration lost progression");
+  assert(migrated?.day === 6 && migrated.flags?.day6_cleanup_done, "legacy save migration lost progression");
 }
 
 async function runDesktop() {
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({ viewport: { width: 1600, height: 900 }, deviceScaleFactor: 1 });
   const page = await context.newPage();
-  const finalState = await completeDay1ToDay5(page, "desktop-1600");
+  const finalState = await completeDay1ToDay6(page, "desktop-1600");
   await verifyLegacySaveMigration(page);
   await captureAreas(page, "desktop-1600");
   await browser.close();
@@ -265,7 +278,7 @@ async function runMobileChromium() {
     hasTouch: true,
   });
   const page = await context.newPage();
-  const finalState = await completeDay1ToDay5(page, "mobile-430");
+  const finalState = await completeDay1ToDay6(page, "mobile-430");
   const layout = await assertMobileLayout(page);
   await captureAreas(page, "mobile-430");
   await browser.close();
