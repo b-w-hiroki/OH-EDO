@@ -58,3 +58,35 @@
     font-size: 10px;
   }
 }
+
+
+.town-next-event-card {
+  border-color: #cfa875 !important;
+  background:
+    linear-gradient(180deg, rgba(255,250,236,.98), rgba(246,232,205,.98)) !important;
+}
+
+.town-next-event-card strong {
+  display: block;
+  margin-top: 2px;
+  color: #7b5131;
+  font-family: var(--font-serif);
+  font-size: 16px;
+}
+
+.town-next-event-card p {
+  margin: 5px 0 0;
+  color: #675342;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+@media (max-width: 599px) {
+  .town-next-event-card {
+    grid-column: 1 / -1 !important;
+  }
+
+  .town-next-event-card strong {
+    font-size: 15px;
+  }
+}
