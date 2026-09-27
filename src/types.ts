@@ -10,6 +10,8 @@ export type Screen =
   | "patrol_result"
   | "festival_choice"
   | "festival_result"
+  | "town_event_choice"
+  | "town_event_result"
   | "room"
   | "status";
 
@@ -111,6 +113,8 @@ export interface Flags {
   festival_started: boolean;
   festival_done: boolean;
   day5_started: boolean;
+  day6_started: boolean;
+  day6_cleanup_done: boolean;
 }
 
 export interface ActiveDialog {
@@ -207,6 +211,41 @@ export interface FireAftermath {
   rumorStrength: number;
 }
 
+
+export interface TownEventChoice {
+  id: string;
+  label: string;
+  description: string;
+  effects: {
+    money?: number;
+    trust?: number;
+    iki?: number;
+    network?: number;
+    skill?: number;
+    hygiene?: number;
+    safety?: number;
+    trend?: number;
+    economy?: number;
+  };
+  rumorTags: RumorTag[];
+  resultText: string;
+}
+
+export interface TownEventDef {
+  id: string;
+  title: string;
+  area: AreaId;
+  intro: DialogLine[];
+  choices: TownEventChoice[];
+}
+
+export interface TownEventResult {
+  eventId: string;
+  choiceId: string;
+  resultText: string;
+  nextDayText: string;
+}
+
 export interface FireChoice {
   id: "fire_evacuate" | "fire_bucket" | "fire_report";
   label: string;
@@ -278,4 +317,6 @@ export interface GameState {
   lastJobResult: JobResult | null;
   lastPatrolResult: PatrolResult | null;
   lastFestivalResult: FestivalResult | null;
+  activeTownEventId: string | null;
+  lastTownEventResult: TownEventResult | null;
 }
