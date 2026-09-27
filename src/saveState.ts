@@ -38,6 +38,9 @@ function mergeState(parsed: Partial<GameState>): GameState {
     lastJobResult: parsed.lastJobResult ?? null,
     lastPatrolResult: parsed.lastPatrolResult ?? null,
     lastFestivalResult: parsed.lastFestivalResult ?? null,
+    activeChapterEventId: parsed.activeChapterEventId ?? null,
+    completedChapterEvents: parsed.completedChapterEvents ?? [],
+    lastChapterResult: parsed.lastChapterResult ?? null,
   };
   const screen = merged.flags.intro_done ? "town" : "title";
   return { ...merged, dialog: null, screen };
