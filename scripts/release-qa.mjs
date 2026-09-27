@@ -174,6 +174,30 @@ async function completeDay1ToDay10(page, prefix) {
   for (const chapter of chapterEvents) {
     await page.getByRole("button", { name: chapter.button }).click();
     await page.waitForSelector(".town-event-panel", { timeout: 5000 });
+    const eventPanelBounds = await page.evaluate(() => {
+      const panel = document.querySelector(".town-event-panel")?.getBoundingClientRect();
+      const stage = document.querySelector(".presentation-stage")?.getBoundingClientRect();
+      return panel && stage
+        ? {
+            viewportWidth: window.innerWidth,
+            panelTop: panel.top,
+            panelBottom: panel.bottom,
+            stageTop: stage.top,
+            stageBottom: stage.bottom,
+          }
+        : null;
+    });
+    assert(eventPanelBounds, `Day${chapter.day} town-event bounds missing`);
+    if (eventPanelBounds.viewportWidth <= 599) {
+      assert(
+        eventPanelBounds.panelTop >= eventPanelBounds.stageTop - 1,
+        `Day${chapter.day} town-event panel clipped above mobile stage: ${JSON.stringify(eventPanelBounds)}`
+      );
+      assert(
+        eventPanelBounds.panelBottom <= eventPanelBounds.stageBottom + 1,
+        `Day${chapter.day} town-event panel exceeds mobile stage: ${JSON.stringify(eventPanelBounds)}`
+      );
+    }
     await page.waitForTimeout(2300);
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.screenshot({
