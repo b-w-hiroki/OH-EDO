@@ -82,6 +82,7 @@ export const INITIAL_STATE: GameState = {
   lastPatrolResult: null,
   lastFestivalResult: null,
   activeTownEventId: null,
+  completedTownEventIds: [],
   lastTownEventResult: null,
 };
 
