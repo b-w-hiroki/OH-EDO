@@ -54,6 +54,7 @@ import {
 } from "./decision/DecisionService";
 import { clearGameState, loadGameState, saveGameState } from "./saveState";
 import { recordMetric } from "./game/metrics";
+import { nextTownEvent, TOWN_EVENTS } from "./events/townEvents";
 
 const decisionService = createDecisionService();
 
@@ -572,6 +573,8 @@ function getCurrentObjective(state: GameState): string {
   if (!state.flags.fire_event_done) return "町の噂を確かめ、次の騒ぎへ向かう";
   if (!state.flags.met_firechief) return "火消し小屋で火消し頭に会う";
   if (!state.flags.patrol_done) return "火消し頭の見回り仕事を手伝う";
+  if (state.day >= 6 && !state.flags.day6_cleanup_done) return "祭りのあと片づけを手伝う";
+  if (state.day >= 6) return "祭り明けの町を歩き、次の頼みごとを探す";
   if (state.day >= 5 && state.flags.festival_done) return "祭りのあとの町を歩き、顔なじみの声を聞く";
   if (state.day >= 5) return "町の人との関係を深め、顔役への道を歩く";
   if (state.day >= 4 && !state.flags.festival_done) {
@@ -1120,6 +1123,92 @@ function App() {
     });
   }, []);
 
+  const startNextTownEvent = useCallback(() => {
+    setState((s) => {
+      const event = nextTownEvent(s);
+      if (!event) return s;
+      recordMetric("town_event_started", 6, event.id);
+      return {
+        ...s,
+        day: 6,
+        time: "morning",
+        currentArea: event.area,
+        screen: "town_event_choice",
+        activeTownEventId: event.id,
+        flags: { ...s.flags, day6_started: true },
+        log: appendLog(s.log, 6, "祭り明けの朝。商店通りでは、もう次の仕事が始まっていた。"),
+      };
+    });
+  }, []);
+
+  const chooseTownEvent = useCallback((choiceId: string) => {
+    uiSound.select();
+    setState((s) => {
+      if (s.screen !== "town_event_choice" || !s.activeTownEventId) return s;
+      const event = TOWN_EVENTS[s.activeTownEventId];
+      const choice = event?.choices.find((item) => item.id === choiceId);
+      if (!event || !choice) return s;
+      const e = choice.effects;
+      recordMetric("town_event_choice", s.day, choice.id);
+      const next = withProgression({
+        ...s,
+        screen: "town_event_result",
+        player: {
+          ...s.player,
+          money: s.player.money + (e.money ?? 0),
+          trust: s.player.trust + (e.trust ?? 0),
+          iki: s.player.iki + (e.iki ?? 0),
+          network: s.player.network + (e.network ?? 0),
+          skill: s.player.skill + (e.skill ?? 0),
+        },
+        town: {
+          ...s.town,
+          hygiene: s.town.hygiene + (e.hygiene ?? 0),
+          safety: s.town.safety + (e.safety ?? 0),
+          trend: s.town.trend + (e.trend ?? 0),
+          economy: s.town.economy + (e.economy ?? 0),
+        },
+        activeRumors: Array.from(new Set([...s.activeRumors, ...choice.rumorTags])),
+        rumorHistory: [
+          ...s.rumorHistory,
+          ...makeRumorRecords(choice.rumorTags, s.day, choice.id, 3),
+        ],
+        playerActions: [
+          ...s.playerActions,
+          {
+            id: `action-${Date.now()}`,
+            day: s.day,
+            type: choice.id,
+            targetNpcId: "fishmonger",
+            importance: 3,
+            tags: [...choice.rumorTags],
+          },
+        ],
+        lastTownEventResult: {
+          eventId: event.id,
+          choiceId: choice.id,
+          resultText: choice.resultText,
+          nextDayText: "祭りが終わっても、町の暮らしは止まらない。もう次の頼みごとがこちらを待っている。",
+        },
+        log: appendLog(s.log, s.day, choice.resultText),
+      });
+      return next;
+    });
+    uiSound.result();
+    setToast("祭り明けの働きが、次の町の評判へ残った");
+    window.setTimeout(() => setToast(null), 2000);
+  }, []);
+
+  const finishTownEvent = useCallback(() => {
+    setState((s) => ({
+      ...s,
+      screen: "town",
+      activeTownEventId: null,
+      flags: { ...s.flags, day6_cleanup_done: true },
+      log: appendLog(s.log, s.day, "祭りのあと片づけが終わり、町はいつもの暮らしへ戻った。"),
+    }));
+  }, []);
+
   const resetGame = useCallback(() => {
     if (!window.confirm("旅をやり直しますか？セーブも消えるよ。")) return;
     clearGameState();
@@ -1389,6 +1478,24 @@ function App() {
               </div>
             )}
 
+            {state.screen === "town_event_choice" && state.activeTownEventId && TOWN_EVENTS[state.activeTownEventId] && (
+              <div className="overlay">
+                <TownEventChoiceView
+                  event={TOWN_EVENTS[state.activeTownEventId]}
+                  onChoose={chooseTownEvent}
+                />
+              </div>
+            )}
+
+            {state.screen === "town_event_result" && state.lastTownEventResult && (
+              <div className="overlay">
+                <TownEventResultView
+                  result={state.lastTownEventResult}
+                  onNext={finishTownEvent}
+                />
+              </div>
+            )}
+
             {state.screen === "room" && (
               <div className="overlay">
                 <RoomView day={state.day} onClose={closeRoom} />
@@ -1412,6 +1519,7 @@ function App() {
                 setSelectedNpcId(npc);
                 EventBus.emit("npc-interact", npc);
               }}
+              onStartNextDay={startNextTownEvent}
             />
           </div>
         )}
@@ -1823,6 +1931,7 @@ function TownSidePanel({
   selectedNpc,
   onSelect,
   onTalk,
+  onStartNextDay,
 }: {
   state: GameState;
   dominantRumor: ReturnType<typeof pickDominantRumor>;
@@ -1831,13 +1940,14 @@ function TownSidePanel({
   selectedNpc: NPCId | null;
   onSelect: (npc: NPCId) => void;
   onTalk: (npc: NPCId) => void;
+  onStartNextDay: () => void;
 }) {
   const areaNpcIds = sidePanelNpcIds(state);
   const knownCount = areaNpcIds.filter((npcId) => isNpcKnown(state, npcId)).length;
   const totalKnownCount = (Object.keys(state.npcRelations) as NPCId[])
     .filter((npc) => npc !== "kumitori_master")
     .filter((npc) => isNpcKnown(state, npc)).length;
-  const finaleReady = state.day >= 5 && state.flags.festival_done;
+  const finaleReady = state.day === 5 && state.flags.festival_done;
   const areaFlavor = AREAS[state.currentArea].flavor;
   const recentActionItems = state.playerActions
     .slice(-3)
@@ -1918,6 +2028,9 @@ function TownSidePanel({
             <span>評判 <b>{state.reputationTags[0] ?? "これから"}</b></span>
           </div>
           <p>{fiveDayHook(state)}</p>
+          <button className="primary town-next-day" onClick={onStartNextDay}>
+            六日目へ
+          </button>
         </section>
       )}
 
@@ -2068,6 +2181,57 @@ function ChoiceImpact({ effects }: { effects: Record<string, number | undefined>
     <span className="choice-impact" aria-label={`変化：${chips.join("、")}`}>
       {chips.map((chip) => <small key={chip}>{chip}</small>)}
     </span>
+  );
+}
+
+function TownEventChoiceView({
+  event,
+  onChoose,
+}: {
+  event: import("./types").TownEventDef;
+  onChoose: (choiceId: string) => void;
+}) {
+  return (
+    <section className="panel town-event-panel">
+      <h2>{event.title}</h2>
+      <div className="town-event-intro">
+        {event.intro.map((line, index) => (
+          <p key={`${line.speaker}-${index}`}>
+            <strong>{line.speaker}</strong>
+            <span>{line.text}</span>
+          </p>
+        ))}
+      </div>
+      <p className="panel-desc">町の顔として、今日はどこから手をつける？</p>
+      <div className="fire-choice-list">
+        {event.choices.map((choice) => (
+          <button className="fire-choice" key={choice.id} onClick={() => onChoose(choice.id)}>
+            <strong>{choice.label}</strong>
+            <span>{choice.description}</span>
+            <ChoiceImpact effects={choice.effects} />
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function TownEventResultView({
+  result,
+  onNext,
+}: {
+  result: import("./types").TownEventResult;
+  onNext: () => void;
+}) {
+  return (
+    <section className="panel town-event-result">
+      <h2>祭りのあと、町の日常へ</h2>
+      <p>{result.resultText}</p>
+      <p className="festival-town-response">{result.nextDayText}</p>
+      <div className="panel-actions">
+        <button className="primary" onClick={onNext}>町へ戻る</button>
+      </div>
+    </section>
   );
 }
 
