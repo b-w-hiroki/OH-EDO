@@ -33,6 +33,30 @@ const NPC_GREETING: Partial<Record<NPCId, string>> = {
   firechief: "気を抜くなよ",
 };
 
+function npcGreeting(state: GameState, npc: NPCId): string {
+  const relation = state.npcRelations[npc];
+  if (state.day >= 5 && relation?.familiarity >= 3) {
+    switch (npc) {
+      case "landlord":
+        return "たろう、今日も頼むよ";
+      case "fishmonger":
+        return "おう、たろう！";
+      case "child":
+        return "たろう、遊ぼう！";
+      case "newsman":
+        return "次の見出し、頼むぜ";
+      case "firechief":
+        return "来たか、たろう";
+    }
+  }
+  if (state.day >= 4 && state.flags.festival_started) {
+    if (npc === "newsman") return "祭りが始まるぞ！";
+    if (npc === "fishmonger") return "今日は稼ぎ時だ！";
+    if (npc === "landlord") return "町が浮かれてるねぇ";
+  }
+  return NPC_GREETING[npc] ?? "今日はどうした？";
+}
+
 const AREA_NOTE: Record<Exclude<AreaId, "room">, string> = {
   nagaya: "人がつながる。町が育つ。ここに、あたらしい江戸。",
   well: "水を汲めば、噂も汲める。井戸端は今日もにぎやか。",
@@ -119,7 +143,7 @@ export function TownPresentation({
 
   return (
     <section
-      className={`town-presentation area-${area} ${dialogOpen ? "is-dialogue" : ""} ${playerSpeaking ? "is-player-speaking" : ""}`}
+      className={`town-presentation area-${area} ${dialogOpen ? "is-dialogue" : ""} ${playerSpeaking ? "is-player-speaking" : ""} ${state.day >= 5 && state.flags.festival_done ? "is-festival-after" : state.day >= 4 && state.flags.festival_started ? "is-festival-prep" : ""}`}
       aria-label={`${AREAS[state.currentArea].name}の情景`}
     >
       <div
@@ -153,7 +177,7 @@ export function TownPresentation({
       {featuredNpc && (
         <>
         <div className="presentation-speech-bubble" aria-hidden="true">
-          {NPC_GREETING[featuredNpc] ?? "今日はどうした？"}
+          {npcGreeting(state, featuredNpc)}
         </div>
         <button
           key={featuredNpc}
