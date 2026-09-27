@@ -1300,13 +1300,16 @@ function App() {
   const lastLog = state.log[state.log.length - 1];
   const dominantRumor = pickDominantRumor(state.activeRumors);
   const areaEcho =
-    state.day >= 3 && state.flags.fire_event_done
-      ? getFireAreaEcho(dominantRumor, state.currentArea)
-      : state.day >= 2
-        ? getRumorAreaEcho(dominantRumor, state.currentArea)
-        : null;
+    state.day >= 6 && state.lastChapterResult
+      ? state.lastChapterResult.townResponse
+      : state.day >= 3 && state.flags.fire_event_done
+        ? getFireAreaEcho(dominantRumor, state.currentArea)
+        : state.day >= 2
+          ? getRumorAreaEcho(dominantRumor, state.currentArea)
+          : null;
   const nextLead = getNextLead(state);
   const currentObjective = getCurrentObjective(state);
+  const activeChapterEvent = eventById(state.activeChapterEventId);
   const yesterdaySummary = getYesterdaySummary(state);
   const localNpcIds = getAreaNpcIds(state);
   const activeTalkNpc =
@@ -1475,6 +1478,22 @@ function App() {
                       ),
                     }))
                   }
+                />
+              </div>
+            )}
+
+            {state.screen === "chapter_choice" && activeChapterEvent && (
+              <div className="overlay">
+                <ChapterEventChoiceView event={activeChapterEvent} onChoose={chooseChapterEvent} />
+              </div>
+            )}
+
+            {state.screen === "chapter_result" && activeChapterEvent && state.lastChapterResult && (
+              <div className="overlay">
+                <ChapterEventResultView
+                  event={activeChapterEvent}
+                  result={state.lastChapterResult}
+                  onNext={advanceChapterEvent}
                 />
               </div>
             )}
