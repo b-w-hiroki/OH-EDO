@@ -1196,7 +1196,7 @@ function App() {
           eventId: event.id,
           choiceId: choice.id,
           resultText: choice.resultText,
-          nextDayText: "祭りが終わっても、町の暮らしは止まらない。もう次の頼みごとがこちらを待っている。",
+          nextDayText: event.closingText,
         },
         log: appendLog(s.log, s.day, choice.resultText),
       });
