@@ -17,3 +17,31 @@ export function recordMetric(type: string, day?: number, detail?: string): void 
     // Metrics are optional and never block play.
   }
 }
+
+
+export function metricReport(): string {
+  try {
+    const raw = sessionStorage.getItem(SESSION_KEY);
+    const events = raw ? (JSON.parse(raw) as MetricEvent[]) : [];
+    return JSON.stringify(
+      {
+        generatedAt: new Date().toISOString(),
+        userAgent: navigator.userAgent,
+        viewport: { width: window.innerWidth, height: window.innerHeight },
+        events,
+      },
+      null,
+      2
+    );
+  } catch {
+    return JSON.stringify({ generatedAt: new Date().toISOString(), events: [] }, null, 2);
+  }
+}
+
+export function isPlaytestMode(): boolean {
+  try {
+    return new URLSearchParams(window.location.search).has("playtest");
+  } catch {
+    return false;
+  }
+}
