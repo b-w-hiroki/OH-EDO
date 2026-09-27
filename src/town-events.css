@@ -98,3 +98,29 @@
     font-size: 15px;
   }
 }
+
+
+/* Mobile town-event overlays live inside the scenic stage.
+   Anchor long choice panels to the top so the first option is never clipped. */
+@media (max-width: 599px) {
+  .town-event-overlay {
+    align-items: flex-start;
+    overflow: hidden;
+    padding: 6px;
+  }
+
+  .town-event-overlay .town-event-panel,
+  .town-event-overlay .town-event-result {
+    width: 100%;
+    max-height: 100%;
+    margin: 0;
+    border-radius: 10px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .town-event-overlay .fire-choice-list {
+    padding-bottom: 8px;
+  }
+}
