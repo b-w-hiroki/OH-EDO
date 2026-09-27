@@ -42,9 +42,9 @@ Pages環境がGitHub側で有効になると公開URLへ反映される。
 
 最初の5日間アークとモック寄せは一通り成立済み。以降は以下を優先する。
 
-1. 実物iPhone Safariでの最終目視
+1. 実物iPhone SafariでDay1→Day10の最終目視
 2. 外部プレイテスト
-3. Day6以降 / 次章の生活イベント
+3. GitHub Pages最終deploy解消
 4. NPC個別エピソードの追加
 5. 音・環境音の本番品質化
 
@@ -137,3 +137,12 @@ Pages環境がGitHub側で有効になると公開URLへ反映される。
 - 旧Day6セーブは自動migration
 - エリア小話をDay10まで拡張
 - browser QAをDay1→Day10へ延長
+
+
+## 2026-09-27 Day10 QA Alignment
+
+- physical iPhone QA / playtest IssueをDay1→Day10基準へ更新
+- Release / Playtest checklistをDay10基準へ更新
+- audio preference保存をSafari private storageでも安全化
+- production smokeへJS/CSS bundle budgetを追加
+- mainの次章実装はgeneric town-event engineに統一
