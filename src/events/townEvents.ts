@@ -6,7 +6,7 @@ export const DAY6_CLEANUP_EVENT: TownEventDef = {
   title: "祭りのあと片づけ",
   area: "market",
   targetNpcId: "fishmonger",
-  closingText: "祭りが終わっても、町の暮らしは止まらない。もう次の頼みごとがこちらを待っている。"
+  closingText: "祭りが終わっても、町の暮らしは止まらない。もう次の頼みごとがこちらを待っている。",
   intro: [
     { speaker: "魚屋", text: "祭りが終わったら終わり、って顔してるな？ 甘い甘い。" },
     { speaker: "瓦版屋", text: "通りは紙くず、空箱、忘れ物。祭りの翌朝がいちばん町らしいんだ。" },
@@ -46,7 +46,7 @@ export const DAY7_WELL_EVENT: TownEventDef = {
   title: "井戸端の順番騒ぎ",
   area: "well",
   targetNpcId: "child",
-  closingText: "揉めごとが収まれば、井戸端はまたいつもの噂話へ戻る。明日は商店通りが騒がしいらしい。"
+  closingText: "揉めごとが収まれば、井戸端はまたいつもの噂話へ戻る。明日は商店通りが騒がしいらしい。",
   intro: [
     { speaker: "長屋の子ども", text: "たいへん！ 井戸の前でみんな怒ってる！" },
     { speaker: "大家", text: "洗い物と水汲みが重なってね。誰が先だで朝から大騒ぎさ。" },
@@ -86,7 +86,7 @@ export const DAY8_MARKET_EVENT: TownEventDef = {
   title: "商店通りの品不足",
   area: "market",
   targetNpcId: "fishmonger",
-  closingText: "品薄の一日は乗り切った。今度は火消し小屋から、町を見てほしいと声がかかっている。"
+  closingText: "品薄の一日は乗り切った。今度は火消し小屋から、町を見てほしいと声がかかっている。",
   intro: [
     { speaker: "魚屋", text: "祭りで売れすぎた。魚も野菜も、今日は入ってくる量が少ねえ。" },
     { speaker: "瓦版屋", text: "品薄って書けば客はもっと来る。商売ってのは不思議だな。" },
@@ -126,7 +126,7 @@ export const DAY9_FIREHOUSE_EVENT: TownEventDef = {
   title: "祭り明けの町内警戒",
   area: "firehouse",
   targetNpcId: "firechief",
-  closingText: "火事のない日にも町を守る仕事はある。明日は大家たちが、もっと大きな相談を持ってくるらしい。"
+  closingText: "火事のない日にも町を守る仕事はある。明日は大家たちが、もっと大きな相談を持ってくるらしい。",
   intro: [
     { speaker: "火消し頭", text: "祭りのあとは気が緩む。火より怖いのは『もう大丈夫』って顔だ。" },
     { speaker: "主人公", text: "今日は何を見る？" },
@@ -166,7 +166,7 @@ export const DAY10_COUNCIL_EVENT: TownEventDef = {
   title: "町内の大きな相談",
   area: "nagaya",
   targetNpcId: "landlord",
-  closingText: "流れ者だった自分へ、町のこれからを聞く声が集まった。ここから先は、暮らすだけでなく町をつくる日々になる。"
+  closingText: "流れ者だった自分へ、町のこれからを聞く声が集まった。ここから先は、暮らすだけでなく町をつくる日々になる。",
   intro: [
     { speaker: "大家", text: "たろう、ちょっと座りな。今日は雑用じゃないよ。" },
     { speaker: "魚屋", text: "商店通りをもっと賑やかにしたい。" },
