@@ -1496,7 +1496,7 @@ function App() {
             )}
 
             {state.screen === "town_event_choice" && state.activeTownEventId && TOWN_EVENTS[state.activeTownEventId] && (
-              <div className="overlay">
+              <div className="overlay town-event-overlay">
                 <TownEventChoiceView
                   event={TOWN_EVENTS[state.activeTownEventId]}
                   onChoose={chooseTownEvent}
@@ -1505,7 +1505,7 @@ function App() {
             )}
 
             {state.screen === "town_event_result" && state.lastTownEventResult && (
-              <div className="overlay">
+              <div className="overlay town-event-overlay">
                 <TownEventResultView
                   result={state.lastTownEventResult}
                   onNext={finishTownEvent}
