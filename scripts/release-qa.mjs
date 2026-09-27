@@ -148,6 +148,8 @@ async function completeDay1ToDay5(page, prefix) {
   s = await state(page);
   assert(s?.day === 5 && s.flags?.day5_started && s.flags?.festival_done, "Day5/festival progression failed");
   await page.waitForSelector(".town-finale-card", { timeout: 5000 });
+  await page.waitForTimeout(2300);
+  await page.evaluate(() => window.scrollTo(0, 0));
   await page.screenshot({ path: `qa-artifacts/${prefix}-day5-finale.png`, fullPage: false });
   assert(s.flags?.room_unlocked, "room unlock regressed");
   assert(s.flags?.firehouse_unlocked, "firehouse unlock regressed");
