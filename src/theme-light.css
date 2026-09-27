@@ -6894,3 +6894,77 @@ body::before {
     font-size: 7px !important;
   }
 }
+
+
+/* ── Rank progression: make the player's changing place in town visible ── */
+.rank-transition {
+  position: fixed;
+  right: 24px;
+  top: 118px;
+  z-index: 4380;
+  min-width: 220px;
+  padding: 10px 14px 11px;
+  border: 1px solid #b99762;
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, rgba(255,248,226,.98), rgba(235,213,168,.98)),
+    url("/assets/edo/ui/ui-sheet.webp") center/cover;
+  color: #4d3b29;
+  box-shadow: 0 12px 28px rgba(63,45,28,.18);
+  font-family: var(--font-ui);
+  pointer-events: none;
+  animation: rankTransitionIn 2.1s ease both;
+}
+
+.rank-transition small {
+  display: block;
+  color: #8c6540;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.rank-transition strong {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--font-serif);
+  font-size: 21px;
+  letter-spacing: .05em;
+}
+
+@keyframes rankTransitionIn {
+  0% {
+    opacity: 0;
+    transform: translateX(12px) scale(.98);
+  }
+  12% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(5px) scale(.995);
+  }
+}
+
+@media (max-width: 599px) {
+  .rank-transition {
+    right: 12px;
+    top: 86px;
+    min-width: 180px;
+    padding: 8px 11px 9px;
+  }
+
+  .rank-transition strong {
+    font-size: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rank-transition {
+    animation: none;
+  }
+}
