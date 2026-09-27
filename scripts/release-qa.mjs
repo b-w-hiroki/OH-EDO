@@ -165,6 +165,7 @@ async function completeDay1ToDay6(page, prefix) {
 
   await page.getByRole("button", { name: "六日目へ" }).click();
   await page.waitForSelector(".town-event-panel", { timeout: 5000 });
+  await page.screenshot({ path: `qa-artifacts/${prefix}-day6-choice.png`, fullPage: false });
   s = await state(page);
   assert(s?.day === 6 && s.flags?.day6_started, "Day6 did not start");
   assert(s.activeTownEventId === "day6_festival_cleanup", "Day6 cleanup event missing");
