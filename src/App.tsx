@@ -44,6 +44,8 @@ import { MobilePlayerSummary } from "./components/MobilePlayerSummary";
 import { JobView } from "./components/JobView";
 import { ResultView } from "./components/ResultView";
 import { TownPresentation } from "./components/TownPresentation";
+import { ChoiceImpact } from "./components/ChoiceImpact";
+import { TownEventChoiceView, TownEventResultView } from "./components/TownEventViews";
 import { EventBus } from "./game/EventBus";
 import { uiSound } from "./game/uiSound";
 import { characterArtPath } from "./characterArt";
@@ -2152,84 +2154,6 @@ function TitleView({
         <span className="cast-chip cast-landlord">大家</span>
         <span className="cast-chip cast-child">子ども</span>
         <span className="cast-chip cast-news">瓦版</span>
-      </div>
-    </section>
-  );
-}
-
-function choiceImpactChips(effects: Record<string, number | undefined>): string[] {
-  const labels: Record<string, string> = {
-    money: "銭",
-    trust: "信用",
-    iki: "粋",
-    network: "人脈",
-    skill: "腕前",
-    hygiene: "衛生",
-    safety: "治安",
-    trend: "流行",
-    economy: "景気",
-  };
-  return Object.entries(effects)
-    .filter(([, value]) => typeof value === "number" && value !== 0)
-    .map(([key, value]) => `${labels[key] ?? key} ${Number(value) > 0 ? "+" : ""}${value}`);
-}
-
-function ChoiceImpact({ effects }: { effects: Record<string, number | undefined> }) {
-  const chips = choiceImpactChips(effects);
-  if (chips.length === 0) return null;
-  return (
-    <span className="choice-impact" aria-label={`変化：${chips.join("、")}`}>
-      {chips.map((chip) => <small key={chip}>{chip}</small>)}
-    </span>
-  );
-}
-
-function TownEventChoiceView({
-  event,
-  onChoose,
-}: {
-  event: import("./types").TownEventDef;
-  onChoose: (choiceId: string) => void;
-}) {
-  return (
-    <section className="panel town-event-panel">
-      <h2>{event.title}</h2>
-      <div className="town-event-intro">
-        {event.intro.map((line, index) => (
-          <p key={`${line.speaker}-${index}`}>
-            <strong>{line.speaker}</strong>
-            <span>{line.text}</span>
-          </p>
-        ))}
-      </div>
-      <p className="panel-desc">町の顔として、今日はどこから手をつける？</p>
-      <div className="fire-choice-list">
-        {event.choices.map((choice) => (
-          <button className="fire-choice" key={choice.id} onClick={() => onChoose(choice.id)}>
-            <strong>{choice.label}</strong>
-            <span>{choice.description}</span>
-            <ChoiceImpact effects={choice.effects} />
-          </button>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function TownEventResultView({
-  result,
-  onNext,
-}: {
-  result: import("./types").TownEventResult;
-  onNext: () => void;
-}) {
-  return (
-    <section className="panel town-event-result">
-      <h2>祭りのあと、町の日常へ</h2>
-      <p>{result.resultText}</p>
-      <p className="festival-town-response">{result.nextDayText}</p>
-      <div className="panel-actions">
-        <button className="primary" onClick={onNext}>町へ戻る</button>
       </div>
     </section>
   );
