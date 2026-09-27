@@ -86,7 +86,7 @@ async function talk(page, name) {
   await advanceDialogs(page);
 }
 
-async function completeDay1ToDay5(page) {
+async function completeDay1ToDay5(page, prefix) {
   await freshStart(page);
 
   let initial = await state(page);
@@ -148,7 +148,7 @@ async function completeDay1ToDay5(page) {
   s = await state(page);
   assert(s?.day === 5 && s.flags?.day5_started && s.flags?.festival_done, "Day5/festival progression failed");
   await page.waitForSelector(".town-finale-card", { timeout: 5000 });
-  await page.screenshot({ path: "qa-artifacts/day5-finale.png", fullPage: false });
+  await page.screenshot({ path: `qa-artifacts/${prefix}-day5-finale.png`, fullPage: false });
   assert(s.flags?.room_unlocked, "room unlock regressed");
   assert(s.flags?.firehouse_unlocked, "firehouse unlock regressed");
   assert(Array.isArray(s.playerActions) && s.playerActions.length >= 3, "player action history missing");
@@ -217,7 +217,7 @@ async function runDesktop() {
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({ viewport: { width: 1600, height: 900 }, deviceScaleFactor: 1 });
   const page = await context.newPage();
-  const finalState = await completeDay1ToDay5(page);
+  const finalState = await completeDay1ToDay5(page, "desktop-1600");
   await captureAreas(page, "desktop-1600");
   await browser.close();
   return { day: finalState.day, provider: finalState.fireAftermath?.provider ?? finalState.lastDecision?.provider };
@@ -233,7 +233,7 @@ async function runMobileChromium() {
     hasTouch: true,
   });
   const page = await context.newPage();
-  const finalState = await completeDay1ToDay5(page);
+  const finalState = await completeDay1ToDay5(page, "mobile-430");
   const layout = await assertMobileLayout(page);
   await captureAreas(page, "mobile-430");
   await browser.close();
