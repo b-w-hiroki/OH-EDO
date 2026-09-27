@@ -575,8 +575,14 @@ function getCurrentObjective(state: GameState): string {
   if (!state.flags.fire_event_done) return "町の噂を確かめ、次の騒ぎへ向かう";
   if (!state.flags.met_firechief) return "火消し小屋で火消し頭に会う";
   if (!state.flags.patrol_done) return "火消し頭の見回り仕事を手伝う";
-  if (state.day >= 6 && !state.flags.day6_cleanup_done) return "祭りのあと片づけを手伝う";
-  if (state.day >= 6) return "祭り明けの町を歩き、次の頼みごとを探す";
+  if (state.activeTownEventId && TOWN_EVENTS[state.activeTownEventId]) {
+    return TOWN_EVENTS[state.activeTownEventId].title;
+  }
+  if (state.day >= 6) {
+    const upcoming = nextTownEvent(state);
+    if (upcoming) return `${upcoming.day}日目：${upcoming.title}`;
+    return "町の顔として、次の相談ごとを探す";
+  }
   if (state.day >= 5 && state.flags.festival_done) return "祭りのあとの町を歩き、顔なじみの声を聞く";
   if (state.day >= 5) return "町の人との関係を深め、顔役への道を歩く";
   if (state.day >= 4 && !state.flags.festival_done) {
@@ -1129,16 +1135,16 @@ function App() {
     setState((s) => {
       const event = nextTownEvent(s);
       if (!event) return s;
-      recordMetric("town_event_started", 6, event.id);
+      recordMetric("town_event_started", event.day, event.id);
       return {
         ...s,
-        day: 6,
+        day: event.day,
         time: "morning",
         currentArea: event.area,
         screen: "town_event_choice",
         activeTownEventId: event.id,
-        flags: { ...s.flags, day6_started: true },
-        log: appendLog(s.log, 6, "祭り明けの朝。商店通りでは、もう次の仕事が始まっていた。"),
+        flags: event.day === 6 ? { ...s.flags, day6_started: true } : s.flags,
+        log: appendLog(s.log, event.day, `${event.title}が始まった。`),
       };
     });
   }, []);
@@ -1181,7 +1187,7 @@ function App() {
             id: `action-${Date.now()}`,
             day: s.day,
             type: choice.id,
-            targetNpcId: "fishmonger",
+            targetNpcId: event.targetNpcId,
             importance: 3,
             tags: [...choice.rumorTags],
           },
@@ -1202,13 +1208,22 @@ function App() {
   }, []);
 
   const finishTownEvent = useCallback(() => {
-    setState((s) => ({
-      ...s,
-      screen: "town",
-      activeTownEventId: null,
-      flags: { ...s.flags, day6_cleanup_done: true },
-      log: appendLog(s.log, s.day, "祭りのあと片づけが終わり、町はいつもの暮らしへ戻った。"),
-    }));
+    setState((s) => {
+      const eventId = s.activeTownEventId ?? s.lastTownEventResult?.eventId;
+      if (!eventId) return { ...s, screen: "town", activeTownEventId: null };
+      const event = TOWN_EVENTS[eventId];
+      return {
+        ...s,
+        screen: "town",
+        activeTownEventId: null,
+        completedTownEventIds: Array.from(new Set([...s.completedTownEventIds, eventId])),
+        flags:
+          eventId === "day6_festival_cleanup"
+            ? { ...s.flags, day6_cleanup_done: true }
+            : s.flags,
+        log: appendLog(s.log, s.day, `${event?.title ?? "町の仕事"}を終えた。`),
+      };
+    });
   }, []);
 
   const resetGame = useCallback(() => {
@@ -1950,6 +1965,7 @@ function TownSidePanel({
     .filter((npc) => npc !== "kumitori_master")
     .filter((npc) => isNpcKnown(state, npc)).length;
   const finaleReady = state.day === 5 && state.flags.festival_done;
+  const upcomingTownEvent = state.screen === "town" ? nextTownEvent(state) : null;
   const areaFlavor = AREAS[state.currentArea].flavor;
   const recentActionItems = state.playerActions
     .slice(-3)
@@ -2032,6 +2048,17 @@ function TownSidePanel({
           <p>{fiveDayHook(state)}</p>
           <button className="primary town-next-day" onClick={onStartNextDay}>
             六日目へ
+          </button>
+        </section>
+      )}
+
+      {!finaleReady && upcomingTownEvent && (
+        <section className="side-card town-next-event-card">
+          <div className="side-card-title"><span><SideIcon kind="story" /> 次の日の頼みごと</span></div>
+          <strong>{upcomingTownEvent.day}日目：{upcomingTownEvent.title}</strong>
+          <p>{AREAS[upcomingTownEvent.area].name}で、また誰かがたろうを待っている。</p>
+          <button className="primary town-next-day" onClick={onStartNextDay}>
+            {upcomingTownEvent.day}日目へ
           </button>
         </section>
       )}
