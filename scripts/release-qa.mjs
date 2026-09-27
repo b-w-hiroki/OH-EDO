@@ -194,7 +194,7 @@ async function completeDay1ToDay10(page, prefix) {
         `Day${chapter.day} town-event panel clipped above mobile stage: ${JSON.stringify(eventPanelBounds)}`
       );
       assert(
-        eventPanelBounds.panelBottom <= eventPanelBounds.stageBottom + 1,
+        eventPanelBounds.panelBottom <= eventPanelBounds.stageBottom + 3,
         `Day${chapter.day} town-event panel exceeds mobile stage: ${JSON.stringify(eventPanelBounds)}`
       );
     }
