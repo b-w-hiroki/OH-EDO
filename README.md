@@ -6,7 +6,7 @@
 
 **昨日の行動 → 翌日の噂 → NPCの態度変化 → 次の事件へ**
 
-現在は、Day1の汲み取りからDay5の春祭り後まで一続きで遊べます。
+現在は、Day1の汲み取りからDay10の町内大相談まで一続きで遊べます。
 
 ## 実装済み
 
@@ -15,7 +15,8 @@
 - Day2→3: 小火騒ぎ + Jev/Local Decision aftermath
 - Day3: 火消し小屋、火消し頭、町内見回り
 - Day4: NPC個別ミニエピソード + 春祭り準備
-- Day5: 春祭り後の町の認知 / 五日間の歩み / 次章フック
+- Day5: 春祭り後の町の認知 / 五日間の歩み
+- Day6〜10: データ駆動の町仕事 / 井戸端・商店・火消し・町内相談
 - 評判タグによる会話 / イベントボーナス
 - NPC関係値
 - 噂履歴 / 寿命 / 評判タグ
@@ -103,7 +104,7 @@ The screenshot workflow uploads both the four baseline mock-comparison captures 
 
 The first playable arc now closes as one continuous loop:
 
-Day1の初仕事 → Day2の噂 → 小火 → 火消し見回り → 春祭り → Day5の町の認知。
+Day1の初仕事 → Day2の噂 → 小火 → 火消し見回り → 春祭り → Day5の町の認知 → Day6〜10の町仕事と町内大相談。
 
 Day5では、NPCの呼び方・顔なじみ表示・町の小話・評判・成長ランクが、それまでの行動を受けて変化します。新しい独立システムではなく、既存の噂・関係値・評判・ランクを締めの演出へ接続しています。
 
@@ -124,3 +125,16 @@ Day5では、NPCの呼び方・顔なじみ表示・町の小話・評判・成�
 チェックリスト:
 - `docs/RELEASE_CHECKLIST.md`
 - `docs/PLAYTEST_CHECKLIST.md`
+
+
+## Chapter two / Day6–10
+
+Day6以降は、新規イベントをApp.tsxへ直書きせず `src/events/chapterTwo.ts` のデータ定義から進行します。
+
+- Day6: 祭りの後片づけ
+- Day7: 井戸端の順番
+- Day8: 品不足の商店通り
+- Day9: 祭礼あとの火の用心
+- Day10: 町内の大相談
+
+既存Day1〜5はそのまま維持し、新章から段階的にイベントデータ駆動化しています。
