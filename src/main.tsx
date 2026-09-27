@@ -1,8 +1,21 @@
 import ReactDOM from "react-dom/client";
 import App from "./App";
+import { AppErrorBoundary } from "./components/AppErrorBoundary";
 import "./styles.css";
 import "./theme-light.css";
 
 // StrictMode is intentionally omitted: its dev-only double mount/unmount
 // conflicts with the Phaser canvas lifecycle.
-ReactDOM.createRoot(document.getElementById("root")!).render(<App />);
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <AppErrorBoundary>
+    <App />
+  </AppErrorBoundary>
+);
+
+if ("serviceWorker" in navigator && import.meta.env.PROD) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch((error) => {
+      console.warn("OH!EDO service worker registration failed", error);
+    });
+  });
+}
