@@ -597,6 +597,14 @@ function getCurrentObjective(state: GameState): string {
   if (!state.flags.fire_event_done) return "町の噂を確かめ、次の騒ぎへ向かう";
   if (!state.flags.met_firechief) return "火消し小屋で火消し頭に会う";
   if (!state.flags.patrol_done) return "火消し頭の見回り仕事を手伝う";
+  if (state.day >= 6 && !state.flags.chapter_two_done) {
+    const event = eventForDay(state.day);
+    if (event && !state.completedChapterEvents.includes(event.id)) {
+      return `${AREAS[event.area].name}で、次の町仕事を引き受ける`;
+    }
+    return "今日の仕事を終え、町の変化を見る";
+  }
+  if (state.day >= 10 && state.flags.chapter_two_done) return "町の顔として、次の相談を待つ";
   if (state.day >= 5 && state.flags.festival_done) return "祭りのあとの町を歩き、顔なじみの声を聞く";
   if (state.day >= 5) return "町の人との関係を深め、顔役への道を歩く";
   if (state.day >= 4 && !state.flags.festival_done) {
