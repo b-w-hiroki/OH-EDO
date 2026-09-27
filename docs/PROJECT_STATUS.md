@@ -123,3 +123,17 @@ Pages環境がGitHub側で有効になると公開URLへ反映される。
 - Issue #76: physical iPhone Safari final QA
 - Issue #77: first-time user playtest
 - Issue #62: GitHub Pages final deploy
+
+
+## 2026-09-27 Day7–Day10 Expansion
+
+- version: 0.2.0-dev.2
+- Day7 井戸端の順番騒ぎ
+- Day8 商店通りの品不足
+- Day9 祭り明けの町内警戒
+- Day10 町内の大きな相談
+- Day6〜Day10を同一のgeneric town-event engineで駆動
+- completedTownEventIdsでイベント完了履歴を保存
+- 旧Day6セーブは自動migration
+- エリア小話をDay10まで拡張
+- browser QAをDay1→Day10へ延長
