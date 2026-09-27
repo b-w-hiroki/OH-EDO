@@ -84,3 +84,23 @@ Pages環境がGitHub側で有効になると公開URLへ反映される。
 
 - 実物iPhone Safariでの最終目視
 - GitHub Pages deployの断続的失敗は Issue #62 でアプリCIと分離して追跡
+
+
+## 2026-09-27 Release Hardening
+
+- version: 0.1.0-rc.3
+- セーブをversioned envelope化し、旧raw GameStateセーブを自動移行
+- 旧セーブ移行をdesktop browser QAへ追加
+- Runtime Error Boundaryを追加
+- PWA manifest / service worker / iPhone standalone metadataを追加
+- 初回の長屋背景と主人公アートをpreload
+- キーボードfocus表示とtouch-actionを改善
+- 外部送信なしのsessionStorage進行メトリクスを追加
+- Playtest / Release checklistを文書化
+- Pagesはbuildとartifact uploadまで成功、最終deployのみIssue #62で継続追跡
+
+### 正式0.1.0へ残る条件
+
+- 物理iPhone SafariでDay1→Day5完走
+- GitHub Pagesの最終deploy成功
+- 初見プレイテスト3人以上
