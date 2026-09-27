@@ -6,7 +6,7 @@
 
 **昨日の行動 → 翌日の噂 → NPCの態度変化 → 次の事件へ**
 
-現在は、Day1の汲み取りからDay6の祭り後片づけまで一続きで遊べます。
+現在は、Day1の汲み取りからDay10の町内相談まで一続きで遊べます。
 
 ## 実装済み
 
@@ -17,6 +17,10 @@
 - Day4: NPC個別ミニエピソード + 春祭り準備
 - Day5: 春祭り後の町の認知 / 五日間の歩み / 次章フック
 - Day6: データ駆動の町イベント / 祭り後片づけ
+- Day7: 井戸端の順番騒ぎ
+- Day8: 商店通りの品不足
+- Day9: 祭り明けの町内警戒
+- Day10: 町内の大きな相談
 - 評判タグによる会話 / イベントボーナス
 - NPC関係値
 - 噂履歴 / 寿命 / 評判タグ
@@ -131,4 +135,4 @@ Day5では、NPCの呼び方・顔なじみ表示・町の小話・評判・成�
 
 `release/0.1.0-rc3` keeps the five-day release candidate fixed.
 
-`main` is now the next-chapter line (`0.2.0-dev.1`) and includes the first generic Day6 town event. New Day6+ work should use the data-driven town-event path rather than adding more one-off screens directly into App.tsx.
+`main` is now the next-chapter line (`0.2.0-dev.2`) and includes the first generic Day6 town event. New Day6+ work should use the data-driven town-event path rather than adding more one-off screens directly into App.tsx.

@@ -91,7 +91,7 @@ async function talk(page, name) {
   await advanceDialogs(page);
 }
 
-async function completeDay1ToDay6(page, prefix) {
+async function completeDay1ToDay10(page, prefix) {
   await freshStart(page);
 
   let initial = await state(page);
@@ -163,22 +163,45 @@ async function completeDay1ToDay6(page, prefix) {
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.screenshot({ path: `qa-artifacts/${prefix}-day5-finale.png`, fullPage: false });
 
-  await page.getByRole("button", { name: "六日目へ" }).click();
-  await page.waitForSelector(".town-event-panel", { timeout: 5000 });
-  await page.screenshot({ path: `qa-artifacts/${prefix}-day6-choice.png`, fullPage: false });
-  s = await state(page);
-  assert(s?.day === 6 && s.flags?.day6_started, "Day6 did not start");
-  assert(s.activeTownEventId === "day6_festival_cleanup", "Day6 cleanup event missing");
-  await page.locator(".town-event-panel .fire-choice").first().evaluate((el) => el.click());
-  await page.waitForSelector(".town-event-result", { timeout: 5000 });
-  await page.getByRole("button", { name: "町へ戻る" }).click();
-  s = await state(page);
-  assert(s?.day === 6 && s.flags?.day6_cleanup_done, "Day6 cleanup did not complete");
-  await page.screenshot({ path: `qa-artifacts/${prefix}-day6-world.png`, fullPage: false });
+  const chapterEvents = [
+    { day: 6, button: "六日目へ", id: "day6_festival_cleanup" },
+    { day: 7, button: "7日目へ", id: "day7_well_order" },
+    { day: 8, button: "8日目へ", id: "day8_market_shortage" },
+    { day: 9, button: "9日目へ", id: "day9_firehouse_watch" },
+    { day: 10, button: "10日目へ", id: "day10_town_council" },
+  ];
 
+  for (const chapter of chapterEvents) {
+    await page.getByRole("button", { name: chapter.button }).click();
+    await page.waitForSelector(".town-event-panel", { timeout: 5000 });
+    await page.waitForTimeout(2300);
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.screenshot({
+      path: `qa-artifacts/${prefix}-day${chapter.day}-choice.png`,
+      fullPage: false,
+    });
+    s = await state(page);
+    assert(s?.day === chapter.day, `Day${chapter.day} did not start`);
+    assert(s.activeTownEventId === chapter.id, `Day${chapter.day} event missing`);
+    await page.locator(".town-event-panel .fire-choice").first().evaluate((el) => el.click());
+    await page.waitForSelector(".town-event-result", { timeout: 5000 });
+    await page.getByRole("button", { name: "町へ戻る" }).click();
+    s = await state(page);
+    assert(
+      s.completedTownEventIds?.includes(chapter.id),
+      `Day${chapter.day} event did not complete`
+    );
+    if (chapter.day === 6) {
+      assert(s.flags?.day6_started && s.flags?.day6_cleanup_done, "Day6 compatibility flags missing");
+    }
+  }
+
+  await page.screenshot({ path: `qa-artifacts/${prefix}-day10-world.png`, fullPage: false });
+  assert(s?.day === 10, "Day10 progression failed");
+  assert(s.completedTownEventIds?.length >= 5, "town event completion history missing");
   assert(s.flags?.room_unlocked, "room unlock regressed");
   assert(s.flags?.firehouse_unlocked, "firehouse unlock regressed");
-  assert(Array.isArray(s.playerActions) && s.playerActions.length >= 4, "player action history missing");
+  assert(Array.isArray(s.playerActions) && s.playerActions.length >= 8, "player action history missing");
   assert(Array.isArray(s.decisionLogs) && s.decisionLogs.length >= 2, "decision logs missing");
   return s;
 }
@@ -242,7 +265,7 @@ async function assertMobileLayout(page) {
 
 async function verifyLegacySaveMigration(page) {
   const current = await state(page);
-  assert(current?.day === 6, "migration fixture requires completed Day6 state");
+  assert(current?.day === 10, "migration fixture requires completed Day10 state");
   await page.evaluate(({ key, legacy }) => {
     localStorage.setItem(key, JSON.stringify(legacy));
   }, { key: STORAGE_KEY, legacy: current });
@@ -252,17 +275,17 @@ async function verifyLegacySaveMigration(page) {
     const raw = localStorage.getItem(key);
     if (!raw) return false;
     const decoded = JSON.parse(raw);
-    return decoded?.schemaVersion === 1 && decoded?.state?.day === 6;
+    return decoded?.schemaVersion === 1 && decoded?.state?.day === 10;
   }, STORAGE_KEY);
   const migrated = await state(page);
-  assert(migrated?.day === 6 && migrated.flags?.day6_cleanup_done, "legacy save migration lost progression");
+  assert(migrated?.day === 10 && migrated.completedTownEventIds?.includes("day10_town_council"), "legacy save migration lost progression");
 }
 
 async function runDesktop() {
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({ viewport: { width: 1600, height: 900 }, deviceScaleFactor: 1 });
   const page = await context.newPage();
-  const finalState = await completeDay1ToDay6(page, "desktop-1600");
+  const finalState = await completeDay1ToDay10(page, "desktop-1600");
   await verifyLegacySaveMigration(page);
   await captureAreas(page, "desktop-1600");
   await browser.close();
@@ -279,7 +302,7 @@ async function runMobileChromium() {
     hasTouch: true,
   });
   const page = await context.newPage();
-  const finalState = await completeDay1ToDay6(page, "mobile-430");
+  const finalState = await completeDay1ToDay10(page, "mobile-430");
   const layout = await assertMobileLayout(page);
   await captureAreas(page, "mobile-430");
   await browser.close();
