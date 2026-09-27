@@ -386,13 +386,15 @@ function rememberedByTownLines(s: GameState, npc: NPCId): DialogLine[] | null {
 
   const trusted = relation.affinity >= 2 || relation.attitude === "friendly" || relation.attitude === "impressed";
   const known = s.player.rank >= 4 ? "もう新入りって呼ぶ方が変だね" : "だいぶ町の顔になってきたね";
+  const currentRumor = pickDominantRumor(s.activeRumors);
+  const rumorMemory = currentRumor ? `今は「${rumorLabel(currentRumor)}」って話まで付いて回ってる。` : "";
 
   switch (npc) {
     case "landlord":
       return trusted
         ? [
             { speaker: "大家", text: `最初はどこの流れ者かと思ったけど、${known}。` },
-            { speaker: "大家", text: "困りごとがあると、あんたを探す声が先に上がるようになったよ。" },
+            { speaker: "大家", text: rumorMemory || "困りごとがあると、あんたを探す声が先に上がるようになったよ。" },
           ]
         : [
             { speaker: "大家", text: "あんたのことを知らない長屋者も、もう少なくなったね。" },
@@ -402,7 +404,7 @@ function rememberedByTownLines(s: GameState, npc: NPCId): DialogLine[] | null {
       return trusted
         ? [
             { speaker: "魚屋", text: "おう、たろう。今日は『新入り』じゃなくて名前で呼んでやるよ。" },
-            { speaker: "魚屋", text: "客の方から、お前の昨日の話を聞かせろって言ってくるんだ。" },
+            { speaker: "魚屋", text: rumorMemory || "客の方から、お前の昨日の話を聞かせろって言ってくるんだ。" },
           ]
         : [
             { speaker: "魚屋", text: "またお前の話を聞かれたぜ。良くも悪くも、顔が売れてきたな。" },
@@ -410,13 +412,13 @@ function rememberedByTownLines(s: GameState, npc: NPCId): DialogLine[] | null {
     case "child":
       return [
         { speaker: "長屋の子ども", text: "ねえ、もう『新入り』じゃないよね！ たろうって呼ぶ！" },
-        { speaker: "長屋の子ども", text: "だって、みんなもう知ってるもん！" },
+        { speaker: "長屋の子ども", text: rumorMemory || "だって、みんなもう知ってるもん！" },
       ];
     case "newsman":
       return trusted
         ? [
             { speaker: "瓦版屋", text: "『謎の新入り』じゃ、もう見出しにならねえな。" },
-            { speaker: "瓦版屋", text: "今じゃ名前を出した方が、町の連中が食いつく。" },
+            { speaker: "瓦版屋", text: rumorMemory || "今じゃ名前を出した方が、町の連中が食いつく。" },
           ]
         : [
             { speaker: "瓦版屋", text: "お前の名前、説明なしでも通るようになってきたぜ。" },
@@ -425,7 +427,7 @@ function rememberedByTownLines(s: GameState, npc: NPCId): DialogLine[] | null {
       return trusted
         ? [
             { speaker: "火消し頭", text: "町の連中がお前を当てにしてる。そういう顔になってきた。" },
-            { speaker: "火消し頭", text: "頼られるってのは、好き勝手できなくなるってことでもある。覚えとけ。" },
+            { speaker: "火消し頭", text: rumorMemory || "頼られるってのは、好き勝手できなくなるってことでもある。覚えとけ。" },
           ]
         : [
             { speaker: "火消し頭", text: "町に顔を覚えられたな。次は、任せてもらえる動きを見せろ。" },
@@ -608,6 +610,7 @@ function getCurrentObjective(state: GameState): string {
   if (!state.flags.fire_event_done) return "町の噂を確かめ、次の騒ぎへ向かう";
   if (!state.flags.met_firechief) return "火消し小屋で火消し頭に会う";
   if (!state.flags.patrol_done) return "火消し頭の見回り仕事を手伝う";
+  if (state.day >= 5 && state.flags.festival_done) return "祭りのあとの町を歩き、顔なじみの声を聞く";
   if (state.day >= 5) return "町の人との関係を深め、顔役への道を歩く";
   if (state.day >= 4 && !state.flags.festival_done) {
     if (!state.flags.episode_newsman_done) return "町の人たちの小さな頼みごとを聞く";
@@ -1765,6 +1768,38 @@ function actionTagLabel(tag?: string): string {
   }
 }
 
+function fiveDayHook(state: GameState): string {
+  if (state.player.rank >= 5) {
+    return "祭りが終わる前から、次の揉めごとを『たろうに聞こう』という声が上がっている。";
+  }
+  if (state.reputationTags.includes("頼れるやつ")) {
+    return "祭りの片づけが始まるそばから、次の頼みごとを持った町人がこちらを探している。";
+  }
+  if (state.reputationTags.includes("粋なやつ")) {
+    return "瓦版屋が、次は祭りの外で起きる話を一緒に追おうと手招きしている。";
+  }
+  return "五日で町はずいぶん近くなった。明日もまた、誰かがこちらを呼び止めそうだ。";
+}
+
+function fiveDayMemoryText(state: GameState): string {
+  const known = (Object.entries(state.npcRelations) as [NPCId, GameState["npcRelations"][NPCId]][])
+    .filter(([npc]) => npc !== "kumitori_master")
+    .filter(([, relation]) => relation.familiarity >= 3).length;
+  const rep = state.reputationTags[0] ?? "まだ決まらない評判";
+  return `${known}人の顔なじみ / ${rep}`;
+}
+
+function festivalClosingLine(choiceId: NonNullable<GameState["lastFestivalResult"]>["choiceId"]): string {
+  switch (choiceId) {
+    case "festival_stalls":
+      return "店先のあちこちから『助かったよ』と声が飛ぶ。見物客ではなく、働く側の顔で祭りを迎えた。";
+    case "festival_decor":
+      return "夕暮れの提灯が灯るころ、通りの景色を見て『あいつの仕事だ』と指さす声が聞こえた。";
+    case "festival_news":
+      return "祭りが始まる前から名前が町を一周した。瓦版屋は面白そうに次の見出しを考えている。";
+  }
+}
+
 function relationMemoryLabel(relation: GameState["npcRelations"][NPCId]): string {
   if (relation.familiarity >= 5 || relation.affinity >= 5) return "町の顔なじみ";
   if (relation.familiarity >= 3) return "覚えられてる";
@@ -1824,6 +1859,10 @@ function TownSidePanel({
   const knownCount = areaNpcIds.filter(
     (npcId) => state.npcRelations[npcId].familiarity >= 3
   ).length;
+  const totalKnownCount = (Object.entries(state.npcRelations) as [NPCId, GameState["npcRelations"][NPCId]][])
+    .filter(([npc]) => npc !== "kumitori_master")
+    .filter(([, relation]) => relation.familiarity >= 3).length;
+  const finaleReady = state.day >= 5 && state.flags.festival_done;
   const areaFlavor = AREAS[state.currentArea].flavor;
   const recentActionItems = state.playerActions
     .slice(-3)
@@ -1894,6 +1933,18 @@ function TownSidePanel({
           ))}
         </div>
       </section>
+
+      {finaleReady && (
+        <section className="side-card town-finale-card">
+          <div className="side-card-title"><span><SideIcon kind="story" /> 五日間の歩み</span></div>
+          <strong className="town-finale-rank">{state.player.rankName}</strong>
+          <div className="town-finale-stats">
+            <span>顔なじみ <b>{totalKnownCount}人</b></span>
+            <span>評判 <b>{state.reputationTags[0] ?? "これから"}</b></span>
+          </div>
+          <p>{fiveDayHook(state)}</p>
+        </section>
+      )}
 
       <section
         className={`side-card yesterday-card ${recentActionItems.length === 0 && !yesterdaySummary ? "is-empty" : ""}`}
@@ -2056,6 +2107,7 @@ function FestivalResultView({
       <h2>祭りの準備、そのあと</h2>
       <p>{result.resultText}</p>
       {result.bonusText && <p className="reputation-bonus">{result.bonusText}</p>}
+      <p className="festival-town-response">{festivalClosingLine(result.choiceId)}</p>
       <p className="muted">{result.nextDayText}</p>
       <div className="panel-actions">
         <button className="primary" onClick={onNext}>五日目へ</button>
