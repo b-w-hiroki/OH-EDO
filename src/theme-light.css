@@ -7179,3 +7179,76 @@ button:focus-visible,
   margin: 0 0 18px;
   line-height: 1.7;
 }
+
+
+/* ── Chapter two: reusable town-event presentation ───────────────── */
+.chapter-event-panel,
+.chapter-event-result {
+  width: min(720px, calc(100% - 28px));
+  margin: 0 auto;
+}
+
+.panel-kicker {
+  margin: 0 0 4px;
+  color: #b25b49;
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.chapter-town-response {
+  margin: 12px 0 8px;
+  padding: 10px 12px;
+  border: 1px solid #dfc49b;
+  border-left: 3px solid #c95e50;
+  border-radius: 8px;
+  background: rgba(255,248,231,.94);
+}
+
+.chapter-town-response strong {
+  display: block;
+  margin-bottom: 3px;
+  color: #a65347;
+  font-size: 10px;
+  letter-spacing: .05em;
+}
+
+.chapter-town-response p {
+  margin: 0;
+  color: #5c4939;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.town-finale-next {
+  width: 100%;
+  min-height: 38px;
+  margin-top: 9px;
+  font-size: 12px;
+}
+
+.chapter-complete-card {
+  border-color: #c49d62 !important;
+}
+
+@media (max-width: 599px) {
+  .chapter-event-panel,
+  .chapter-event-result {
+    width: calc(100% - 12px);
+  }
+
+  .chapter-event-panel h2,
+  .chapter-event-result h2 {
+    font-size: 20px;
+  }
+
+  .chapter-town-response {
+    padding: 8px 9px;
+  }
+
+  .chapter-town-response p {
+    font-size: 11px;
+  }
+}
