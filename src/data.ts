@@ -58,6 +58,8 @@ export const INITIAL_STATE: GameState = {
     festival_started: false,
     festival_done: false,
     day5_started: false,
+    chapter_two_started: false,
+    chapter_two_done: false,
   },
   npcRelations: {
     landlord: { affinity: 0, caution: 0, familiarity: 0, attitude: "neutral" },
@@ -79,6 +81,9 @@ export const INITIAL_STATE: GameState = {
   lastJobResult: null,
   lastPatrolResult: null,
   lastFestivalResult: null,
+  activeChapterEventId: null,
+  completedChapterEvents: [],
+  lastChapterResult: null,
 };
 
 export const NPCS: Record<NPCId, NPCDef> = {
