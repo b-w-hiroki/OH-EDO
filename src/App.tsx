@@ -379,6 +379,62 @@ interface NPCDialogPick {
   lines: DialogLine[];
 }
 
+function rememberedByTownLines(s: GameState, npc: NPCId): DialogLine[] | null {
+  if (s.day < 5) return null;
+  const relation = s.npcRelations[npc];
+  if (!relation || (relation.familiarity < 2 && s.player.rank < 3)) return null;
+
+  const trusted = relation.affinity >= 2 || relation.attitude === "friendly" || relation.attitude === "impressed";
+  const known = s.player.rank >= 4 ? "もう新入りって呼ぶ方が変だね" : "だいぶ町の顔になってきたね";
+
+  switch (npc) {
+    case "landlord":
+      return trusted
+        ? [
+            { speaker: "大家", text: `最初はどこの流れ者かと思ったけど、${known}。` },
+            { speaker: "大家", text: "困りごとがあると、あんたを探す声が先に上がるようになったよ。" },
+          ]
+        : [
+            { speaker: "大家", text: "あんたのことを知らない長屋者も、もう少なくなったね。" },
+            { speaker: "大家", text: "評判ってのは、いいのも悪いのも積み重なるもんさ。" },
+          ];
+    case "fishmonger":
+      return trusted
+        ? [
+            { speaker: "魚屋", text: "おう、たろう。今日は『新入り』じゃなくて名前で呼んでやるよ。" },
+            { speaker: "魚屋", text: "客の方から、お前の昨日の話を聞かせろって言ってくるんだ。" },
+          ]
+        : [
+            { speaker: "魚屋", text: "またお前の話を聞かれたぜ。良くも悪くも、顔が売れてきたな。" },
+          ];
+    case "child":
+      return [
+        { speaker: "長屋の子ども", text: "ねえ、もう『新入り』じゃないよね！ たろうって呼ぶ！" },
+        { speaker: "長屋の子ども", text: "だって、みんなもう知ってるもん！" },
+      ];
+    case "newsman":
+      return trusted
+        ? [
+            { speaker: "瓦版屋", text: "『謎の新入り』じゃ、もう見出しにならねえな。" },
+            { speaker: "瓦版屋", text: "今じゃ名前を出した方が、町の連中が食いつく。" },
+          ]
+        : [
+            { speaker: "瓦版屋", text: "お前の名前、説明なしでも通るようになってきたぜ。" },
+          ];
+    case "firechief":
+      return trusted
+        ? [
+            { speaker: "火消し頭", text: "町の連中がお前を当てにしてる。そういう顔になってきた。" },
+            { speaker: "火消し頭", text: "頼られるってのは、好き勝手できなくなるってことでもある。覚えとけ。" },
+          ]
+        : [
+            { speaker: "火消し頭", text: "町に顔を覚えられたな。次は、任せてもらえる動きを見せろ。" },
+          ];
+    default:
+      return null;
+  }
+}
+
 function pickNPCDialog(s: GameState, npc: NPCId): NPCDialogPick | null {
   if (npc === "kumitori_master") return null;
 
@@ -399,6 +455,12 @@ function pickNPCDialog(s: GameState, npc: NPCId): NPCDialogPick | null {
     if (npc === "newsman" && s.flags.episode_newsman_done && !s.flags.festival_started && !s.flags.festival_done) {
       return { kind: "festival_intro", lines: FESTIVAL_INTRO_LINES };
     }
+  }
+
+  // By Day 5, NPCs stop treating the player as an anonymous newcomer.
+  const rememberedLines = rememberedByTownLines(s, npc);
+  if (rememberedLines) {
+    return { kind: "reputation_reply", lines: rememberedLines };
   }
 
   // Persistent reputation changes how people talk even after short-lived rumors fade.
@@ -606,9 +668,11 @@ function App() {
   const [areaTransition, setAreaTransition] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [dayTransition, setDayTransition] = useState<number | null>(null);
+  const [rankTransition, setRankTransition] = useState<string | null>(null);
   const [selectedNpcId, setSelectedNpcId] = useState<NPCId | null>(() => getAreaNpcIds(loadInitial())[0] ?? null);
   const dialogOpenRef = useRef(false);
   const previousDayRef = useRef(state.day);
+  const previousRankRef = useRef(state.player.rank);
 
   useEffect(() => {
     const local = getAreaNpcIds(state);
@@ -635,6 +699,15 @@ function App() {
     const timer = window.setTimeout(() => setDayTransition(null), 1900);
     return () => window.clearTimeout(timer);
   }, [state.day]);
+
+  useEffect(() => {
+    if (state.player.rank <= previousRankRef.current) return;
+    previousRankRef.current = state.player.rank;
+    uiSound.result();
+    setRankTransition(state.player.rankName);
+    const timer = window.setTimeout(() => setRankTransition(null), 2100);
+    return () => window.clearTimeout(timer);
+  }, [state.player.rank, state.player.rankName]);
 
   // Auto-triggers when standing on the town with no dialog open.
   useEffect(() => {
@@ -1460,6 +1533,12 @@ function App() {
           {yesterdaySummary && <span>{yesterdaySummary}</span>}
         </div>
       )}
+      {rankTransition && (
+        <div className="rank-transition" aria-live="polite">
+          <small>町での立場が変わった</small>
+          <strong>{rankTransition}</strong>
+        </div>
+      )}
       {toast && <div className="game-toast" aria-live="polite">{toast}</div>}
     </div>
   );
@@ -1686,6 +1765,12 @@ function actionTagLabel(tag?: string): string {
   }
 }
 
+function relationMemoryLabel(relation: GameState["npcRelations"][NPCId]): string {
+  if (relation.familiarity >= 5 || relation.affinity >= 5) return "町の顔なじみ";
+  if (relation.familiarity >= 3) return "覚えられてる";
+  return relationLabel(relation.attitude);
+}
+
 function relationLabel(attitude: GameState["npcRelations"][NPCId]["attitude"]): string {
   switch (attitude) {
     case "friendly":
@@ -1736,6 +1821,9 @@ function TownSidePanel({
   onTalk: (npc: NPCId) => void;
 }) {
   const areaNpcIds = sidePanelNpcIds(state);
+  const knownCount = areaNpcIds.filter(
+    (npcId) => state.npcRelations[npcId].familiarity >= 3
+  ).length;
   const areaFlavor = AREAS[state.currentArea].flavor;
   const recentActionItems = state.playerActions
     .slice(-3)
@@ -1760,7 +1848,9 @@ function TownSidePanel({
       <section className="side-card">
         <div className="side-card-title">
           <span><SideIcon kind="people" /> このあたりの人たち</span>
-          <small className="side-card-more">顔なじみ</small>
+          <small className="side-card-more">
+            {knownCount > 0 ? `${knownCount}人が顔なじみ` : "まだ新入り"}
+          </small>
         </div>
         <div className="nearby-list">
           {areaNpcIds.map((npcId) => (
@@ -1787,7 +1877,7 @@ function TownSidePanel({
               <div className="nearby-copy">
                 <strong>{npcDisplayName(npcId)}</strong>
                 <span className="npc-subtitle">{npcSubtitle(npcId)}</span>
-                <small className="relation-pill">♥ {relationLabel(state.npcRelations[npcId].attitude)}</small>
+                <small className={`relation-pill ${state.npcRelations[npcId].familiarity >= 3 ? "is-known" : ""}`}>♥ {relationMemoryLabel(state.npcRelations[npcId])}</small>
               </div>
               <button
                 className="nearby-talk"
