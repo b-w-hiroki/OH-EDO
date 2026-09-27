@@ -1583,6 +1583,7 @@ function App() {
                 setSelectedNpcId(npc);
                 EventBus.emit("npc-interact", npc);
               }}
+              onStartChapterTwo={startChapterTwo}
             />
           </div>
         )}
@@ -1994,6 +1995,7 @@ function TownSidePanel({
   selectedNpc,
   onSelect,
   onTalk,
+  onStartChapterTwo,
 }: {
   state: GameState;
   dominantRumor: ReturnType<typeof pickDominantRumor>;
@@ -2002,13 +2004,15 @@ function TownSidePanel({
   selectedNpc: NPCId | null;
   onSelect: (npc: NPCId) => void;
   onTalk: (npc: NPCId) => void;
+  onStartChapterTwo: () => void;
 }) {
   const areaNpcIds = sidePanelNpcIds(state);
   const knownCount = areaNpcIds.filter((npcId) => isNpcKnown(state, npcId)).length;
   const totalKnownCount = (Object.keys(state.npcRelations) as NPCId[])
     .filter((npc) => npc !== "kumitori_master")
     .filter((npc) => isNpcKnown(state, npc)).length;
-  const finaleReady = state.day >= 5 && state.flags.festival_done;
+  const finaleReady = state.day === 5 && state.flags.festival_done && !state.flags.chapter_two_started;
+  const chapterComplete = state.day >= 10 && state.flags.chapter_two_done;
   const areaFlavor = AREAS[state.currentArea].flavor;
   const recentActionItems = state.playerActions
     .slice(-3)
@@ -2089,6 +2093,21 @@ function TownSidePanel({
             <span>評判 <b>{state.reputationTags[0] ?? "これから"}</b></span>
           </div>
           <p>{fiveDayHook(state)}</p>
+          <button className="primary town-finale-next" onClick={onStartChapterTwo}>
+            六日目へ
+          </button>
+        </section>
+      )}
+
+      {chapterComplete && (
+        <section className="side-card town-finale-card chapter-complete-card">
+          <div className="side-card-title"><span><SideIcon kind="story" /> 十日間の歩み</span></div>
+          <strong className="town-finale-rank">{state.player.rankName}</strong>
+          <div className="town-finale-stats">
+            <span>町仕事 <b>{state.completedChapterEvents.length + 3}件</b></span>
+            <span>評判 <b>{state.reputationTags[0] ?? "町の顔"}</b></span>
+          </div>
+          <p>相談を任される側から、町の決め事に加わる側へ。次は、もっと大きな町の話が待っている。</p>
         </section>
       )}
 
