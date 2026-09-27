@@ -42,7 +42,7 @@ export function TownEventResultView({
 }) {
   return (
     <section className="panel town-event-result">
-      <h2>祭りのあと、町の日常へ</h2>
+      <h2>今日の仕事、そのあと</h2>
       <p>{result.resultText}</p>
       <p className="festival-town-response">{result.nextDayText}</p>
       <div className="panel-actions">
