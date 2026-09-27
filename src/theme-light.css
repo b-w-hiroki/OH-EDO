@@ -7099,3 +7099,46 @@ body::before {
     font-size: 11px;
   }
 }
+
+
+/* ── Choice readability: show likely consequences before committing ── */
+.choice-impact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 7px;
+}
+
+.choice-impact small {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 3px 7px;
+  border: 1px solid #d7bea0;
+  border-radius: 999px;
+  background: rgba(255,250,240,.92);
+  color: #785842;
+  font-family: var(--font-ui);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .01em;
+}
+
+.fire-choice:hover .choice-impact small,
+.fire-choice:focus-visible .choice-impact small {
+  border-color: #cb9c7e;
+  background: #fff4df;
+}
+
+@media (max-width: 599px) {
+  .choice-impact {
+    gap: 4px;
+    margin-top: 5px;
+  }
+
+  .choice-impact small {
+    min-height: 20px;
+    padding: 2px 6px;
+    font-size: 8px;
+  }
+}
