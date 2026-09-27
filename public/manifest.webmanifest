@@ -1,0 +1,20 @@
+{
+  "name": "OH！EDO！ — 江戸ライフ成り上がり",
+  "short_name": "OH！EDO！",
+  "description": "昨日の行動が、今日の町の空気になる。江戸の町生活アドベンチャー。",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4ead6",
+  "theme_color": "#e66f55",
+  "lang": "ja",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
