@@ -76,3 +76,18 @@ OH！EDO！を「見た目の良い試作」ではなく、初見でも迷わず
 - [ ] 同じ箇所で2人以上が迷った場合は修正Issueを作る
 - [ ] Day1→Day5 / Day1→Day10の所要時間を記録する
 - [ ] Day6〜Day10がミニゲーム集ではなく町生活の続きに感じるか確認する
+
+
+## Playtest mode
+
+URLの末尾に `?playtest=1` を付けて起動すると、覚え書き画面に **プレイ記録をコピー** が表示される。
+
+記録内容:
+- Day到達時刻
+- 主要な選択
+- Day6〜Day10のtown-event選択
+- 現在Day / ランク
+- playerActions
+- completedTownEventIds
+
+外部サーバーへは送信せず、sessionStorage内だけで保持する。テスト終了時にコピーしたJSONを回収する。
