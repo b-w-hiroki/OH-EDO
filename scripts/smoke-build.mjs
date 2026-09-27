@@ -27,6 +27,9 @@ const assetsDir = new URL("assets/", dist);
 const files = await readdir(assetsDir);
 const js = files.filter((name) => name.endsWith(".js"));
 const css = files.filter((name) => name.endsWith(".css"));
+if (files.some((name) => name.toLowerCase().includes("phaser"))) {
+  throw new Error("unused Phaser bundle should not be emitted by the scenic React build");
+}
 if (js.length === 0 || css.length === 0) {
   throw new Error("expected JS and CSS assets in dist/assets");
 }
