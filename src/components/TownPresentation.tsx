@@ -143,7 +143,7 @@ export function TownPresentation({
 
   return (
     <section
-      className={`town-presentation area-${area} ${dialogOpen ? "is-dialogue" : ""} ${playerSpeaking ? "is-player-speaking" : ""} ${state.day >= 5 && state.flags.festival_done ? "is-festival-after" : state.day >= 4 && state.flags.festival_started ? "is-festival-prep" : ""}`}
+      className={`town-presentation area-${area} ${dialogOpen ? "is-dialogue" : ""} ${playerSpeaking ? "is-player-speaking" : ""} ${state.day === 5 && state.flags.festival_done ? "is-festival-after" : state.day >= 4 && state.flags.festival_started ? "is-festival-prep" : ""}`}
       aria-label={`${AREAS[state.currentArea].name}の情景`}
     >
       <div
