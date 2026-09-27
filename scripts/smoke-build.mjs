@@ -32,11 +32,38 @@ if (js.length === 0 || css.length === 0) {
 }
 
 let combined = "";
+let totalJsBytes = 0;
+let largestJsBytes = 0;
 for (const name of js) {
   const path = new URL(`assets/${name}`, dist);
   const info = await stat(path);
   if (info.size === 0) throw new Error(`empty bundle: ${name}`);
+  totalJsBytes += info.size;
+  largestJsBytes = Math.max(largestJsBytes, info.size);
   combined += await readFile(path, "utf8");
+}
+
+let totalCssBytes = 0;
+for (const name of css) {
+  const path = new URL(`assets/${name}`, dist);
+  const info = await stat(path);
+  if (info.size === 0) throw new Error(`empty stylesheet: ${name}`);
+  totalCssBytes += info.size;
+}
+
+const budgets = {
+  totalJsBytes: 6 * 1024 * 1024,
+  largestJsBytes: 3.5 * 1024 * 1024,
+  totalCssBytes: 800 * 1024,
+};
+if (totalJsBytes > budgets.totalJsBytes) {
+  throw new Error(`JS budget exceeded: ${totalJsBytes} > ${budgets.totalJsBytes}`);
+}
+if (largestJsBytes > budgets.largestJsBytes) {
+  throw new Error(`largest JS chunk budget exceeded: ${largestJsBytes} > ${budgets.largestJsBytes}`);
+}
+if (totalCssBytes > budgets.totalCssBytes) {
+  throw new Error(`CSS budget exceeded: ${totalCssBytes} > ${budgets.totalCssBytes}`);
 }
 
 for (const token of ["OH！EDO！", "火消し小屋", "Decision"]) {
@@ -45,4 +72,6 @@ for (const token of ["OH！EDO！", "火消し小屋", "Decision"]) {
   }
 }
 
-console.log("smoke-build: production bundle looks healthy");
+console.log(
+  `smoke-build: production bundle looks healthy (js=${totalJsBytes}B, largest=${largestJsBytes}B, css=${totalCssBytes}B)`
+);
