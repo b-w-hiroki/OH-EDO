@@ -15,7 +15,7 @@
 - Day2→3: 小火騒ぎ + Jev/Local Decision aftermath
 - Day3: 火消し小屋、火消し頭、町内見回り
 - Day4: NPC個別ミニエピソード + 春祭り準備
-- Day5への進行
+- Day5: 春祭り後の町の認知 / 五日間の歩み / 次章フック
 - 評判タグによる会話 / イベントボーナス
 - NPC関係値
 - 噂履歴 / 寿命 / 評判タグ
@@ -94,6 +94,15 @@ Release candidate QA is automated in `scripts/release-qa.mjs`.
 - Chromium mobile 430×932: Day1→Day5 through-play + all area world/dialog captures
 - WebKit iPhone-class 430×932: safe-area, horizontal overflow, touch target, and dialog interaction checks
 - Save/progression flags, decision logs, and Jev/Local provider results are verified during the through-play
-- Background assets are already 1672×941, so the final pass keeps them near native resolution instead of upscaling/re-generating them
+- The five scenic backgrounds use the mock-aligned spring Edo set, with per-area desktop/mobile staging tuned against viewport captures
 
 The screenshot workflow uploads both the four baseline mock-comparison captures and release-QA captures.
+
+
+## Five-day arc
+
+The first playable arc now closes as one continuous loop:
+
+Day1の初仕事 → Day2の噂 → 小火 → 火消し見回り → 春祭り → Day5の町の認知。
+
+Day5では、NPCの呼び方・顔なじみ表示・町の小話・評判・成長ランクが、それまでの行動を受けて変化します。新しい独立システムではなく、既存の噂・関係値・評判・ランクを締めの演出へ接続しています。
