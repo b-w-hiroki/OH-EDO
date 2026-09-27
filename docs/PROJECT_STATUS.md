@@ -104,3 +104,15 @@ Pages環境がGitHub側で有効になると公開URLへ反映される。
 - 物理iPhone SafariでDay1→Day5完走
 - GitHub Pagesの最終deploy成功
 - 初見プレイテスト3人以上
+
+
+## 2026-09-27 Chapter Two
+
+- Day6〜10を実装
+- 新章イベントを `src/events/chapterTwo.ts` へデータ定義化
+- 汎用 ChapterEvent choice/result UIを追加
+- Day5 finaleからDay6へ継続可能
+- Day10で町内大相談まで進行
+- セーブmigrationへ新章stateを追加
+- Release QAをDay1→Day10へ拡張
+- Day1〜5の既存進行ロジックは維持
