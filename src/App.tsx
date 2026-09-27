@@ -1876,7 +1876,7 @@ function TownSidePanel({
 
   const rumorItems = [
     areaEcho ?? "まだ大きな噂はない。",
-    areaFlavor[(state.day + 1) % areaFlavor.length] ?? areaFlavor[0],
+    areaFlavor[Math.min(areaFlavor.length - 1, Math.max(0, state.day - 1))] ?? areaFlavor[0],
     dominantRumor
       ? `町では「${rumorLabel(dominantRumor)}」の話が少しずつ広がっている。`
       : "商店通りでは、朝から新しい話題を探す声が聞こえる。",
@@ -1938,6 +1938,7 @@ function TownSidePanel({
         <section className="side-card town-finale-card">
           <div className="side-card-title"><span><SideIcon kind="story" /> 五日間の歩み</span></div>
           <strong className="town-finale-rank">{state.player.rankName}</strong>
+          <small className="town-finale-memory">{fiveDayMemoryText(state)}</small>
           <div className="town-finale-stats">
             <span>顔なじみ <b>{totalKnownCount}人</b></span>
             <span>評判 <b>{state.reputationTags[0] ?? "これから"}</b></span>
