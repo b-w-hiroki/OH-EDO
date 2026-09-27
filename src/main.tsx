@@ -3,6 +3,7 @@ import App from "./App";
 import { AppErrorBoundary } from "./components/AppErrorBoundary";
 import "./styles.css";
 import "./theme-light.css";
+import "./town-events.css";
 
 // StrictMode is intentionally omitted: its dev-only double mount/unmount
 // conflicts with the Phaser canvas lifecycle.

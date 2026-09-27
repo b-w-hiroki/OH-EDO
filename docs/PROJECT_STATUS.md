@@ -104,3 +104,22 @@ Pages環境がGitHub側で有効になると公開URLへ反映される。
 - 物理iPhone SafariでDay1→Day5完走
 - GitHub Pagesの最終deploy成功
 - 初見プレイテスト3人以上
+
+
+## 2026-09-27 Day6 / Next Chapter Start
+
+- main version: 0.2.0-dev.1
+- release/0.1.0-rc3 remains the five-day release candidate
+- Day6「祭りのあと片づけ」を追加
+- Day6はgeneric town-event定義から選択肢 / 効果 / 結果を駆動
+- desktop / mobile / WebKit QAをDay6まで延長
+- ChoiceImpact / TownEventViewsをApp.tsxから分離
+- Day6固有CSSをtown-events.cssへ分離
+- Pages workflowをupload-pages-artifact@v4へ更新
+- Pages復旧手順をdocs/PAGES_RECOVERY.mdへ整理
+
+### 外部依存
+
+- Issue #76: physical iPhone Safari final QA
+- Issue #77: first-time user playtest
+- Issue #62: GitHub Pages final deploy
