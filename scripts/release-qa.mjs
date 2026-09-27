@@ -147,6 +147,8 @@ async function completeDay1ToDay5(page) {
 
   s = await state(page);
   assert(s?.day === 5 && s.flags?.day5_started && s.flags?.festival_done, "Day5/festival progression failed");
+  await page.waitForSelector(".town-finale-card", { timeout: 5000 });
+  await page.screenshot({ path: "qa-artifacts/day5-finale.png", fullPage: false });
   assert(s.flags?.room_unlocked, "room unlock regressed");
   assert(s.flags?.firehouse_unlocked, "firehouse unlock regressed");
   assert(Array.isArray(s.playerActions) && s.playerActions.length >= 3, "player action history missing");
