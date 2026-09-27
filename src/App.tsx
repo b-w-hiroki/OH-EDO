@@ -55,7 +55,7 @@ import {
   makeDecisionLog,
 } from "./decision/DecisionService";
 import { clearGameState, loadGameState, saveGameState } from "./saveState";
-import { recordMetric } from "./game/metrics";
+import { isPlaytestMode, metricReport, recordMetric } from "./game/metrics";
 import { eventById, eventForDay, makeChapterResult } from "./events/chapterTwo";
 
 const decisionService = createDecisionService();
@@ -795,6 +795,7 @@ function App() {
 
   // ── Actions ─────────────────────────────────────────
   const startGame = useCallback(() => {
+    recordMetric("game_started", 1);
     uiSound.startAmbience();
     setState((s) => startDialogInState(s, "opening", OPENING_LINES));
   }, []);
@@ -813,6 +814,7 @@ function App() {
   }, []);
 
   const chooseJob = useCallback((choice: JobChoice) => {
+    recordMetric("choice", 1, choice.id);
     uiSound.select();
     setToast(`${actionTagLabel(choice.rumorTags[0])} → 明日の町に残る`);
     window.setTimeout(() => setToast(null), 1800);
@@ -835,6 +837,7 @@ function App() {
 
   const chooseFireResponse = useCallback(async (choice: FireChoice) => {
     if (state.screen !== "fire_choice") return;
+    recordMetric("choice", state.day, choice.id);
     uiSound.select();
     const e = choice.effects;
     const action = {
@@ -940,6 +943,7 @@ function App() {
   }, [state]);
 
   const chooseFestival = useCallback((choice: FestivalChoice) => {
+    recordMetric("choice", 4, choice.id);
     uiSound.select();
     setState((s) => {
       if (s.screen !== "festival_choice") return s;
@@ -1003,6 +1007,7 @@ function App() {
   }, []);
 
   const choosePatrol = useCallback((choice: PatrolChoice) => {
+    recordMetric("choice", 3, choice.id);
     uiSound.select();
     setToast(`${actionTagLabel(choice.rumorTags[0])} → 町の人が覚えている`);
     window.setTimeout(() => setToast(null), 1800);
@@ -2553,6 +2558,19 @@ function StatusPanel({
             <li key={i}>{entry}</li>
           ))}
         </ol>
+      )}
+
+      {isPlaytestMode() && (
+        <div className="playtest-tools">
+          <h3>プレイテスト</h3>
+          <p className="muted">記録はこの端末内だけに保存され、外部送信されません。</p>
+          <button
+            className="ghost"
+            onClick={() => navigator.clipboard?.writeText(metricReport())}
+          >
+            プレイ記録をコピー
+          </button>
+        </div>
       )}
 
       <div className="panel-actions">
