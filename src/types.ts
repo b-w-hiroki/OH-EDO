@@ -237,6 +237,7 @@ export interface TownEventDef {
   title: string;
   area: AreaId;
   targetNpcId: NPCId;
+  closingText: string;
   intro: DialogLine[];
   choices: TownEventChoice[];
 }
