@@ -95,8 +95,8 @@ Pages上ではサーバーAPIがないため、別途Jev Proxyを設定しない
 
 Release candidate QA is automated in `scripts/release-qa.mjs`.
 
-- Chromium desktop 1600×900: Day1→Day5 through-play + all area world/dialog captures
-- Chromium mobile 430×932: Day1→Day5 through-play + all area world/dialog captures
+- Chromium desktop 1600×900: Day1→Day10 through-play + all area world/dialog captures
+- Chromium mobile 430×932: Day1→Day10 through-play + all area world/dialog captures
 - WebKit iPhone-class 430×932: safe-area, horizontal overflow, touch target, and dialog interaction checks
 - Save/progression flags, decision logs, and Jev/Local provider results are verified during the through-play
 - The five scenic backgrounds use the mock-aligned spring Edo set, with per-area desktop/mobile staging tuned against viewport captures
@@ -135,4 +135,4 @@ Day5では、NPCの呼び方・顔なじみ表示・町の小話・評判・成�
 
 `release/0.1.0-rc3` keeps the five-day release candidate fixed.
 
-`main` is now the next-chapter line (`0.2.0-dev.2`) and includes the first generic Day6 town event. New Day6+ work should use the data-driven town-event path rather than adding more one-off screens directly into App.tsx.
+`main` is the next-chapter line (`0.2.0-dev.2`) and now runs Day6〜Day10 through the generic town-event engine. New chapter work should extend that data-driven path rather than adding one-off screens directly into App.tsx.
