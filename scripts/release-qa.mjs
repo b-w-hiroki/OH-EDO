@@ -91,7 +91,7 @@ async function talk(page, name) {
   await advanceDialogs(page);
 }
 
-async function completeDay1ToDay5(page, prefix) {
+async function completeDay1ToDay10(page, prefix) {
   await freshStart(page);
 
   let initial = await state(page);
@@ -166,6 +166,36 @@ async function completeDay1ToDay5(page, prefix) {
   assert(s.flags?.firehouse_unlocked, "firehouse unlock regressed");
   assert(Array.isArray(s.playerActions) && s.playerActions.length >= 3, "player action history missing");
   assert(Array.isArray(s.decisionLogs) && s.decisionLogs.length >= 2, "decision logs missing");
+
+  const chapterStart = page.getByRole("button", { name: "六日目へ" });
+  await chapterStart.waitFor({ state: "visible", timeout: 5000 });
+  await chapterStart.click();
+
+  const chapterDays = [
+    { day: 6, area: "商店通り", npc: "熊さん", next: "7日目へ" },
+    { day: 7, area: "井戸端", npc: "源太", next: "8日目へ" },
+    { day: 8, area: "商店通り", npc: "熊さん", next: "9日目へ" },
+    { day: 9, area: "火消し小屋", npc: "火消し頭", next: "10日目へ" },
+    { day: 10, area: "長屋前", npc: "おかみさん", next: "町へ戻る" },
+  ];
+
+  for (const step of chapterDays) {
+    s = await state(page);
+    assert(s?.day === step.day, `Day${step.day} did not start`);
+    await move(page, step.area);
+    await talk(page, step.npc);
+    await page.waitForSelector(".chapter-event-panel", { timeout: 5000 });
+    await page.locator(".chapter-event-panel .fire-choice").first().evaluate((el) => el.click());
+    await page.waitForSelector(".chapter-event-result", { timeout: 5000 });
+    await page.getByRole("button", { name: step.next }).click();
+  }
+
+  s = await state(page);
+  assert(s?.day === 10 && s.flags?.chapter_two_done, "Day10 chapter completion failed");
+  assert(Array.isArray(s.completedChapterEvents) && s.completedChapterEvents.length === 5, "chapter event history incomplete");
+  await page.waitForSelector(".chapter-complete-card", { timeout: 5000 });
+  await page.waitForTimeout(300);
+  await page.screenshot({ path: `qa-artifacts/${prefix}-day10-finale.png`, fullPage: false });
   return s;
 }
 
@@ -248,7 +278,7 @@ async function runDesktop() {
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({ viewport: { width: 1600, height: 900 }, deviceScaleFactor: 1 });
   const page = await context.newPage();
-  const finalState = await completeDay1ToDay5(page, "desktop-1600");
+  const finalState = await completeDay1ToDay10(page, "desktop-1600");
   await verifyLegacySaveMigration(page);
   await captureAreas(page, "desktop-1600");
   await browser.close();
@@ -265,7 +295,7 @@ async function runMobileChromium() {
     hasTouch: true,
   });
   const page = await context.newPage();
-  const finalState = await completeDay1ToDay5(page, "mobile-430");
+  const finalState = await completeDay1ToDay10(page, "mobile-430");
   const layout = await assertMobileLayout(page);
   await captureAreas(page, "mobile-430");
   await browser.close();
