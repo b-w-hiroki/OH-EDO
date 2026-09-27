@@ -329,6 +329,13 @@ function applyDialogComplete(s: GameState, kind: DialogKind): GameState {
         log: appendLog(s.log, s.day, "長屋裏手で小火騒ぎが起きた。"),
       };
 
+    case "chapter_event_intro":
+      return {
+        ...s,
+        dialog: null,
+        screen: "chapter_choice",
+      };
+
     case "rumor_landlord":
     case "rumor_fishmonger":
     case "rumor_child":
@@ -342,6 +349,7 @@ function applyDialogComplete(s: GameState, kind: DialogKind): GameState {
 interface NPCDialogPick {
   kind: DialogKind;
   lines: DialogLine[];
+  eventId?: string;
 }
 
 function rememberedByTownLines(s: GameState, npc: NPCId): DialogLine[] | null {
@@ -404,6 +412,20 @@ function rememberedByTownLines(s: GameState, npc: NPCId): DialogLine[] | null {
 
 function pickNPCDialog(s: GameState, npc: NPCId): NPCDialogPick | null {
   if (npc === "kumitori_master") return null;
+
+  const chapterEvent = s.day >= 6 ? eventForDay(s.day) : null;
+  if (
+    chapterEvent &&
+    !s.completedChapterEvents.includes(chapterEvent.id) &&
+    s.currentArea === chapterEvent.area &&
+    npc === chapterEvent.triggerNpc
+  ) {
+    return {
+      kind: "chapter_event_intro",
+      lines: chapterEvent.intro,
+      eventId: chapterEvent.id,
+    };
+  }
 
   // Day 4+: short personal episodes make the town feel inhabited.
   if (s.day >= 4) {
