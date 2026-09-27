@@ -106,3 +106,21 @@ The first playable arc now closes as one continuous loop:
 Day1の初仕事 → Day2の噂 → 小火 → 火消し見回り → 春祭り → Day5の町の認知。
 
 Day5では、NPCの呼び方・顔なじみ表示・町の小話・評判・成長ランクが、それまでの行動を受けて変化します。新しい独立システムではなく、既存の噂・関係値・評判・ランクを締めの演出へ接続しています。
+
+
+## Release hardening
+
+0.1.0-rc.3では、5日間アークの内容を変えずにリリース品質を上げています。
+
+- versioned save + 旧セーブ自動移行
+- Runtime Error Boundary
+- PWA manifest / service worker
+- iPhone standalone metadata
+- 初回情景アセットのpreload
+- focus-visible / touch操作改善
+- 外部送信しないsessionStorageベースの進行メトリクス
+- 旧セーブ移行をRelease QAで実ブラウザ検証
+
+チェックリスト:
+- `docs/RELEASE_CHECKLIST.md`
+- `docs/PLAYTEST_CHECKLIST.md`
