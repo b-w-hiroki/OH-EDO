@@ -281,6 +281,13 @@ async function verifyLegacySaveMigration(page) {
   assert(migrated?.day === 10 && migrated.completedTownEventIds?.includes("day10_town_council"), "legacy save migration lost progression");
 }
 
+async function verifyPlaytestMode(page) {
+  await page.goto(`${baseURL}?playtest=1`, { waitUntil: "networkidle" });
+  await page.getByRole("button", { name: /メニュー/ }).click();
+  await page.getByRole("button", { name: "プレイ記録をコピー" }).waitFor({ state: "visible", timeout: 5000 });
+  await page.getByRole("button", { name: "町へ戻る" }).click();
+}
+
 async function runDesktop() {
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({ viewport: { width: 1600, height: 900 }, deviceScaleFactor: 1 });
@@ -288,6 +295,7 @@ async function runDesktop() {
   const finalState = await completeDay1ToDay10(page, "desktop-1600");
   await verifyLegacySaveMigration(page);
   await captureAreas(page, "desktop-1600");
+  await verifyPlaytestMode(page);
   await browser.close();
   return { day: finalState.day, provider: finalState.fireAftermath?.provider ?? finalState.lastDecision?.provider };
 }
