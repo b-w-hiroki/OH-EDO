@@ -751,7 +751,10 @@ function App() {
         if (s.screen !== "town") return s;
         const picked = pickNPCDialog(s, npc);
         if (!picked) return s;
-        return startDialogInState(s, picked.kind, picked.lines);
+        const prepared = picked.eventId
+          ? { ...s, activeChapterEventId: picked.eventId }
+          : s;
+        return startDialogInState(prepared, picked.kind, picked.lines);
       });
     };
     const onArea = (area: AreaId) => {
