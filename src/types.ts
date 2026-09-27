@@ -10,6 +10,8 @@ export type Screen =
   | "patrol_result"
   | "festival_choice"
   | "festival_result"
+  | "chapter_choice"
+  | "chapter_result"
   | "room"
   | "status";
 
@@ -60,7 +62,8 @@ export type DialogKind =
   | "rumor_fishmonger"
   | "rumor_child"
   | "rumor_newsman"
-  | "already_met";
+  | "already_met"
+  | "chapter_event_intro";
 
 export interface DialogLine {
   speaker: string;
@@ -111,6 +114,8 @@ export interface Flags {
   festival_started: boolean;
   festival_done: boolean;
   day5_started: boolean;
+  chapter_two_started: boolean;
+  chapter_two_done: boolean;
 }
 
 export interface ActiveDialog {
@@ -196,6 +201,36 @@ export interface FestivalResult {
   nextDayText: string;
 }
 
+export interface ChapterEventEffects {
+  money?: number;
+  trust?: number;
+  iki?: number;
+  network?: number;
+  skill?: number;
+  hygiene?: number;
+  safety?: number;
+  trend?: number;
+  economy?: number;
+}
+
+export interface ChapterEventChoice {
+  id: string;
+  label: string;
+  description: string;
+  effects: ChapterEventEffects;
+  rumorTags: RumorTag[];
+  resultText: string;
+}
+
+export interface ChapterEventResult {
+  eventId: string;
+  choiceId: string;
+  resultText: string;
+  townResponse: string;
+  nextDayText: string;
+}
+
+
 export interface FireAftermath {
   choiceId: FireChoice["id"];
   resultText: string;
@@ -278,4 +313,7 @@ export interface GameState {
   lastJobResult: JobResult | null;
   lastPatrolResult: PatrolResult | null;
   lastFestivalResult: FestivalResult | null;
+  activeChapterEventId: string | null;
+  completedChapterEvents: string[];
+  lastChapterResult: ChapterEventResult | null;
 }
