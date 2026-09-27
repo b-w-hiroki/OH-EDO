@@ -1,6 +1,6 @@
 const SESSION_KEY = "oh-edo-session-metrics";
 
-type MetricEvent = {
+export type MetricEvent = {
   type: string;
   at: string;
   day?: number;
@@ -15,5 +15,23 @@ export function recordMetric(type: string, day?: number, detail?: string): void 
     sessionStorage.setItem(SESSION_KEY, JSON.stringify(events.slice(-100)));
   } catch {
     // Metrics are optional and never block play.
+  }
+}
+
+
+export function readMetrics(): MetricEvent[] {
+  try {
+    const raw = sessionStorage.getItem(SESSION_KEY);
+    return raw ? (JSON.parse(raw) as MetricEvent[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function clearMetrics(): void {
+  try {
+    sessionStorage.removeItem(SESSION_KEY);
+  } catch {
+    // Optional QA data only.
   }
 }

@@ -55,7 +55,7 @@ import {
   makeDecisionLog,
 } from "./decision/DecisionService";
 import { clearGameState, loadGameState, saveGameState } from "./saveState";
-import { recordMetric } from "./game/metrics";
+import { readMetrics, recordMetric } from "./game/metrics";
 import { nextTownEvent, TOWN_EVENTS } from "./events/townEvents";
 
 const decisionService = createDecisionService();
@@ -770,6 +770,7 @@ function App() {
 
   // ── Actions ─────────────────────────────────────────
   const startGame = useCallback(() => {
+    recordMetric("game_started", 1);
     uiSound.startAmbience();
     setState((s) => startDialogInState(s, "opening", OPENING_LINES));
   }, []);
@@ -791,7 +792,11 @@ function App() {
     uiSound.select();
     setToast(`${actionTagLabel(choice.rumorTags[0])} → 明日の町に残る`);
     window.setTimeout(() => setToast(null), 1800);
-    setState((s) => (s.screen === "job" ? applyJobChoice(s, choice) : s));
+    setState((s) => {
+      if (s.screen !== "job") return s;
+      recordMetric("choice", s.day, choice.id);
+      return applyJobChoice(s, choice);
+    });
   }, []);
 
   const startFireEvent = useCallback(() => {
@@ -810,6 +815,7 @@ function App() {
 
   const chooseFireResponse = useCallback(async (choice: FireChoice) => {
     if (state.screen !== "fire_choice") return;
+    recordMetric("choice", state.day, choice.id);
     uiSound.select();
     const e = choice.effects;
     const action = {
@@ -918,6 +924,7 @@ function App() {
     uiSound.select();
     setState((s) => {
       if (s.screen !== "festival_choice") return s;
+      recordMetric("choice", s.day, choice.id);
       const e = choice.effects;
       const hasBonus =
         choice.favoredReputation != null &&
@@ -983,6 +990,7 @@ function App() {
     window.setTimeout(() => setToast(null), 1800);
     setState((s) => {
       if (s.screen !== "patrol_choice") return s;
+      recordMetric("choice", s.day, choice.id);
       const e = choice.effects;
       const next = withProgression({
         ...s,
@@ -2373,6 +2381,28 @@ function StatusPanel({
   state: GameState;
   onClose: () => void;
 }) {
+  const playtestMode =
+    typeof window !== "undefined" &&
+    new URLSearchParams(window.location.search).get("playtest") === "1";
+
+  const copyPlaytestReport = async () => {
+    const report = {
+      exportedAt: new Date().toISOString(),
+      day: state.day,
+      rank: state.player.rankName,
+      completedTownEventIds: state.completedTownEventIds,
+      playerActions: state.playerActions,
+      metrics: readMetrics(),
+    };
+    const text = JSON.stringify(report, null, 2);
+    try {
+      await navigator.clipboard.writeText(text);
+      window.alert("プレイテスト記録をコピーしました。");
+    } catch {
+      window.prompt("下の記録をコピーしてください。", text);
+    }
+  };
+
   return (
     <section className="panel">
       <h2>覚え書き</h2>
@@ -2481,6 +2511,11 @@ function StatusPanel({
       )}
 
       <div className="panel-actions">
+        {playtestMode && (
+          <button className="ghost" onClick={copyPlaytestReport}>
+            プレイ記録をコピー
+          </button>
+        )}
         <button className="primary" onClick={onClose}>
           町へ戻る
         </button>
