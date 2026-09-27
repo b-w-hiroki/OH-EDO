@@ -7252,3 +7252,21 @@ button:focus-visible,
     font-size: 11px;
   }
 }
+
+
+/* ── Opt-in playtest tools (?playtest=1) ─────────────────────────── */
+.playtest-tools {
+  margin-top: 16px;
+  padding: 12px;
+  border: 1px dashed #c8a67d;
+  border-radius: 9px;
+  background: rgba(255,248,232,.7);
+}
+
+.playtest-tools h3 {
+  margin-top: 0;
+}
+
+.playtest-tools .ghost {
+  min-height: 44px;
+}
