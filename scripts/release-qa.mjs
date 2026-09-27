@@ -174,6 +174,8 @@ async function completeDay1ToDay10(page, prefix) {
   for (const chapter of chapterEvents) {
     await page.getByRole("button", { name: chapter.button }).click();
     await page.waitForSelector(".town-event-panel", { timeout: 5000 });
+    await page.waitForTimeout(2300);
+    await page.evaluate(() => window.scrollTo(0, 0));
     await page.screenshot({
       path: `qa-artifacts/${prefix}-day${chapter.day}-choice.png`,
       fullPage: false,
