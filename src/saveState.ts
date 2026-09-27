@@ -39,6 +39,9 @@ function mergeState(parsed: Partial<GameState>): GameState {
     lastPatrolResult: parsed.lastPatrolResult ?? null,
     lastFestivalResult: parsed.lastFestivalResult ?? null,
     activeTownEventId: parsed.activeTownEventId ?? null,
+    completedTownEventIds:
+      parsed.completedTownEventIds ??
+      (parsed.flags?.day6_cleanup_done ? ["day6_festival_cleanup"] : []),
     lastTownEventResult: parsed.lastTownEventResult ?? null,
   };
   const screen = merged.flags.intro_done ? "town" : "title";
