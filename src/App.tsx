@@ -1052,6 +1052,122 @@ function App() {
     });
   }, []);
 
+  const chooseChapterEvent = useCallback((choice: ChapterEventChoice) => {
+    uiSound.select();
+    setState((s) => {
+      if (s.screen !== "chapter_choice") return s;
+      const event = eventById(s.activeChapterEventId);
+      if (!event) return { ...s, screen: "town", activeChapterEventId: null };
+
+      const e = choice.effects;
+      const affinityGain = choice.rumorTags.includes("helpful") || choice.rumorTags.includes("iki") ? 2 : 1;
+      const relation = s.npcRelations[event.triggerNpc];
+      const next = withProgression({
+        ...s,
+        screen: "chapter_result",
+        player: {
+          ...s.player,
+          money: s.player.money + (e.money ?? 0),
+          trust: s.player.trust + (e.trust ?? 0),
+          iki: s.player.iki + (e.iki ?? 0),
+          network: s.player.network + (e.network ?? 0),
+          skill: s.player.skill + (e.skill ?? 0),
+        },
+        town: {
+          ...s.town,
+          hygiene: s.town.hygiene + (e.hygiene ?? 0),
+          safety: s.town.safety + (e.safety ?? 0),
+          trend: s.town.trend + (e.trend ?? 0),
+          economy: s.town.economy + (e.economy ?? 0),
+        },
+        npcRelations: {
+          ...s.npcRelations,
+          [event.triggerNpc]: {
+            ...relation,
+            affinity: relation.affinity + affinityGain,
+            familiarity: relation.familiarity + 1,
+            attitude: affinityGain >= 2 ? "impressed" : "friendly",
+          },
+        },
+        activeRumors: Array.from(new Set([...s.activeRumors, ...choice.rumorTags])),
+        rumorHistory: [
+          ...s.rumorHistory,
+          ...makeRumorRecords(choice.rumorTags, s.day, choice.id, 3),
+        ],
+        playerActions: [
+          ...s.playerActions,
+          {
+            id: `action-${Date.now()}`,
+            day: s.day,
+            type: choice.id,
+            targetNpcId: event.triggerNpc,
+            importance: event.day >= 10 ? 4 : 3,
+            tags: [...choice.rumorTags],
+          },
+        ],
+        completedChapterEvents: Array.from(new Set([...s.completedChapterEvents, event.id])),
+        lastChapterResult: makeChapterResult(event, choice, s),
+        flags: {
+          ...s.flags,
+          chapter_two_started: true,
+          chapter_two_done: event.day >= 10 ? true : s.flags.chapter_two_done,
+        },
+        log: appendLog(s.log, s.day, choice.resultText),
+      });
+      recordMetric("chapter_event_complete", s.day, event.id);
+      return next;
+    });
+    uiSound.result();
+    setToast(`${actionTagLabel(choice.rumorTags[0])} → 明日の町へ`);
+    window.setTimeout(() => setToast(null), 1900);
+  }, []);
+
+  const advanceChapterEvent = useCallback(() => {
+    setState((s) => {
+      if (s.screen !== "chapter_result") return s;
+      const event = eventById(s.activeChapterEventId);
+      if (!event) return { ...s, screen: "town", activeChapterEventId: null };
+
+      if (event.day >= 10) {
+        return withProgression({
+          ...s,
+          screen: "town",
+          time: "morning",
+          currentArea: "nagaya",
+          activeChapterEventId: null,
+          flags: { ...s.flags, chapter_two_done: true },
+          log: appendLog(s.log, 10, "町内の相談を終え、名実ともに町の顔として扱われるようになった。"),
+        });
+      }
+
+      const nextDay = event.day + 1;
+      return withProgression({
+        ...s,
+        screen: "town",
+        day: nextDay,
+        time: "morning",
+        currentArea: "nagaya",
+        activeChapterEventId: null,
+        log: appendLog(s.log, nextDay, s.lastChapterResult?.nextDayText ?? `${nextDay}日目の朝になった。`),
+      });
+    });
+  }, []);
+
+  const startChapterTwo = useCallback(() => {
+    setState((s) => {
+      if (s.day < 5 || !s.flags.festival_done || s.flags.chapter_two_started) return s;
+      return withProgression({
+        ...s,
+        day: 6,
+        time: "morning",
+        currentArea: "nagaya",
+        screen: "town",
+        flags: { ...s.flags, chapter_two_started: true },
+        log: appendLog(s.log, 6, "祭りの翌々日。町の暮らしは止まらず、また新しい頼みごとが始まった。"),
+      });
+    });
+  }, []);
+
   const goToNight = useCallback(async () => {
     const context = buildDayDecisionContext(state);
     const outcome = await decisionService.decide(context);
