@@ -1804,6 +1804,9 @@ function TownSidePanel({
   onTalk: (npc: NPCId) => void;
 }) {
   const areaNpcIds = sidePanelNpcIds(state);
+  const knownCount = areaNpcIds.filter(
+    (npcId) => state.npcRelations[npcId].familiarity >= 3
+  ).length;
   const areaFlavor = AREAS[state.currentArea].flavor;
   const recentActionItems = state.playerActions
     .slice(-3)
@@ -1828,7 +1831,9 @@ function TownSidePanel({
       <section className="side-card">
         <div className="side-card-title">
           <span><SideIcon kind="people" /> このあたりの人たち</span>
-          <small className="side-card-more">顔なじみ</small>
+          <small className="side-card-more">
+            {knownCount > 0 ? `${knownCount}人が顔なじみ` : "まだ新入り"}
+          </small>
         </div>
         <div className="nearby-list">
           {areaNpcIds.map((npcId) => (
