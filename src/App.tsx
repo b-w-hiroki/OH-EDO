@@ -668,9 +668,11 @@ function App() {
   const [areaTransition, setAreaTransition] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [dayTransition, setDayTransition] = useState<number | null>(null);
+  const [rankTransition, setRankTransition] = useState<string | null>(null);
   const [selectedNpcId, setSelectedNpcId] = useState<NPCId | null>(() => getAreaNpcIds(loadInitial())[0] ?? null);
   const dialogOpenRef = useRef(false);
   const previousDayRef = useRef(state.day);
+  const previousRankRef = useRef(state.player.rank);
 
   useEffect(() => {
     const local = getAreaNpcIds(state);
@@ -697,6 +699,15 @@ function App() {
     const timer = window.setTimeout(() => setDayTransition(null), 1900);
     return () => window.clearTimeout(timer);
   }, [state.day]);
+
+  useEffect(() => {
+    if (state.player.rank <= previousRankRef.current) return;
+    previousRankRef.current = state.player.rank;
+    uiSound.result();
+    setRankTransition(state.player.rankName);
+    const timer = window.setTimeout(() => setRankTransition(null), 2100);
+    return () => window.clearTimeout(timer);
+  }, [state.player.rank, state.player.rankName]);
 
   // Auto-triggers when standing on the town with no dialog open.
   useEffect(() => {
@@ -1520,6 +1531,12 @@ function App() {
           <small>昨日の行動が、今日の町へ</small>
           <strong>{dayTransition}日目の朝</strong>
           {yesterdaySummary && <span>{yesterdaySummary}</span>}
+        </div>
+      )}
+      {rankTransition && (
+        <div className="rank-transition" aria-live="polite">
+          <small>町での立場が変わった</small>
+          <strong>{rankTransition}</strong>
         </div>
       )}
       {toast && <div className="game-toast" aria-live="polite">{toast}</div>}
