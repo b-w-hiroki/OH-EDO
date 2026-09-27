@@ -1,4 +1,4 @@
-# OH！EDO！ 0.1.0 Release Checklist
+# OH！EDO！ Release Checklist
 
 ## 自動確認
 
@@ -6,10 +6,11 @@
 - [ ] npm run typecheck
 - [ ] npm run build
 - [ ] npm run smoke
-- [ ] Chromium desktop Day1→Day5
-- [ ] Chromium 430×932 Day1→Day5
+- [ ] Chromium desktop Day1→Day10
+- [ ] Chromium 430×932 Day1→Day10
 - [ ] WebKit iPhone-class smoke
 - [ ] desktop/mobile Day5 finale capture
+- [ ] Day10 completion state / final town-event result
 - [ ] save schema migration check
 - [ ] manifest / service worker production smoke
 
@@ -25,7 +26,7 @@
 - [ ] 選択肢
 - [ ] エリア移動
 - [ ] 部屋出入り
-- [ ] Day1→Day5完走
+- [ ] Day1→Day10完走
 - [ ] ホーム画面追加
 - [ ] standalone起動
 - [ ] 再起動後セーブ復帰
@@ -38,7 +39,7 @@
 - [ ] 公開URLで初回起動
 - [ ] 公開URLでリロード
 - [ ] アセット404なし
-- [ ] Local fallbackでDay1→Day5継続可能
+- [ ] Local fallbackでDay1→Day10継続可能
 
 ## リリース
 
@@ -47,3 +48,11 @@
 - [ ] GitHub Release
 - [ ] Release notes
 - [ ] 不要な古いrelease branch整理
+
+
+## Branch policy
+
+- `release/0.1.0-rc3`: Day1〜Day5安定版候補。内容固定。
+- `main`: 0.2系開発線。Day1〜Day10。
+- 0.1.0正式tagは実機QA / Pages / 初見テストが完了した時点でrc3から作成する。
+- 0.2系正式化はDay1〜Day10の実機・初見QA完了後に判断する。

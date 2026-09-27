@@ -71,13 +71,25 @@ export const uiSound = {
   setMuted(value: boolean): void {
     muted = value;
     if (typeof window !== "undefined") {
-      localStorage.setItem("oh-edo-muted", value ? "1" : "0");
+      try {
+        localStorage.setItem("oh-edo-muted", value ? "1" : "0");
+      } catch {
+        // Audio preference storage is optional and must never block play.
+      }
     }
-    if (!value) ambientPulse();
+    if (value) {
+      this.stopAmbience();
+    } else {
+      ambientPulse();
+    }
   },
   isMuted(): boolean {
-    if (typeof window !== "undefined" && localStorage.getItem("oh-edo-muted") === "1") {
-      muted = true;
+    if (typeof window !== "undefined") {
+      try {
+        muted = localStorage.getItem("oh-edo-muted") === "1";
+      } catch {
+        // Keep the in-memory value when storage is unavailable.
+      }
     }
     return muted;
   },
