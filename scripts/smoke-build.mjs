@@ -8,6 +8,21 @@ if (!index.includes("./assets/")) {
   throw new Error("dist/index.html must use relative asset paths for Pages");
 }
 
+
+const manifestPath = new URL("manifest.webmanifest", dist);
+const swPath = new URL("sw.js", dist);
+const [manifestRaw, serviceWorker] = await Promise.all([
+  readFile(manifestPath, "utf8"),
+  readFile(swPath, "utf8"),
+]);
+const manifest = JSON.parse(manifestRaw);
+if (manifest.display !== "standalone" || manifest.start_url !== "./") {
+  throw new Error("PWA manifest must stay installable under the Pages subpath");
+}
+if (!serviceWorker.includes("oh-edo-v1")) {
+  throw new Error("service worker cache version missing");
+}
+
 const assetsDir = new URL("assets/", dist);
 const files = await readdir(assetsDir);
 const js = files.filter((name) => name.endsWith(".js"));

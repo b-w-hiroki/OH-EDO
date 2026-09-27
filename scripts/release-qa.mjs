@@ -12,7 +12,9 @@ function assert(condition, message) {
 async function state(page) {
   return page.evaluate((key) => {
     const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : null;
+    if (!raw) return null;
+    const decoded = JSON.parse(raw);
+    return decoded?.state ?? decoded;
   }, STORAGE_KEY);
 }
 
@@ -46,7 +48,8 @@ async function freshStart(page) {
   await page.waitForFunction((key) => {
     const raw = localStorage.getItem(key);
     if (!raw) return false;
-    const s = JSON.parse(raw);
+    const decoded = JSON.parse(raw);
+    const s = decoded?.state ?? decoded;
     return Boolean(s.flags?.intro_done);
   }, STORAGE_KEY);
   await page.waitForTimeout(180);
@@ -66,7 +69,9 @@ async function move(page, label) {
     await page.waitForFunction(({ key, area }) => {
       const raw = localStorage.getItem(key);
       if (!raw) return false;
-      return JSON.parse(raw).currentArea === area;
+      const decoded = JSON.parse(raw);
+      const s = decoded?.state ?? decoded;
+      return s.currentArea === area;
     }, { key: STORAGE_KEY, area: ids[label] });
   }
   await page.waitForTimeout(80);
@@ -114,12 +119,18 @@ async function completeDay1ToDay5(page, prefix) {
   await page.waitForSelector(".fire-choice-list", { timeout: 5000 });
   await page.waitForFunction((key) => {
     const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw).screen === "fire_choice" : false;
+    if (!raw) return false;
+    const decoded = JSON.parse(raw);
+    const s = decoded?.state ?? decoded;
+    return s.screen === "fire_choice";
   }, STORAGE_KEY);
   await page.locator(".fire-choice").first().evaluate((el) => el.click());
   await page.waitForFunction((key) => {
     const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw).screen === "fire_result" : false;
+    if (!raw) return false;
+    const decoded = JSON.parse(raw);
+    const s = decoded?.state ?? decoded;
+    return s.screen === "fire_result";
   }, STORAGE_KEY, { timeout: 30000 });
   await page.waitForSelector(".fire-aftermath", { timeout: 5000 });
   await page.getByRole("button", { name: "三日目へ" }).click();
@@ -215,11 +226,30 @@ async function assertMobileLayout(page) {
   return result;
 }
 
+async function verifyLegacySaveMigration(page) {
+  const current = await state(page);
+  assert(current?.day === 5, "migration fixture requires completed Day5 state");
+  await page.evaluate(({ key, legacy }) => {
+    localStorage.setItem(key, JSON.stringify(legacy));
+  }, { key: STORAGE_KEY, legacy: current });
+  await page.reload({ waitUntil: "networkidle" });
+  await page.waitForSelector(".world-layout", { timeout: 10000 });
+  await page.waitForFunction((key) => {
+    const raw = localStorage.getItem(key);
+    if (!raw) return false;
+    const decoded = JSON.parse(raw);
+    return decoded?.schemaVersion === 1 && decoded?.state?.day === 5;
+  }, STORAGE_KEY);
+  const migrated = await state(page);
+  assert(migrated?.day === 5 && migrated.flags?.festival_done, "legacy save migration lost progression");
+}
+
 async function runDesktop() {
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({ viewport: { width: 1600, height: 900 }, deviceScaleFactor: 1 });
   const page = await context.newPage();
   const finalState = await completeDay1ToDay5(page, "desktop-1600");
+  await verifyLegacySaveMigration(page);
   await captureAreas(page, "desktop-1600");
   await browser.close();
   return { day: finalState.day, provider: finalState.fireAftermath?.provider ?? finalState.lastDecision?.provider };

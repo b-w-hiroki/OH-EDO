@@ -25,7 +25,6 @@ import {
   NPC_EPISODES,
   REPUTATION_LINES,
   RANKS,
-  INITIAL_STATE,
   JOB_CHOICES,
   KUMITORI_EVENT_LINES,
   LANDLORD_INTRO_LINES,
@@ -53,50 +52,13 @@ import {
   createDecisionService,
   makeDecisionLog,
 } from "./decision/DecisionService";
+import { clearGameState, loadGameState, saveGameState } from "./saveState";
+import { recordMetric } from "./game/metrics";
 
 const decisionService = createDecisionService();
 
-const STORAGE_KEY = "oh-edo-mvp-save-v2";
-
 function loadInitial(): GameState {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return INITIAL_STATE;
-    const parsed = JSON.parse(raw) as Partial<GameState>;
-    const merged: GameState = {
-      ...INITIAL_STATE,
-      ...parsed,
-      player: { ...INITIAL_STATE.player, ...(parsed.player ?? {}) },
-      town: { ...INITIAL_STATE.town, ...(parsed.town ?? {}) },
-      flags: { ...INITIAL_STATE.flags, ...(parsed.flags ?? {}) },
-      npcRelations: Object.fromEntries(
-        Object.entries(INITIAL_STATE.npcRelations).map(([npcId, initial]) => [
-          npcId,
-          {
-            ...initial,
-            ...(parsed.npcRelations?.[npcId as NPCId] ?? {}),
-          },
-        ])
-      ) as GameState["npcRelations"],
-      activeRumors: parsed.activeRumors ?? [],
-      rumorHistory: parsed.rumorHistory ?? [],
-      reputationTags: parsed.reputationTags ?? [],
-      log: parsed.log ?? [],
-      playerActions: parsed.playerActions ?? [],
-      decisionLogs: parsed.decisionLogs ?? [],
-      lastDecision: parsed.lastDecision ?? null,
-      fireAftermath: parsed.fireAftermath ?? null,
-      dialog: null,
-      lastJobResult: parsed.lastJobResult ?? null,
-      lastPatrolResult: parsed.lastPatrolResult ?? null,
-      lastFestivalResult: parsed.lastFestivalResult ?? null,
-    };
-    // Drop transient dialog/overlay state on load.
-    const screen = merged.flags.intro_done ? "town" : "title";
-    return { ...merged, dialog: null, screen };
-  } catch {
-    return INITIAL_STATE;
-  }
+  return loadGameState();
 }
 
 function appendLog(log: string[], day: number, entry: string): string[] {
@@ -687,9 +649,9 @@ function App() {
   // Persist.
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      saveGameState(state);
     } catch {
-      // ignore quota / privacy mode
+      // Save failures never block play.
     }
   }, [state]);
 
@@ -697,6 +659,7 @@ function App() {
   useEffect(() => {
     if (state.day <= previousDayRef.current) return;
     previousDayRef.current = state.day;
+    recordMetric("day_started", state.day);
     uiSound.result();
     setDayTransition(state.day);
     const timer = window.setTimeout(() => setDayTransition(null), 1900);
@@ -1159,7 +1122,7 @@ function App() {
 
   const resetGame = useCallback(() => {
     if (!window.confirm("旅をやり直しますか？セーブも消えるよ。")) return;
-    localStorage.removeItem(STORAGE_KEY);
+    clearGameState();
     window.location.reload();
   }, []);
 

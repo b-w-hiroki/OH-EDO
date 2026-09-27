@@ -7142,3 +7142,40 @@ body::before {
     font-size: 8px;
   }
 }
+
+
+/* ── Release hardening: focus visibility + fatal recovery ────────── */
+button,
+[role="button"] {
+  touch-action: manipulation;
+}
+
+button:focus-visible,
+[role="button"]:focus-visible {
+  outline: 3px solid rgba(205, 92, 72, .55);
+  outline-offset: 3px;
+}
+
+.fatal-error {
+  width: min(560px, calc(100vw - 28px));
+  margin: 12vh auto 0;
+  padding: 24px;
+  border: 1px solid #d2b587;
+  border-radius: 14px;
+  background: #fffaf0;
+  color: #4f4033;
+  box-shadow: 0 18px 42px rgba(65, 46, 30, .16);
+  font-family: var(--font-ui);
+  text-align: center;
+}
+
+.fatal-error h1 {
+  margin: 0 0 10px;
+  font-family: var(--font-serif);
+  font-size: clamp(24px, 5vw, 34px);
+}
+
+.fatal-error p {
+  margin: 0 0 18px;
+  line-height: 1.7;
+}
