@@ -226,11 +226,30 @@ async function assertMobileLayout(page) {
   return result;
 }
 
+async function verifyLegacySaveMigration(page) {
+  const current = await state(page);
+  assert(current?.day === 5, "migration fixture requires completed Day5 state");
+  await page.evaluate(({ key, legacy }) => {
+    localStorage.setItem(key, JSON.stringify(legacy));
+  }, { key: STORAGE_KEY, legacy: current });
+  await page.reload({ waitUntil: "networkidle" });
+  await page.waitForSelector(".world-layout", { timeout: 10000 });
+  await page.waitForFunction((key) => {
+    const raw = localStorage.getItem(key);
+    if (!raw) return false;
+    const decoded = JSON.parse(raw);
+    return decoded?.schemaVersion === 1 && decoded?.state?.day === 5;
+  }, STORAGE_KEY);
+  const migrated = await state(page);
+  assert(migrated?.day === 5 && migrated.flags?.festival_done, "legacy save migration lost progression");
+}
+
 async function runDesktop() {
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({ viewport: { width: 1600, height: 900 }, deviceScaleFactor: 1 });
   const page = await context.newPage();
   const finalState = await completeDay1ToDay5(page, "desktop-1600");
+  await verifyLegacySaveMigration(page);
   await captureAreas(page, "desktop-1600");
   await browser.close();
   return { day: finalState.day, provider: finalState.fireAftermath?.provider ?? finalState.lastDecision?.provider };
