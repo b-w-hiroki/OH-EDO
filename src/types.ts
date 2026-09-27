@@ -233,8 +233,10 @@ export interface TownEventChoice {
 
 export interface TownEventDef {
   id: string;
+  day: number;
   title: string;
   area: AreaId;
+  targetNpcId: NPCId;
   intro: DialogLine[];
   choices: TownEventChoice[];
 }
@@ -318,5 +320,6 @@ export interface GameState {
   lastPatrolResult: PatrolResult | null;
   lastFestivalResult: FestivalResult | null;
   activeTownEventId: string | null;
+  completedTownEventIds: string[];
   lastTownEventResult: TownEventResult | null;
 }
