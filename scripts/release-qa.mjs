@@ -398,7 +398,7 @@ async function runIPhoneWebKit() {
   return { day: finalState.day, layout, accessibility };
 }
 
+const iphone = await runIPhoneWebKit();
 const desktop = await runDesktop();
 const mobile = await runMobileChromium();
-const iphone = await runIPhoneWebKit();
 console.log(JSON.stringify({ ok: true, desktop, mobile, iphone }, null, 2));
