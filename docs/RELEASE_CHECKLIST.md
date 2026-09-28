@@ -8,11 +8,13 @@
 - [ ] npm run smoke
 - [ ] Chromium desktop Day1→Day10
 - [ ] Chromium 430×932 Day1→Day10
-- [ ] WebKit iPhone-class smoke
+- [ ] WebKit iPhone-class portrait smoke
+- [ ] WebKit iPhone-class landscape smoke
 - [ ] desktop/mobile Day5 finale capture
 - [ ] Day10 completion state / final town-event result
 - [ ] save schema migration check
 - [ ] manifest / service worker production smoke
+- [ ] PWA offline reload + Day10 save restore
 
 ## 物理iPhone Safari
 
