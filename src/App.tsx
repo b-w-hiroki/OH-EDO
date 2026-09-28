@@ -67,7 +67,7 @@ import {
 } from "./decision/DecisionService";
 import { clearGameState, loadGameState, saveGameState } from "./saveState";
 import { recordMetric } from "./game/metrics";
-import { nextTownEvent, TOWN_EVENTS } from "./events/townEvents";
+import { nextTownEvent, townEventConsequence, TOWN_EVENTS } from "./events/townEvents";
 import { actionTagLabel, npcDisplayName, relationLabel, rumorLabel } from "./townLabels";
 
 const decisionService = createDecisionService();
@@ -365,13 +365,15 @@ function rememberedByTownLines(s: GameState, npc: NPCId): DialogLine[] | null {
   const known = s.player.rank >= 4 ? "もう新入りって呼ぶ方が変だね" : "だいぶ町の顔になってきたね";
   const currentRumor = pickDominantRumor(s.activeRumors);
   const rumorMemory = currentRumor ? `今は「${rumorLabel(currentRumor)}」って話まで付いて回ってる。` : "";
+  const yesterdayAction = s.playerActions.filter((action) => action.day === s.day - 1).slice(-1)[0];
+  const consequenceMemory = townEventConsequence(yesterdayAction?.type)?.npcReactions[npc] ?? "";
 
   switch (npc) {
     case "landlord":
       return trusted
         ? [
             { speaker: "大家", text: `最初はどこの流れ者かと思ったけど、${known}。` },
-            { speaker: "大家", text: rumorMemory || "困りごとがあると、あんたを探す声が先に上がるようになったよ。" },
+            { speaker: "大家", text: consequenceMemory || rumorMemory || "困りごとがあると、あんたを探す声が先に上がるようになったよ。" },
           ]
         : [
             { speaker: "大家", text: "あんたのことを知らない長屋者も、もう少なくなったね。" },
@@ -381,7 +383,7 @@ function rememberedByTownLines(s: GameState, npc: NPCId): DialogLine[] | null {
       return trusted
         ? [
             { speaker: "魚屋", text: "おう、たろう。今日は『新入り』じゃなくて名前で呼んでやるよ。" },
-            { speaker: "魚屋", text: rumorMemory || "客の方から、お前の昨日の話を聞かせろって言ってくるんだ。" },
+            { speaker: "魚屋", text: consequenceMemory || rumorMemory || "客の方から、お前の昨日の話を聞かせろって言ってくるんだ。" },
           ]
         : [
             { speaker: "魚屋", text: "またお前の話を聞かれたぜ。良くも悪くも、顔が売れてきたな。" },
@@ -389,13 +391,13 @@ function rememberedByTownLines(s: GameState, npc: NPCId): DialogLine[] | null {
     case "child":
       return [
         { speaker: "長屋の子ども", text: "ねえ、もう『新入り』じゃないよね！ たろうって呼ぶ！" },
-        { speaker: "長屋の子ども", text: rumorMemory || "だって、みんなもう知ってるもん！" },
+        { speaker: "長屋の子ども", text: consequenceMemory || rumorMemory || "だって、みんなもう知ってるもん！" },
       ];
     case "newsman":
       return trusted
         ? [
             { speaker: "瓦版屋", text: "『謎の新入り』じゃ、もう見出しにならねえな。" },
-            { speaker: "瓦版屋", text: rumorMemory || "今じゃ名前を出した方が、町の連中が食いつく。" },
+            { speaker: "瓦版屋", text: consequenceMemory || rumorMemory || "今じゃ名前を出した方が、町の連中が食いつく。" },
           ]
         : [
             { speaker: "瓦版屋", text: "お前の名前、説明なしでも通るようになってきたぜ。" },
@@ -404,7 +406,7 @@ function rememberedByTownLines(s: GameState, npc: NPCId): DialogLine[] | null {
       return trusted
         ? [
             { speaker: "火消し頭", text: "町の連中がお前を当てにしてる。そういう顔になってきた。" },
-            { speaker: "火消し頭", text: rumorMemory || "頼られるってのは、好き勝手できなくなるってことでもある。覚えとけ。" },
+            { speaker: "火消し頭", text: consequenceMemory || rumorMemory || "頼られるってのは、好き勝手できなくなるってことでもある。覚えとけ。" },
           ]
         : [
             { speaker: "火消し頭", text: "町に顔を覚えられたな。次は、任せてもらえる動きを見せろ。" },
@@ -612,6 +614,8 @@ function getYesterdaySummary(state: GameState): string | null {
     .filter((action) => action.day === state.day - 1)
     .slice(-1)[0];
   if (!yesterday) return state.lastDecision ? "昨日の行動が町の噂になっている。" : null;
+  const consequence = townEventConsequence(yesterday.type);
+  if (consequence) return consequence.townReaction;
   const tag = yesterday.tags?.[0];
   return tag
     ? `昨日の行動が「${rumorLabel(tag)}」として町に残っている。`
