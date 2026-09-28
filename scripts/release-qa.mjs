@@ -352,11 +352,12 @@ async function runDesktop() {
   const context = await browser.newContext({ viewport: { width: 1600, height: 900 }, deviceScaleFactor: 1 });
   const page = await context.newPage();
   const finalState = await completeDay1ToDay10(page, "desktop-1600");
+  const accessibility = await assertAccessibilityBasics(page);
   await verifyLegacySaveMigration(page);
   await captureAreas(page, "desktop-1600");
   await verifyPlaytestMode(page);
   await browser.close();
-  return { day: finalState.day, provider: finalState.fireAftermath?.provider ?? finalState.lastDecision?.provider };
+  return { day: finalState.day, provider: finalState.fireAftermath?.provider ?? finalState.lastDecision?.provider, accessibility };
 }
 
 async function runMobileChromium() {
@@ -370,6 +371,7 @@ async function runMobileChromium() {
   });
   const page = await context.newPage();
   const finalState = await completeDay1ToDay10(page, "mobile-430");
+  const accessibility = await assertAccessibilityBasics(page);
   const layout = await assertMobileLayout(page);
   await captureAreas(page, "mobile-430");
   await browser.close();
