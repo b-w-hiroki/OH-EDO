@@ -38,6 +38,7 @@ jobs:
           exit 1
       - run: node scripts/capture-screenshots.mjs
       - run: node scripts/release-qa.mjs
+      - run: node scripts/local-perf-report.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
