@@ -347,6 +347,20 @@ async function verifyPlaytestMode(page) {
   await page.getByRole("button", { name: "町へ戻る" }).click();
 }
 
+async function verifyPwaOfflineRestore(page, context) {
+  await page.goto(baseURL, { waitUntil: "networkidle" });
+  await page.waitForFunction(() => Boolean(navigator.serviceWorker?.controller), null, { timeout: 10000 });
+  const before = await state(page);
+  assert(before?.day === 10, "offline restore fixture requires completed Day10 state");
+  await context.setOffline(true);
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await page.waitForSelector(".world-layout", { timeout: 10000 });
+  const restored = await state(page);
+  assert(restored?.day === 10, "offline reload lost saved Day10 progression");
+  assert(restored.completedTownEventIds?.includes("day10_town_council"), "offline reload lost town-event history");
+  await context.setOffline(false);
+}
+
 async function runDesktop() {
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({ viewport: { width: 1600, height: 900 }, deviceScaleFactor: 1 });
@@ -356,6 +370,7 @@ async function runDesktop() {
   await verifyLegacySaveMigration(page);
   await captureAreas(page, "desktop-1600");
   await verifyPlaytestMode(page);
+  await verifyPwaOfflineRestore(page, context);
   await browser.close();
   return { day: finalState.day, provider: finalState.fireAftermath?.provider ?? finalState.lastDecision?.provider, accessibility };
 }
@@ -376,6 +391,31 @@ async function runMobileChromium() {
   await captureAreas(page, "mobile-430");
   await browser.close();
   return { day: finalState.day, provider: finalState.fireAftermath?.provider ?? finalState.lastDecision?.provider, layout, accessibility };
+}
+
+async function runIPhoneLandscapeWebKit() {
+  const browser = await webkit.launch({ headless: true });
+  const iphone = devices["iPhone 16 Pro Max"] ?? devices["iPhone 15 Pro Max"] ?? devices["iPhone 14 Pro Max"];
+  const context = await browser.newContext({
+    ...iphone,
+    viewport: { width: 844, height: 390 },
+    screen: { width: 844, height: 390 },
+  });
+  const page = await context.newPage();
+  await freshStart(page);
+  const accessibility = await assertAccessibilityBasics(page);
+  const layout = await assertMobileLayout(page);
+  await page.screenshot({ path: "qa-artifacts/iphone-webkit-landscape-world.png", fullPage: false });
+  const talk = page.locator(".reference-talk-cta:visible");
+  if (await talk.count()) {
+    await talk.click();
+    await page.waitForSelector(".mock-dialog:visible", { timeout: 5000 });
+    await page.screenshot({ path: "qa-artifacts/iphone-webkit-landscape-dialog.png", fullPage: false });
+    await advanceDialogs(page);
+  }
+  assert((await state(page))?.screen === "town", "landscape WebKit conversation did not return to town");
+  await browser.close();
+  return { layout, accessibility };
 }
 
 async function runIPhoneWebKit() {
@@ -406,4 +446,5 @@ async function runIPhoneWebKit() {
 const desktop = await runDesktop();
 const mobile = await runMobileChromium();
 const iphone = await runIPhoneWebKit();
-console.log(JSON.stringify({ ok: true, desktop, mobile, iphone }, null, 2));
+const iphoneLandscape = await runIPhoneLandscapeWebKit();
+console.log(JSON.stringify({ ok: true, desktop, mobile, iphone, iphoneLandscape }, null, 2));
