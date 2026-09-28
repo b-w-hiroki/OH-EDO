@@ -1,0 +1,347 @@
+/* ── Day-change feedback: make yesterday → today feel tangible ───── */
+.day-transition {
+  position: fixed;
+  left: 50%;
+  top: 112px;
+  z-index: 4400;
+  width: min(560px, calc(100vw - 32px));
+  transform: translateX(-50%);
+  padding: 12px 18px 13px;
+  border: 1px solid #cfb17e;
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(255,253,244,.98), rgba(244,230,202,.98)),
+    url("/assets/edo/ui/ui-sheet.webp") center/cover;
+  color: #4d3c2e;
+  box-shadow: 0 14px 34px rgba(67,48,31,.20);
+  font-family: var(--font-ui);
+  text-align: center;
+  pointer-events: none;
+  animation: dayTransitionIn 1.9s ease both;
+}
+
+.day-transition::before,
+.day-transition::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 48px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #c45b4b);
+  opacity: .7;
+}
+
+.day-transition::before {
+  left: 16px;
+}
+
+.day-transition::after {
+  right: 16px;
+  transform: rotate(180deg);
+}
+
+.day-transition small,
+.day-transition span {
+  display: block;
+}
+
+.day-transition small {
+  margin-bottom: 2px;
+  color: #a55347;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.day-transition strong {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 25px;
+  line-height: 1.15;
+  letter-spacing: .08em;
+}
+
+.day-transition span {
+  margin-top: 4px;
+  color: #74604d;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+@keyframes dayTransitionIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -10px) scale(.98);
+  }
+  12% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  78% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -5px) scale(.995);
+  }
+}
+
+.logstrip-rumors,
+.rumor-chip {
+  letter-spacing: .01em;
+}
+
+@media (max-width: 599px) {
+  .day-transition {
+    top: 92px;
+    width: calc(100vw - 24px);
+    padding: 10px 12px 11px;
+    border-radius: 9px;
+  }
+
+  .day-transition::before,
+  .day-transition::after {
+    width: 24px;
+  }
+
+  .day-transition strong {
+    font-size: 21px;
+  }
+
+  .day-transition span {
+    font-size: 9px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .day-transition {
+    animation: none;
+  }
+}
+
+
+/* ── Town memory: visibly shift people from strangers to familiar faces ── */
+.relation-pill.is-known {
+  border-color: #d8a7a0;
+  background: linear-gradient(180deg, #fff2ed, #f7ddd5);
+  color: #a64d43;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.8);
+}
+
+.nearby-person:has(.relation-pill.is-known) {
+  border-color: #e7c5b4;
+  background:
+    linear-gradient(180deg, rgba(255,254,249,.98), rgba(255,246,236,.98));
+}
+
+@media (max-width: 599px) {
+  .relation-pill.is-known {
+    font-size: 7px !important;
+  }
+}
+
+
+/* ── Rank progression: make the player's changing place in town visible ── */
+.rank-transition {
+  position: fixed;
+  right: 24px;
+  top: 118px;
+  z-index: 4380;
+  min-width: 220px;
+  padding: 10px 14px 11px;
+  border: 1px solid #b99762;
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, rgba(255,248,226,.98), rgba(235,213,168,.98)),
+    url("/assets/edo/ui/ui-sheet.webp") center/cover;
+  color: #4d3b29;
+  box-shadow: 0 12px 28px rgba(63,45,28,.18);
+  font-family: var(--font-ui);
+  pointer-events: none;
+  animation: rankTransitionIn 2.1s ease both;
+}
+
+.rank-transition small {
+  display: block;
+  color: #8c6540;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.rank-transition strong {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--font-serif);
+  font-size: 21px;
+  letter-spacing: .05em;
+}
+
+@keyframes rankTransitionIn {
+  0% {
+    opacity: 0;
+    transform: translateX(12px) scale(.98);
+  }
+  12% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(5px) scale(.995);
+  }
+}
+
+@media (max-width: 599px) {
+  .rank-transition {
+    right: 12px;
+    top: 86px;
+    min-width: 180px;
+    padding: 8px 11px 9px;
+  }
+
+  .rank-transition strong {
+    font-size: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rank-transition {
+    animation: none;
+  }
+}
+
+
+/* ── Five-day finale: festival atmosphere + compact payoff card ─── */
+.town-presentation.is-festival-prep .town-background {
+  filter: saturate(1.09) contrast(1.025) brightness(1.025);
+}
+
+.town-presentation.is-festival-after .town-background {
+  filter: saturate(1.08) contrast(1.02) brightness(1.035);
+}
+
+.town-presentation.is-festival-prep .scene-petals,
+.town-presentation.is-festival-after .scene-petals {
+  opacity: 1;
+}
+
+.town-presentation.is-festival-prep .scene-petals i,
+.town-presentation.is-festival-after .scene-petals i {
+  animation-duration: 10.5s;
+}
+
+.town-finale-card {
+  border-color: #d6ad72 !important;
+  background:
+    linear-gradient(180deg, rgba(255,248,226,.98), rgba(247,232,202,.98)),
+    url("/assets/edo/ui/ui-sheet.webp") center/cover !important;
+  box-shadow: 0 8px 20px rgba(98,67,31,.14) !important;
+}
+
+.town-finale-rank {
+  display: block;
+  color: #7f4f2f;
+  font-family: var(--font-serif);
+  font-size: 21px;
+  line-height: 1.12;
+  letter-spacing: .05em;
+}
+
+.town-finale-memory {
+  display: block;
+  margin-top: 3px;
+  color: #8b7259;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.town-finale-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+  margin: 8px 0 7px;
+}
+
+.town-finale-stats span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  min-width: 0;
+  padding: 5px 7px;
+  border: 1px solid rgba(196,158,107,.5);
+  border-radius: 7px;
+  background: rgba(255,255,255,.46);
+  color: #75604d;
+  font-size: 9px;
+}
+
+.town-finale-stats b {
+  overflow: hidden;
+  color: #a14f3f;
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.town-finale-card p {
+  margin: 0;
+  color: #5d4b3a;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.festival-town-response {
+  margin: 10px 0 6px;
+  padding: 10px 12px;
+  border-left: 3px solid #d56655;
+  border-radius: 6px;
+  background: #fff6e8;
+  color: #624936;
+  font-weight: 700;
+  line-height: 1.65;
+}
+
+@media (min-width: 900px) {
+  .town-side-panel:has(.town-finale-card) > .town-mood-card {
+    display: none !important;
+  }
+
+  .town-side-panel:has(.town-finale-card) > .town-flavor-card {
+    min-height: 72px !important;
+  }
+
+  .town-finale-card {
+    padding: 9px 10px !important;
+  }
+}
+
+@media (max-width: 599px) {
+  .town-finale-card {
+    grid-column: 1 / -1 !important;
+    padding: 8px 9px !important;
+  }
+
+  .town-finale-rank {
+    font-size: 18px;
+  }
+
+  .town-finale-card p {
+    font-size: 9px;
+  }
+
+  .town-side-panel:has(.town-finale-card) > .town-mood-card {
+    display: none !important;
+  }
+
+  .festival-town-response {
+    margin-top: 7px;
+    padding: 8px 9px;
+    font-size: 11px;
+  }
+}
