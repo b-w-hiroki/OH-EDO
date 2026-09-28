@@ -52,9 +52,9 @@ for (const name of css) {
 }
 
 const budgets = {
-  totalJsBytes: 6 * 1024 * 1024,
-  largestJsBytes: 3.5 * 1024 * 1024,
-  totalCssBytes: 800 * 1024,
+  totalJsBytes: 1024 * 1024,
+  largestJsBytes: 600 * 1024,
+  totalCssBytes: 300 * 1024,
 };
 if (totalJsBytes > budgets.totalJsBytes) {
   throw new Error(`JS budget exceeded: ${totalJsBytes} > ${budgets.totalJsBytes}`);
