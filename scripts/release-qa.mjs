@@ -261,6 +261,41 @@ async function captureAreas(page, prefix) {
   }
 }
 
+async function assertAccessibilityBasics(page) {
+  const result = await page.evaluate(() => {
+    const visible = (el) => {
+      const style = getComputedStyle(el);
+      const rect = el.getBoundingClientRect();
+      return style.display !== "none" && style.visibility !== "hidden" && rect.width > 0 && rect.height > 0;
+    };
+    const buttons = [...document.querySelectorAll("button, [role='button']")].filter(visible);
+    const unnamedButtons = buttons
+      .filter((el) => !(el.getAttribute("aria-label") || el.textContent || "").trim())
+      .map((el) => el.outerHTML.slice(0, 160));
+    const customButtonsWithoutKeyboard = buttons
+      .filter((el) => el.getAttribute("role") === "button" && el.tagName !== "BUTTON")
+      .filter((el) => !el.hasAttribute("tabindex"))
+      .map((el) => el.outerHTML.slice(0, 160));
+    const imagesWithoutAlt = [...document.querySelectorAll("img")]
+      .filter((img) => !img.hasAttribute("alt"))
+      .map((img) => img.getAttribute("src") || "(unknown)");
+    return {
+      lang: document.documentElement.lang,
+      title: document.title,
+      unnamedButtons,
+      customButtonsWithoutKeyboard,
+      imagesWithoutAlt,
+    };
+  });
+
+  assert(result.lang.startsWith("ja"), `document language must be Japanese: ${JSON.stringify(result)}`);
+  assert(Boolean(result.title.trim()), "document title is missing");
+  assert(result.unnamedButtons.length === 0, `visible controls without accessible name: ${JSON.stringify(result.unnamedButtons)}`);
+  assert(result.customButtonsWithoutKeyboard.length === 0, `custom buttons missing tabindex: ${JSON.stringify(result.customButtonsWithoutKeyboard)}`);
+  assert(result.imagesWithoutAlt.length === 0, `images missing alt attribute: ${JSON.stringify(result.imagesWithoutAlt)}`);
+  return result;
+}
+
 async function assertMobileLayout(page) {
   const result = await page.evaluate(() => {
     const doc = document.documentElement;
@@ -317,11 +352,12 @@ async function runDesktop() {
   const context = await browser.newContext({ viewport: { width: 1600, height: 900 }, deviceScaleFactor: 1 });
   const page = await context.newPage();
   const finalState = await completeDay1ToDay10(page, "desktop-1600");
+  const accessibility = await assertAccessibilityBasics(page);
   await verifyLegacySaveMigration(page);
   await captureAreas(page, "desktop-1600");
   await verifyPlaytestMode(page);
   await browser.close();
-  return { day: finalState.day, provider: finalState.fireAftermath?.provider ?? finalState.lastDecision?.provider };
+  return { day: finalState.day, provider: finalState.fireAftermath?.provider ?? finalState.lastDecision?.provider, accessibility };
 }
 
 async function runMobileChromium() {
@@ -335,10 +371,11 @@ async function runMobileChromium() {
   });
   const page = await context.newPage();
   const finalState = await completeDay1ToDay10(page, "mobile-430");
+  const accessibility = await assertAccessibilityBasics(page);
   const layout = await assertMobileLayout(page);
   await captureAreas(page, "mobile-430");
   await browser.close();
-  return { day: finalState.day, provider: finalState.fireAftermath?.provider ?? finalState.lastDecision?.provider, layout };
+  return { day: finalState.day, provider: finalState.fireAftermath?.provider ?? finalState.lastDecision?.provider, layout, accessibility };
 }
 
 async function runIPhoneWebKit() {
@@ -351,6 +388,7 @@ async function runIPhoneWebKit() {
   });
   const page = await context.newPage();
   await freshStart(page);
+  const accessibility = await assertAccessibilityBasics(page);
   const layout = await assertMobileLayout(page);
   await page.screenshot({ path: "qa-artifacts/iphone-webkit-430-world.png", fullPage: false });
   if (!(await page.locator(".mock-dialog:visible").count())) {
@@ -362,7 +400,7 @@ async function runIPhoneWebKit() {
   const s = await state(page);
   assert(s?.screen === "town", "WebKit conversation did not return to town");
   await browser.close();
-  return { day: s.day, layout };
+  return { day: s.day, layout, accessibility };
 }
 
 const desktop = await runDesktop();
