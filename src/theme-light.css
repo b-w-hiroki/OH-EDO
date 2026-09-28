@@ -6750,3 +6750,207 @@ body::before {
     bottom: -13%;
   }
 }
+
+
+/* ── Approved mock parity pass: art-first Edo town composition ────── */
+@media (min-width: 1100px) {
+  .app {
+    max-width: 1580px;
+    padding-inline: 12px;
+  }
+
+  .reference-header {
+    grid-template-columns: 178px minmax(330px, .78fr) minmax(610px, 1.45fr) auto;
+    gap: 8px;
+  }
+
+  .desktop-header-status {
+    min-width: 0;
+  }
+
+  .reference-logo {
+    min-width: 0;
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+    transform: rotate(-1deg);
+    color: #173b58;
+    font-size: 38px;
+    line-height: .95;
+    letter-spacing: -.055em;
+    text-shadow: 0 2px 0 rgba(255,255,255,.82);
+  }
+
+  .reference-logo .logo-oh,
+  .reference-logo .logo-edo {
+    color: #173b58;
+  }
+
+  .reference-logo-wrap small {
+    margin-top: 2px;
+    background: #fff8e8;
+    border-color: #d5b780;
+    color: #7b4b2f;
+  }
+
+  .reference-day-card {
+    justify-content: flex-start;
+    min-height: 64px;
+    padding-inline: 16px;
+    border-radius: 8px;
+  }
+
+  .reference-statusbar {
+    min-height: 64px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(81,67,48,.08);
+  }
+
+  .reference-stat {
+    min-width: 0;
+    padding-inline: 7px;
+  }
+
+  .objective-strip {
+    min-height: 30px;
+    margin-bottom: 6px;
+    padding-block: 5px;
+    box-shadow: none;
+    border-color: #ead8b8;
+    background: rgba(255,249,236,.9);
+  }
+
+  .world-layout {
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 8px;
+  }
+
+  .stage {
+    border-radius: 10px;
+    border-width: 1px;
+    box-shadow: 0 8px 20px rgba(74,61,45,.12);
+  }
+
+  .side-card {
+    border-radius: 8px;
+    box-shadow: none;
+    border-color: #e1cfad;
+    background: rgba(255,251,242,.96);
+  }
+
+  .nearby-person {
+    min-height: 54px;
+    border-radius: 5px;
+    border-color: #eadbc0;
+    background: rgba(255,254,249,.84);
+  }
+
+  .nearby-talk {
+    min-width: 48px;
+    border-radius: 6px;
+  }
+
+  .reference-action-dock {
+    gap: 6px;
+    margin-top: 7px;
+    grid-template-columns: minmax(0, 1fr) 196px;
+  }
+
+  .reference-area-nav {
+    gap: 4px;
+  }
+
+  .reference-area-nav button {
+    min-height: 70px;
+    border-width: 1px;
+    border-radius: 7px;
+    background-image: none;
+    background: #fff9eb;
+    border-color: #d7c29d;
+    box-shadow: 0 2px 0 #bda57d;
+    color: #3f5668;
+  }
+
+  .reference-area-nav button.active {
+    background-image: none;
+    background: #fff1d2;
+    border-color: #d78633;
+    box-shadow: 0 2px 0 #b86c24;
+    color: #5a3824;
+  }
+
+  .reference-area-nav button.map-tab {
+    background: #f7f0df;
+    border-color: #ccb996;
+    box-shadow: 0 2px 0 #ab9773;
+  }
+
+  .reference-talk-cta {
+    min-height: 70px;
+    border-radius: 50px;
+    border-color: #bb493d;
+    background: #df5c4d;
+    box-shadow: 0 3px 0 #9e392f;
+  }
+
+  .reference-talk-cta .talk-bubble {
+    width: 42px;
+    height: 42px;
+  }
+
+  /* The approved market mock reads left-to-right:
+     fishmonger → player → child, with the street visible between them. */
+  .town-presentation.area-market .presentation-primary.art-fishmonger {
+    left: 0%;
+    right: auto;
+    width: 31%;
+    height: 79%;
+    z-index: 5;
+  }
+
+  .town-presentation.area-market .presentation-player {
+    left: 35%;
+    width: 27%;
+    height: 72%;
+    z-index: 6;
+  }
+
+  .town-presentation.area-market .presentation-secondary.art-child {
+    left: auto;
+    right: 1.5%;
+    bottom: 1%;
+    width: 18%;
+    height: 45%;
+    z-index: 6;
+  }
+
+  .town-presentation.area-market .presentation-scene-note {
+    left: 38%;
+    bottom: 5%;
+    width: min(300px, 30%);
+  }
+}
+
+/* Keep mobile closer to the mock: scene first, compact chrome, strong CTA. */
+@media (max-width: 599px) {
+  .objective-strip {
+    min-height: 28px;
+    margin-bottom: 5px;
+    padding: 4px 7px;
+  }
+
+  .side-card {
+    border-radius: 8px;
+    box-shadow: none;
+  }
+
+  .reference-area-nav button {
+    border-radius: 7px;
+    box-shadow: 0 2px 0 #86afc9;
+  }
+
+  .reference-talk-cta {
+    border-radius: 28px;
+  }
+}
