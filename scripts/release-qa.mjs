@@ -123,6 +123,10 @@ async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = 
   assert(s?.day === 2 && s.flags?.day2_started, "Day2 did not start");
   assert(s.lastDecision?.provider === "local" || s.lastDecision?.provider === "jev", "Decision provider missing after night");
 
+  if (captureMilestones) {
+    await page.waitForTimeout(250);
+    await page.screenshot({ path: `qa-artifacts/${prefix}-fire-lead.png`, fullPage: false });
+  }
   await page.getByRole("button", { name: "騒ぎを見に行く" }).click();
   await advanceDialogs(page);
   await page.waitForSelector(".fire-choice-list", { timeout: 5000 });
