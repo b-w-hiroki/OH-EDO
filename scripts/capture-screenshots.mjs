@@ -42,6 +42,13 @@ async function capture(name, viewport, mobile = false) {
   });
   const page = await context.newPage();
 
+  await page.goto(baseURL, { waitUntil: "networkidle" });
+  await page.evaluate(() => localStorage.clear());
+  await page.reload({ waitUntil: "networkidle" });
+  await page.waitForSelector(".mock-title", { timeout: 10000 });
+  await page.waitForTimeout(300);
+  await page.screenshot({ path: `screenshots/${name}-title.png`, fullPage: false });
+
   await startToTown(page);
   await page.screenshot({ path: `screenshots/${name}-world.png`, fullPage: false });
 
