@@ -9018,3 +9018,23 @@ body::before {
     display: none !important;
   }
 }
+
+
+@media (min-width: 900px) {
+  .reference-stat-row {
+    grid-template-columns: repeat(5, minmax(88px, 1fr)) !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-talk {
+    display: none !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-person {
+    grid-template-columns: 52px minmax(0, 1fr) !important;
+    cursor: pointer;
+  }
+
+  .reference-header-actions .reset-compact {
+    display: none !important;
+  }
+}
