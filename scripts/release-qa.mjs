@@ -454,6 +454,20 @@ async function runDesktop() {
   const page = await context.newPage();
   const finalState = await completeDay1ToDay10(page, "desktop-1600");
   const accessibility = await assertAccessibilityBasics(page);
+  const mockParity = await page.evaluate(() => {
+    const visible = (el) => Boolean(el) && getComputedStyle(el).display !== "none" && el.getBoundingClientRect().width > 0;
+    return {
+      navButtons: [...document.querySelectorAll(".reference-area-nav button")].filter(visible).length,
+      talkCtaVisible: visible(document.querySelector(".reference-talk-cta")),
+      topStats: [...document.querySelectorAll(".reference-stat")].filter(visible).length,
+      storyVisible: visible(document.querySelector(".town-flavor-card")),
+      rumorVisible: visible(document.querySelector(".rumor-card")),
+    };
+  });
+  assert(mockParity.navButtons >= 5, `approved mock travel tabs missing: ${JSON.stringify(mockParity)}`);
+  assert(!mockParity.talkCtaVisible, `oversized desktop talk CTA returned: ${JSON.stringify(mockParity)}`);
+  assert(mockParity.topStats === 5, `desktop HUD should expose five core stats: ${JSON.stringify(mockParity)}`);
+  assert(mockParity.storyVisible && mockParity.rumorVisible, `approved mock side rail hierarchy missing: ${JSON.stringify(mockParity)}`);
   await verifyLegacySaveMigration(page);
   await captureAreas(page, "desktop-1600");
   await captureStatusBook(page, "desktop-1600");
