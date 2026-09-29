@@ -88,8 +88,10 @@ export function TownSidePanel({
     }));
 
   const rumorItems = [
-    areaEcho ?? "まだ大きな噂はない。",
-    areaFlavor[Math.min(areaFlavor.length - 1, Math.max(0, state.day - 1))] ?? areaFlavor[0],
+    yesterdaySummary ?? areaEcho ?? "まだ大きな噂はない。",
+    yesterdaySummary && areaEcho
+      ? areaEcho
+      : areaFlavor[Math.min(areaFlavor.length - 1, Math.max(0, state.day - 1))] ?? areaFlavor[0],
     dominantRumor
       ? `町では「${rumorLabel(dominantRumor)}」の話が少しずつ広がっている。`
       : "商店通りでは、朝から新しい話題を探す声が聞こえる。",
