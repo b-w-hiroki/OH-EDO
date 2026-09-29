@@ -7,6 +7,7 @@ import "./transient-feedback.css";
 import "./town-events.css";
 import "./result-panels.css";
 import "./interaction-polish.css";
+import "./title-viewport.css";
 
 // StrictMode is intentionally omitted: its dev-only double mount/unmount
 // conflicts with the Phaser canvas lifecycle.

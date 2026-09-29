@@ -47,6 +47,14 @@ async function capture(name, viewport, mobile = false) {
   await page.reload({ waitUntil: "networkidle" });
   await page.waitForSelector(".mock-title", { timeout: 10000 });
   await page.waitForTimeout(300);
+  const titleBounds = await page.evaluate(() => {
+    const title = document.querySelector(".mock-title")?.getBoundingClientRect();
+    return title ? { top: title.top, bottom: title.bottom, height: title.height, viewportHeight: window.innerHeight } : null;
+  });
+  if (!titleBounds) throw new Error("title bounds missing");
+  if (viewport.width <= 599 && titleBounds.height < titleBounds.viewportHeight * 0.82) {
+    throw new Error(`mobile title under-fills viewport: ${JSON.stringify(titleBounds)}`);
+  }
   await page.screenshot({ path: `screenshots/${name}-title.png`, fullPage: false });
 
   await startToTown(page);
