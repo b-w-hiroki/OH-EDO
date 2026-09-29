@@ -41,7 +41,7 @@ export function TownEventChoiceView({
       <div className="fire-choice-list">
         {event.choices.map((choice, index) => (
           <button className="fire-choice town-event-choice" key={choice.id} onClick={() => onChoose(choice.id)}>
-            <span className="town-event-choice-mark" aria-hidden="true">{["一", "二", "三"][index] ?? index + 1}</span>
+            <span className="town-event-choice-mark" aria-hidden="true">{["壱", "弐", "参"][index] ?? index + 1}</span>
             <strong>{choice.label}</strong>
             <span>{choice.description}</span>
             <ChoiceImpact effects={choice.effects} />
