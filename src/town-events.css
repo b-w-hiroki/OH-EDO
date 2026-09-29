@@ -124,3 +124,221 @@
     padding-bottom: 8px;
   }
 }
+
+
+/* ── Chapter-card polish: make Day6+ read like an illustrated game event ── */
+.town-event-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: -2px 0 12px;
+  padding: 0 0 10px;
+  border-bottom: 1px solid rgba(159, 119, 72, .28);
+}
+
+.town-event-heading > div {
+  min-width: 0;
+}
+
+.town-event-heading small {
+  display: block;
+  margin-bottom: 2px;
+  color: #8f755b;
+  font-family: var(--font-ui);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
+
+.town-event-heading h2 {
+  margin: 0;
+  color: #4c382a;
+  font-family: var(--font-serif);
+  font-size: clamp(22px, 2.5vw, 30px);
+  letter-spacing: .03em;
+}
+
+.town-event-day-seal {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  flex: none;
+  border: 2px solid #a94738;
+  border-radius: 12px 9px 13px 8px;
+  background:
+    linear-gradient(145deg, #d75b49, #b83f35);
+  color: #fff5e8;
+  box-shadow:
+    inset 0 0 0 3px rgba(255,242,221,.18),
+    0 3px 0 #873129,
+    0 6px 12px rgba(79,45,31,.14);
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-weight: 900;
+  transform: rotate(-2deg);
+}
+
+.result-seal {
+  border-color: #486a78;
+  background: linear-gradient(145deg, #6e96a6, #496b79);
+  box-shadow:
+    inset 0 0 0 3px rgba(255,255,255,.15),
+    0 3px 0 #37515c,
+    0 6px 12px rgba(45,65,72,.14);
+  font-size: 24px;
+}
+
+.town-event-panel .panel-desc {
+  margin: 3px 0 10px;
+  padding-left: 12px;
+  border-left: 3px solid #cf6651;
+  color: #655241;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.town-event-panel .fire-choice-list {
+  gap: 12px;
+}
+
+.town-event-choice {
+  position: relative;
+  overflow: hidden;
+  min-height: 156px;
+  padding: 18px 16px 15px 52px;
+  border: 1px solid #c5a271;
+  border-radius: 9px;
+  background:
+    linear-gradient(180deg, rgba(255,252,242,.98), rgba(239,224,194,.98)),
+    url("/assets/edo/ui/ui-sheet.webp") center/520px 390px;
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.9),
+    inset 0 -8px 14px rgba(104,72,38,.05),
+    0 3px 0 #aa8555,
+    0 7px 14px rgba(70,51,33,.09);
+}
+
+.town-event-choice::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  pointer-events: none;
+  border: 1px solid rgba(121,85,47,.11);
+  border-radius: 5px;
+}
+
+.town-event-choice:hover,
+.town-event-choice:focus-visible {
+  border-color: #bb674b;
+  background:
+    linear-gradient(180deg, rgba(255,249,232,.99), rgba(241,212,163,.99)),
+    url("/assets/edo/ui/ui-sheet.webp") center/520px 390px;
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.9),
+    0 4px 0 #9d573f,
+    0 10px 18px rgba(100,60,38,.12);
+}
+
+.town-event-choice-mark {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid #9d4d3d;
+  border-radius: 50%;
+  background: #c95b49;
+  color: #fff7e9 !important;
+  box-shadow:
+    inset 0 0 0 2px rgba(255,242,223,.18),
+    0 2px 0 rgba(111,47,37,.28);
+  font-family: var(--font-serif);
+  font-size: 13px !important;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.town-event-choice > strong {
+  position: relative;
+  z-index: 1;
+  color: #663f29;
+  font-family: var(--font-serif);
+  font-size: 18px;
+  letter-spacing: .025em;
+}
+
+.town-event-choice > span:not(.town-event-choice-mark) {
+  position: relative;
+  z-index: 1;
+  color: #6c5a48;
+}
+
+.town-event-choice .choice-impact {
+  position: relative;
+  z-index: 1;
+  margin-top: auto;
+}
+
+.town-event-result {
+  border-width: 2px;
+}
+
+.town-event-result > p {
+  position: relative;
+  margin: 12px 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(178,145,99,.36);
+  border-radius: 7px;
+  background: rgba(255,252,243,.74);
+  color: #594739;
+  line-height: 1.75;
+}
+
+.town-event-result .festival-town-response {
+  border-left: 4px solid #6f91a0;
+  background: rgba(237,245,247,.72);
+}
+
+@media (max-width: 599px) {
+  .town-event-heading {
+    gap: 9px;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+  }
+
+  .town-event-day-seal {
+    width: 46px;
+    height: 46px;
+    border-radius: 9px 7px 10px 7px;
+    font-size: 12px;
+  }
+
+  .result-seal {
+    font-size: 20px;
+  }
+
+  .town-event-heading h2 {
+    font-size: 19px;
+  }
+
+  .town-event-choice {
+    min-height: 0;
+    padding: 13px 11px 12px 44px;
+  }
+
+  .town-event-choice-mark {
+    top: 11px;
+    left: 10px;
+    width: 25px;
+    height: 25px;
+    font-size: 11px !important;
+  }
+
+  .town-event-choice > strong {
+    font-size: 15px;
+  }
+}

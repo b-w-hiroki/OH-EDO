@@ -10,7 +10,13 @@ export function TownEventChoiceView({
 }) {
   return (
     <section className="panel town-event-panel">
-      <h2>{event.title}</h2>
+      <header className="town-event-heading">
+        <span className="town-event-day-seal">{event.day}日目</span>
+        <div>
+          <small>大江戸町・今日の相談</small>
+          <h2>{event.title}</h2>
+        </div>
+      </header>
       <div className="town-event-intro">
         {event.intro.map((line, index) => (
           <p key={`${line.speaker}-${index}`}>
@@ -21,8 +27,9 @@ export function TownEventChoiceView({
       </div>
       <p className="panel-desc">町の顔として、今日はどこから手をつける？</p>
       <div className="fire-choice-list">
-        {event.choices.map((choice) => (
-          <button className="fire-choice" key={choice.id} onClick={() => onChoose(choice.id)}>
+        {event.choices.map((choice, index) => (
+          <button className="fire-choice town-event-choice" key={choice.id} onClick={() => onChoose(choice.id)}>
+            <span className="town-event-choice-mark" aria-hidden="true">{["一", "二", "三"][index] ?? index + 1}</span>
             <strong>{choice.label}</strong>
             <span>{choice.description}</span>
             <ChoiceImpact effects={choice.effects} />
@@ -42,7 +49,13 @@ export function TownEventResultView({
 }) {
   return (
     <section className="panel town-event-result">
-      <h2>今日の仕事、そのあと</h2>
+      <header className="town-event-heading result-heading">
+        <span className="town-event-day-seal result-seal">済</span>
+        <div>
+          <small>町に残ったもの</small>
+          <h2>今日の仕事、そのあと</h2>
+        </div>
+      </header>
       <p>{result.resultText}</p>
       <p className="festival-town-response">{result.nextDayText}</p>
       <div className="panel-actions">
