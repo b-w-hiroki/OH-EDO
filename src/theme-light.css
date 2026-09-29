@@ -6750,3 +6750,453 @@ body::before {
     bottom: -13%;
   }
 }
+
+
+/* ── Approved mock parity pass: art-first Edo town composition ────── */
+@media (min-width: 1100px) {
+  .app {
+    max-width: 1580px;
+    padding-inline: 12px;
+  }
+
+  .reference-header {
+    grid-template-columns: 178px minmax(330px, .78fr) minmax(610px, 1.45fr) auto;
+    gap: 8px;
+  }
+
+  .desktop-header-status {
+    min-width: 0;
+  }
+
+  .reference-logo {
+    min-width: 0;
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+    transform: rotate(-1deg);
+    color: #173b58;
+    font-size: 38px;
+    line-height: .95;
+    letter-spacing: -.055em;
+    text-shadow: 0 2px 0 rgba(255,255,255,.82);
+  }
+
+  .reference-logo .logo-oh,
+  .reference-logo .logo-edo {
+    color: #173b58;
+  }
+
+  .reference-logo-wrap small {
+    margin-top: 2px;
+    background: #fff8e8;
+    border-color: #d5b780;
+    color: #7b4b2f;
+  }
+
+  .reference-day-card {
+    justify-content: flex-start;
+    min-height: 64px;
+    padding-inline: 16px;
+    border-radius: 8px;
+  }
+
+  .reference-statusbar {
+    min-height: 64px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(81,67,48,.08);
+  }
+
+  .reference-stat {
+    min-width: 0;
+    padding-inline: 7px;
+  }
+
+  .objective-strip {
+    min-height: 30px;
+    margin-bottom: 6px;
+    padding-block: 5px;
+    box-shadow: none;
+    border-color: #ead8b8;
+    background: rgba(255,249,236,.9);
+  }
+
+  .world-layout {
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 8px;
+  }
+
+  .stage {
+    border-radius: 10px;
+    border-width: 1px;
+    box-shadow: 0 8px 20px rgba(74,61,45,.12);
+  }
+
+  .side-card {
+    border-radius: 8px;
+    box-shadow: none;
+    border-color: #e1cfad;
+    background: rgba(255,251,242,.96);
+  }
+
+  .nearby-person {
+    min-height: 54px;
+    border-radius: 5px;
+    border-color: #eadbc0;
+    background: rgba(255,254,249,.84);
+  }
+
+  .nearby-talk {
+    min-width: 48px;
+    border-radius: 6px;
+  }
+
+  .reference-action-dock {
+    gap: 6px;
+    margin-top: 7px;
+    grid-template-columns: minmax(0, 1fr) 196px;
+  }
+
+  .reference-area-nav {
+    gap: 4px;
+  }
+
+  .reference-area-nav button {
+    min-height: 70px;
+    border-width: 1px;
+    border-radius: 7px;
+    background-image: none;
+    background: #fff9eb;
+    border-color: #d7c29d;
+    box-shadow: 0 2px 0 #bda57d;
+    color: #3f5668;
+  }
+
+  .reference-area-nav button.active {
+    background-image: none;
+    background: #fff1d2;
+    border-color: #d78633;
+    box-shadow: 0 2px 0 #b86c24;
+    color: #5a3824;
+  }
+
+  .reference-area-nav button.map-tab {
+    background: #f7f0df;
+    border-color: #ccb996;
+    box-shadow: 0 2px 0 #ab9773;
+  }
+
+  .reference-talk-cta {
+    min-height: 70px;
+    border-radius: 50px;
+    border-color: #bb493d;
+    background: #df5c4d;
+    box-shadow: 0 3px 0 #9e392f;
+  }
+
+  .reference-talk-cta .talk-bubble {
+    width: 42px;
+    height: 42px;
+  }
+
+  /* The approved market mock reads left-to-right:
+     fishmonger → player → child, with the street visible between them. */
+  .town-presentation.area-market .presentation-primary.art-fishmonger {
+    left: 0%;
+    right: auto;
+    width: 31%;
+    height: 79%;
+    z-index: 5;
+  }
+
+  .town-presentation.area-market .presentation-player {
+    left: 35%;
+    width: 27%;
+    height: 72%;
+    z-index: 6;
+  }
+
+  .town-presentation.area-market .presentation-secondary.art-child {
+    left: auto;
+    right: 1.5%;
+    bottom: 1%;
+    width: 18%;
+    height: 45%;
+    z-index: 6;
+  }
+
+  .town-presentation.area-market .presentation-scene-note {
+    left: 38%;
+    bottom: 5%;
+    width: min(300px, 30%);
+  }
+}
+
+/* Keep mobile closer to the mock: scene first, compact chrome, strong CTA. */
+@media (max-width: 599px) {
+  .objective-strip {
+    min-height: 28px;
+    margin-bottom: 5px;
+    padding: 4px 7px;
+  }
+
+  .side-card {
+    border-radius: 8px;
+    box-shadow: none;
+  }
+
+  .reference-area-nav button {
+    border-radius: 7px;
+    box-shadow: 0 2px 0 #86afc9;
+  }
+
+  .reference-talk-cta {
+    border-radius: 28px;
+  }
+}
+
+
+/* ── UI parts quality pass: wood, lacquer, washi, crest-like icon framing ── */
+.reference-stat-icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border: 1px solid #c9ae7f;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 28%, rgba(255,255,255,.9), transparent 28%),
+    linear-gradient(145deg, #fff5d9 0%, #ead3a6 58%, #d8b77f 100%);
+  box-shadow:
+    inset 0 0 0 2px rgba(255,250,236,.82),
+    inset 0 -3px 5px rgba(120,82,43,.10),
+    0 2px 0 rgba(121,83,45,.26),
+    0 4px 8px rgba(75,55,36,.10);
+  color: #5e6f79;
+}
+
+.reference-stat-icon::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(126,91,54,.16);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.reference-stat-icon svg {
+  width: 19px;
+  height: 19px;
+  filter: drop-shadow(0 1px 0 rgba(255,255,255,.72));
+}
+
+.reference-stat:nth-child(1) .reference-stat-icon { color: #a8792c; }
+.reference-stat:nth-child(2) .reference-stat-icon { color: #5f83a8; }
+.reference-stat:nth-child(3) .reference-stat-icon { color: #87649b; }
+.reference-stat:nth-child(4) .reference-stat-icon { color: #4f7995; }
+.reference-stat:nth-child(5) .reference-stat-icon { color: #596f80; }
+.reference-stat:nth-child(6) .reference-stat-icon { color: #8d7549; }
+
+.side-card {
+  position: relative;
+  overflow: hidden;
+  border-color: #d4bd94 !important;
+  background:
+    linear-gradient(180deg, rgba(255,252,244,.975), rgba(247,239,222,.975)),
+    url("/assets/edo/ui/ui-sheet.webp") center/560px 420px;
+}
+
+.side-card::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  pointer-events: none;
+  border: 1px solid rgba(156,121,75,.08);
+  border-radius: inherit;
+}
+
+.side-card-title {
+  position: relative;
+  z-index: 1;
+  min-height: 28px;
+  padding: 4px 8px 5px 10px !important;
+  border-bottom: 1px solid #dac39e;
+  background:
+    linear-gradient(90deg, rgba(130,90,52,.10), rgba(255,255,255,0) 52%);
+  letter-spacing: .04em;
+}
+
+.side-card-title::before {
+  content: "";
+  width: 4px;
+  align-self: stretch;
+  margin-right: 4px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #c95245, #e49a59);
+  box-shadow: 0 0 0 1px rgba(132,75,50,.08);
+}
+
+.nearby-person {
+  position: relative;
+  border-color: #dec9a7 !important;
+  background:
+    linear-gradient(180deg, rgba(255,254,249,.96), rgba(250,244,231,.96)) !important;
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.9),
+    0 2px 5px rgba(81,62,42,.055);
+}
+
+.nearby-avatar {
+  border-radius: 8px !important;
+  border: 2px solid #fff8e9 !important;
+  outline: 1px solid #bda67e !important;
+  background-color: #e7dbc3;
+  box-shadow:
+    inset 0 0 0 1px rgba(115,83,52,.08),
+    0 2px 5px rgba(65,48,34,.12) !important;
+}
+
+.nearby-talk {
+  border: 1px solid #bd5d4e !important;
+  border-radius: 5px !important;
+  background:
+    linear-gradient(180deg, #fff1e6, #f3d1c4) !important;
+  color: #9d463a !important;
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.75),
+    0 2px 0 rgba(137,67,54,.18);
+}
+
+.reference-area-nav button {
+  position: relative;
+  overflow: hidden;
+  border-color: #c8aa79 !important;
+  background:
+    linear-gradient(180deg, rgba(255,250,237,.98), rgba(235,219,187,.98)),
+    url("/assets/edo/ui/ui-sheet.webp") center/520px 390px !important;
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.78),
+    inset 0 -5px 8px rgba(111,76,39,.06),
+    0 3px 0 #ae8955 !important;
+}
+
+.reference-area-nav button::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(118,83,46,.10);
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.reference-area-nav button.active {
+  border-color: #c9663e !important;
+  background:
+    linear-gradient(180deg, rgba(255,244,215,.98), rgba(237,196,126,.98)),
+    url("/assets/edo/ui/ui-sheet.webp") center/520px 390px !important;
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.72),
+    inset 0 -6px 10px rgba(122,63,32,.07),
+    0 3px 0 #a95832 !important;
+}
+
+.area-nav-icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #b69a70;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 36% 28%, #fffef6 0 20%, transparent 21%),
+    linear-gradient(145deg, #f8ecd0, #d8c09a);
+  box-shadow:
+    inset 0 0 0 2px rgba(255,250,235,.66),
+    0 2px 0 rgba(105,77,46,.18);
+  color: #536e81;
+}
+
+.area-nav-icon svg {
+  width: 22px;
+  height: 22px;
+  filter: drop-shadow(0 1px rgba(255,255,255,.7));
+}
+
+.reference-area-nav button.active .area-nav-icon {
+  border-color: #bd7044;
+  background:
+    radial-gradient(circle at 36% 28%, #fff9e8 0 20%, transparent 21%),
+    linear-gradient(145deg, #f7ddb0, #dcaa63);
+  color: #8d4d2f;
+}
+
+.reference-talk-cta {
+  position: relative;
+  overflow: hidden;
+  border-color: #8f342c !important;
+  background:
+    linear-gradient(180deg, #e76b58 0%, #c9473d 64%, #b33931 100%) !important;
+  box-shadow:
+    inset 0 2px rgba(255,255,255,.24),
+    inset 0 -5px 10px rgba(93,25,22,.18),
+    0 4px 0 #7d2c27,
+    0 8px 16px rgba(102,43,35,.18) !important;
+}
+
+.reference-talk-cta::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 12%;
+  right: 12%;
+  height: 24%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255,255,255,.18), transparent);
+  pointer-events: none;
+}
+
+.reference-talk-cta .talk-bubble {
+  border: 1px solid rgba(120,49,39,.28);
+  background:
+    radial-gradient(circle at 35% 30%, #fffef6 0 24%, transparent 25%),
+    linear-gradient(145deg, #fff8e8, #ead8b7) !important;
+  box-shadow:
+    inset 0 0 0 2px rgba(255,255,255,.55),
+    0 2px 0 rgba(94,39,33,.18);
+}
+
+.reference-talk-cta strong {
+  text-shadow: 0 1px 0 rgba(80,25,20,.20);
+  letter-spacing: .02em;
+}
+
+.rumor-marker {
+  box-shadow:
+    inset 0 0 0 2px rgba(255,255,255,.48),
+    0 1px 2px rgba(65,49,37,.10);
+}
+
+@media (max-width: 599px) {
+  .reference-stat-icon {
+    width: 29px;
+    height: 29px;
+  }
+
+  .reference-stat-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .area-nav-icon {
+    width: 31px;
+    height: 31px;
+  }
+
+  .area-nav-icon svg {
+    width: 19px;
+    height: 19px;
+  }
+}
