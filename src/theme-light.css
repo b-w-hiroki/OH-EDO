@@ -9038,3 +9038,18 @@ body::before {
     display: none !important;
   }
 }
+
+
+@media (min-width: 900px) {
+  .town-side-panel > .yesterday-card {
+    display: none !important;
+  }
+
+  .town-side-panel > .rumor-card {
+    order: 2 !important;
+  }
+
+  .town-side-panel > .town-mood-card {
+    order: 3 !important;
+  }
+}
