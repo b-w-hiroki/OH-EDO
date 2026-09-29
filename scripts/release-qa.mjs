@@ -107,6 +107,10 @@ async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = 
   await advanceDialogs(page);
   await page.waitForSelector(".jobview", { timeout: 5000 });
   await page.getByRole("button", { name: "これで行く" }).first().click();
+  await page.waitForSelector(".resultview", { timeout: 5000 });
+  if (captureMilestones) {
+    await page.screenshot({ path: `qa-artifacts/${prefix}-day1-result.png`, fullPage: false });
+  }
   await page.getByRole("button", { name: "夜へ進む" }).click();
   await advanceDialogs(page);
 
@@ -133,6 +137,9 @@ async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = 
     return s.screen === "fire_result";
   }, STORAGE_KEY, { timeout: 30000 });
   await page.waitForSelector(".fire-aftermath", { timeout: 5000 });
+  if (captureMilestones) {
+    await page.screenshot({ path: `qa-artifacts/${prefix}-fire-result.png`, fullPage: false });
+  }
   await page.getByRole("button", { name: "三日目へ" }).click();
 
   s = await state(page);
@@ -144,6 +151,10 @@ async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = 
   await talk(page, "火消し頭");
   await page.waitForSelector(".fire-choice-list", { timeout: 5000 });
   await page.locator(".fire-choice").first().evaluate((el) => el.click());
+  await page.waitForSelector(".patrol-result", { timeout: 5000 });
+  if (captureMilestones) {
+    await page.screenshot({ path: `qa-artifacts/${prefix}-patrol-result.png`, fullPage: false });
+  }
   await page.getByRole("button", { name: "四日目へ" }).click();
 
   s = await state(page);
@@ -154,6 +165,10 @@ async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = 
   await talk(page, "瓦版屋");
   await page.waitForSelector(".festival-panel", { timeout: 5000 });
   await page.locator(".fire-choice").first().evaluate((el) => el.click());
+  await page.waitForSelector(".festival-result", { timeout: 5000 });
+  if (captureMilestones) {
+    await page.screenshot({ path: `qa-artifacts/${prefix}-festival-result.png`, fullPage: false });
+  }
   await page.getByRole("button", { name: "五日目へ" }).click();
 
   s = await state(page);
