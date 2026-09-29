@@ -6954,3 +6954,249 @@ body::before {
     border-radius: 28px;
   }
 }
+
+
+/* ── UI parts quality pass: wood, lacquer, washi, crest-like icon framing ── */
+.reference-stat-icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border: 1px solid #c9ae7f;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 28%, rgba(255,255,255,.9), transparent 28%),
+    linear-gradient(145deg, #fff5d9 0%, #ead3a6 58%, #d8b77f 100%);
+  box-shadow:
+    inset 0 0 0 2px rgba(255,250,236,.82),
+    inset 0 -3px 5px rgba(120,82,43,.10),
+    0 2px 0 rgba(121,83,45,.26),
+    0 4px 8px rgba(75,55,36,.10);
+  color: #5e6f79;
+}
+
+.reference-stat-icon::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(126,91,54,.16);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.reference-stat-icon svg {
+  width: 19px;
+  height: 19px;
+  filter: drop-shadow(0 1px 0 rgba(255,255,255,.72));
+}
+
+.reference-stat:nth-child(1) .reference-stat-icon { color: #a8792c; }
+.reference-stat:nth-child(2) .reference-stat-icon { color: #5f83a8; }
+.reference-stat:nth-child(3) .reference-stat-icon { color: #87649b; }
+.reference-stat:nth-child(4) .reference-stat-icon { color: #4f7995; }
+.reference-stat:nth-child(5) .reference-stat-icon { color: #596f80; }
+.reference-stat:nth-child(6) .reference-stat-icon { color: #8d7549; }
+
+.side-card {
+  position: relative;
+  overflow: hidden;
+  border-color: #d4bd94 !important;
+  background:
+    linear-gradient(180deg, rgba(255,252,244,.975), rgba(247,239,222,.975)),
+    url("/assets/edo/ui/ui-sheet.webp") center/560px 420px;
+}
+
+.side-card::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  pointer-events: none;
+  border: 1px solid rgba(156,121,75,.08);
+  border-radius: inherit;
+}
+
+.side-card-title {
+  position: relative;
+  z-index: 1;
+  min-height: 28px;
+  padding: 4px 8px 5px 10px !important;
+  border-bottom: 1px solid #dac39e;
+  background:
+    linear-gradient(90deg, rgba(130,90,52,.10), rgba(255,255,255,0) 52%);
+  letter-spacing: .04em;
+}
+
+.side-card-title::before {
+  content: "";
+  width: 4px;
+  align-self: stretch;
+  margin-right: 4px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #c95245, #e49a59);
+  box-shadow: 0 0 0 1px rgba(132,75,50,.08);
+}
+
+.nearby-person {
+  position: relative;
+  border-color: #dec9a7 !important;
+  background:
+    linear-gradient(180deg, rgba(255,254,249,.96), rgba(250,244,231,.96)) !important;
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.9),
+    0 2px 5px rgba(81,62,42,.055);
+}
+
+.nearby-avatar {
+  border-radius: 8px !important;
+  border: 2px solid #fff8e9 !important;
+  outline: 1px solid #bda67e !important;
+  background-color: #e7dbc3;
+  box-shadow:
+    inset 0 0 0 1px rgba(115,83,52,.08),
+    0 2px 5px rgba(65,48,34,.12) !important;
+}
+
+.nearby-talk {
+  border: 1px solid #bd5d4e !important;
+  border-radius: 5px !important;
+  background:
+    linear-gradient(180deg, #fff1e6, #f3d1c4) !important;
+  color: #9d463a !important;
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.75),
+    0 2px 0 rgba(137,67,54,.18);
+}
+
+.reference-area-nav button {
+  position: relative;
+  overflow: hidden;
+  border-color: #c8aa79 !important;
+  background:
+    linear-gradient(180deg, rgba(255,250,237,.98), rgba(235,219,187,.98)),
+    url("/assets/edo/ui/ui-sheet.webp") center/520px 390px !important;
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.78),
+    inset 0 -5px 8px rgba(111,76,39,.06),
+    0 3px 0 #ae8955 !important;
+}
+
+.reference-area-nav button::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(118,83,46,.10);
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.reference-area-nav button.active {
+  border-color: #c9663e !important;
+  background:
+    linear-gradient(180deg, rgba(255,244,215,.98), rgba(237,196,126,.98)),
+    url("/assets/edo/ui/ui-sheet.webp") center/520px 390px !important;
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.72),
+    inset 0 -6px 10px rgba(122,63,32,.07),
+    0 3px 0 #a95832 !important;
+}
+
+.area-nav-icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #b69a70;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 36% 28%, #fffef6 0 20%, transparent 21%),
+    linear-gradient(145deg, #f8ecd0, #d8c09a);
+  box-shadow:
+    inset 0 0 0 2px rgba(255,250,235,.66),
+    0 2px 0 rgba(105,77,46,.18);
+  color: #536e81;
+}
+
+.area-nav-icon svg {
+  width: 22px;
+  height: 22px;
+  filter: drop-shadow(0 1px rgba(255,255,255,.7));
+}
+
+.reference-area-nav button.active .area-nav-icon {
+  border-color: #bd7044;
+  background:
+    radial-gradient(circle at 36% 28%, #fff9e8 0 20%, transparent 21%),
+    linear-gradient(145deg, #f7ddb0, #dcaa63);
+  color: #8d4d2f;
+}
+
+.reference-talk-cta {
+  position: relative;
+  overflow: hidden;
+  border-color: #8f342c !important;
+  background:
+    linear-gradient(180deg, #e76b58 0%, #c9473d 64%, #b33931 100%) !important;
+  box-shadow:
+    inset 0 2px rgba(255,255,255,.24),
+    inset 0 -5px 10px rgba(93,25,22,.18),
+    0 4px 0 #7d2c27,
+    0 8px 16px rgba(102,43,35,.18) !important;
+}
+
+.reference-talk-cta::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 12%;
+  right: 12%;
+  height: 24%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255,255,255,.18), transparent);
+  pointer-events: none;
+}
+
+.reference-talk-cta .talk-bubble {
+  border: 1px solid rgba(120,49,39,.28);
+  background:
+    radial-gradient(circle at 35% 30%, #fffef6 0 24%, transparent 25%),
+    linear-gradient(145deg, #fff8e8, #ead8b7) !important;
+  box-shadow:
+    inset 0 0 0 2px rgba(255,255,255,.55),
+    0 2px 0 rgba(94,39,33,.18);
+}
+
+.reference-talk-cta strong {
+  text-shadow: 0 1px 0 rgba(80,25,20,.20);
+  letter-spacing: .02em;
+}
+
+.rumor-marker {
+  box-shadow:
+    inset 0 0 0 2px rgba(255,255,255,.48),
+    0 1px 2px rgba(65,49,37,.10);
+}
+
+@media (max-width: 599px) {
+  .reference-stat-icon {
+    width: 29px;
+    height: 29px;
+  }
+
+  .reference-stat-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .area-nav-icon {
+    width: 31px;
+    height: 31px;
+  }
+
+  .area-nav-icon svg {
+    width: 19px;
+    height: 19px;
+  }
+}
