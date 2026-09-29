@@ -754,3 +754,88 @@
     font-size: 12px;
   }
 }
+
+
+/* ── Next lead: Edo notice strip instead of generic web banner ───── */
+.next-lead {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+  margin-top: 6px;
+  padding: 8px 10px 8px 12px;
+  border: 1px solid #b88b54;
+  border-radius: 6px;
+  background:
+    linear-gradient(180deg, rgba(255,248,227,.98), rgba(236,215,176,.98)),
+    url("/assets/edo/ui/ui-sheet.webp") center/520px 390px;
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.72),
+    0 3px 0 rgba(115,77,43,.18),
+    0 6px 12px rgba(68,48,30,.08);
+}
+
+.next-lead::before {
+  content: "急";
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 2px solid #a13e34;
+  border-radius: 5px 4px 6px 4px;
+  background: #c95345;
+  color: #fff2df;
+  box-shadow: inset 0 0 0 2px rgba(255,235,211,.11);
+  font-family: var(--font-serif);
+  font-size: 12px;
+  font-weight: 900;
+  transform: rotate(-3deg);
+}
+
+.next-lead-label {
+  display: none;
+}
+
+.next-lead-text {
+  min-width: 0;
+  color: #5d4939;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.next-lead .primary {
+  min-height: 38px;
+  padding: 6px 14px;
+  border-radius: 19px;
+  white-space: nowrap;
+  font-size: 11px;
+}
+
+@media (max-width: 599px) {
+  .next-lead {
+    grid-template-columns: 25px minmax(0, 1fr) auto;
+    gap: 6px;
+    margin-top: 5px;
+    padding: 6px 7px;
+  }
+
+  .next-lead::before {
+    width: 23px;
+    height: 23px;
+    font-size: 10px;
+  }
+
+  .next-lead-text {
+    font-size: 8px;
+    line-height: 1.3;
+  }
+
+  .next-lead .primary {
+    min-height: 34px;
+    padding: 5px 9px;
+    font-size: 9px;
+  }
+}
