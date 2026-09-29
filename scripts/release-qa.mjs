@@ -349,6 +349,7 @@ async function verifyLegacySaveMigration(page) {
 async function captureStatusBook(page, prefix) {
   await page.getByRole("button", { name: /メニュー/ }).click();
   await page.locator(".status-book").waitFor({ state: "visible", timeout: 5000 });
+  await page.waitForTimeout(300);
   await page.screenshot({ path: `qa-artifacts/${prefix}-status-book.png`, fullPage: false });
   await page.getByRole("button", { name: "町へ戻る" }).click();
 }
