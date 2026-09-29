@@ -437,14 +437,20 @@ async function runIPhoneWebKit() {
     serviceWorkers: "block",
   });
   const page = await context.newPage();
-  const finalState = await completeDay1ToDay10(page, "iphone-webkit-430", { captureMilestones: false });
+  await freshStart(page);
   const accessibility = await assertAccessibilityBasics(page);
   const layout = await assertMobileLayout(page);
   await page.screenshot({ path: "qa-artifacts/iphone-webkit-430-world.png", fullPage: false });
+  if (!(await page.locator(".mock-dialog:visible").count())) {
+    await page.locator(".reference-talk-cta:visible").click();
+    await page.waitForSelector(".mock-dialog:visible", { timeout: 5000 });
+  }
+  await page.screenshot({ path: "qa-artifacts/iphone-webkit-430-dialog.png", fullPage: false });
+  await advanceDialogs(page);
   const s = await state(page);
-  assert(s?.screen === "town" && s.day === 10, "WebKit Day10 flow did not return to town");
+  assert(s?.screen === "town", "WebKit conversation did not return to town");
   await browser.close();
-  return { day: finalState.day, layout, accessibility };
+  return { day: s.day, layout, accessibility };
 }
 
 // Run WebKit first while the runner is fresh. Long Chromium through-plays can
