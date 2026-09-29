@@ -7200,3 +7200,143 @@ body::before {
     height: 19px;
   }
 }
+
+
+/* ── Chrome parts polish: compact Edo tool controls + seal markers ── */
+.reference-header-actions .ghost,
+.reference-header-actions .sound-toggle,
+.reference-header-actions .reset-compact {
+  position: relative;
+  overflow: hidden;
+  min-height: 44px;
+  border: 1px solid #b99763;
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255,252,243,.98), rgba(233,218,190,.98)),
+    url("/assets/edo/ui/ui-sheet.webp") center/520px 390px;
+  color: #4f4439;
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.84),
+    inset 0 -4px 8px rgba(101,70,36,.06),
+    0 2px 0 #99784f,
+    0 4px 8px rgba(72,52,34,.08);
+}
+
+.reference-header-actions .ghost::after,
+.reference-header-actions .sound-toggle::after,
+.reference-header-actions .reset-compact::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  pointer-events: none;
+  border: 1px solid rgba(113,80,46,.08);
+  border-radius: 4px;
+}
+
+.reference-header-actions .sound-toggle {
+  padding-inline: 13px;
+  color: #5d4a35;
+}
+
+.reference-header-actions .ghost:hover,
+.reference-header-actions .sound-toggle:hover,
+.reference-header-actions .reset-compact:hover {
+  transform: translateY(-1px);
+  background:
+    linear-gradient(180deg, #fffdf6, #f0dfbd),
+    url("/assets/edo/ui/ui-sheet.webp") center/520px 390px;
+}
+
+.reference-header-actions .ghost:active,
+.reference-header-actions .sound-toggle:active,
+.reference-header-actions .reset-compact:active {
+  transform: translateY(1px);
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.72),
+    0 1px 0 #99784f;
+}
+
+.side-card-title svg {
+  padding: 2px;
+  border: 1px solid #c8ad82;
+  border-radius: 50%;
+  background: #f8ecd3;
+  color: #795d3e;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.5),
+    0 1px 2px rgba(72,52,34,.08);
+}
+
+.rumor-marker {
+  position: relative;
+  border-radius: 6px;
+  transform: rotate(45deg);
+  background:
+    linear-gradient(145deg, #eef7fb, #c9e0ea) !important;
+  border-color: #9ab7c5 !important;
+}
+
+.rumor-marker::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  background: #729aae;
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.32);
+}
+
+.rumor-marker-1 {
+  background:
+    linear-gradient(145deg, #fff3d9, #ebc58b) !important;
+  border-color: #c18d4d !important;
+}
+
+.rumor-marker-1::after {
+  background: #c48a3b;
+}
+
+.rumor-marker-2 {
+  background:
+    linear-gradient(145deg, #fbe9ef, #ddb1bf) !important;
+  border-color: #b77b8f !important;
+}
+
+.rumor-marker-2::after {
+  background: #b46d84;
+}
+
+.rumor-list li {
+  position: relative;
+}
+
+.rumor-list li::after {
+  content: "";
+  position: absolute;
+  left: 30px;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(158,127,87,.18), transparent);
+}
+
+.rumor-list li:last-child::after {
+  display: none;
+}
+
+@media (max-width: 599px) {
+  .reference-header-actions .ghost {
+    border-radius: 7px;
+    box-shadow:
+      inset 0 1px rgba(255,255,255,.82),
+      0 2px 0 #99784f;
+  }
+
+  .rumor-marker {
+    width: 17px;
+    height: 17px;
+  }
+
+  .rumor-marker::after {
+    inset: 4px;
+  }
+}
