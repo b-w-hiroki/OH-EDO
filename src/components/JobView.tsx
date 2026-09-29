@@ -22,7 +22,7 @@ function signed(n: number): string {
 
 export function JobView({ choices, onChoose }: Props) {
   return (
-    <section className="jobview">
+    <section className="jobview legacy-choice-panel">
       <div className="area-card">
         <h2 className="area-name">仕事 ── 汲み取り騒動</h2>
         <p className="area-desc">
@@ -33,7 +33,7 @@ export function JobView({ choices, onChoose }: Props) {
 
       <ul className="choice-list">
         {choices.map((c) => (
-          <li key={c.id} className="choice-card">
+          <li key={c.id} className="choice-card legacy-choice-card">
             <h3>{c.label}</h3>
             <p>{c.description}</p>
             <p className="choice-effects">{effectsLabel(c.effects)}</p>
