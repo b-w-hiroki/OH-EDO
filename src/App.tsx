@@ -1295,7 +1295,7 @@ function App() {
 
   return (
     <div className="app">
-      <header className="reference-header">
+      <header className={`reference-header ${state.screen === "title" ? "is-title" : ""}`}>
         <div className="reference-logo-wrap">
           <span className="reference-logo" aria-label="OH! EDO!">
             <span className="logo-oh">OH!</span>
