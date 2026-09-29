@@ -108,6 +108,7 @@ async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = 
   await page.waitForSelector(".jobview", { timeout: 5000 });
   await page.getByRole("button", { name: "これで行く" }).first().click();
   await page.waitForSelector(".resultview", { timeout: 5000 });
+  await settleResultCapture(page);
   if (captureMilestones) {
     await page.screenshot({ path: `qa-artifacts/${prefix}-day1-result.png`, fullPage: false });
   }
@@ -137,6 +138,7 @@ async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = 
     return s.screen === "fire_result";
   }, STORAGE_KEY, { timeout: 30000 });
   await page.waitForSelector(".fire-aftermath", { timeout: 5000 });
+  await settleResultCapture(page);
   if (captureMilestones) {
     await page.screenshot({ path: `qa-artifacts/${prefix}-fire-result.png`, fullPage: false });
   }
@@ -152,6 +154,7 @@ async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = 
   await page.waitForSelector(".fire-choice-list", { timeout: 5000 });
   await page.locator(".fire-choice").first().evaluate((el) => el.click());
   await page.waitForSelector(".patrol-result", { timeout: 5000 });
+  await settleResultCapture(page);
   if (captureMilestones) {
     await page.screenshot({ path: `qa-artifacts/${prefix}-patrol-result.png`, fullPage: false });
   }
@@ -166,6 +169,7 @@ async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = 
   await page.waitForSelector(".festival-panel", { timeout: 5000 });
   await page.locator(".fire-choice").first().evaluate((el) => el.click());
   await page.waitForSelector(".festival-result", { timeout: 5000 });
+  await settleResultCapture(page);
   if (captureMilestones) {
     await page.screenshot({ path: `qa-artifacts/${prefix}-festival-result.png`, fullPage: false });
   }
@@ -359,6 +363,18 @@ async function verifyLegacySaveMigration(page) {
   }, STORAGE_KEY);
   const migrated = await state(page);
   assert(migrated?.day === 10 && migrated.completedTownEventIds?.includes("day10_town_council"), "legacy save migration lost progression");
+}
+
+async function settleResultCapture(page) {
+  const dayTransition = page.locator(".day-transition");
+  if (await dayTransition.count()) {
+    await dayTransition.waitFor({ state: "hidden", timeout: 2600 }).catch(() => {});
+  }
+  const rankTransition = page.locator(".rank-transition");
+  if (await rankTransition.count()) {
+    await rankTransition.waitFor({ state: "hidden", timeout: 2600 }).catch(() => {});
+  }
+  await page.waitForTimeout(280);
 }
 
 async function captureStatusBook(page, prefix) {
