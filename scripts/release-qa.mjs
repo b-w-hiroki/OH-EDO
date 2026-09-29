@@ -91,7 +91,7 @@ async function talk(page, name) {
   await advanceDialogs(page);
 }
 
-async function completeDay1ToDay10(page, prefix) {
+async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = {}) {
   await freshStart(page);
 
   let initial = await state(page);
@@ -159,9 +159,11 @@ async function completeDay1ToDay10(page, prefix) {
   s = await state(page);
   assert(s?.day === 5 && s.flags?.day5_started && s.flags?.festival_done, "Day5/festival progression failed");
   await page.waitForSelector(".town-finale-card", { timeout: 5000 });
-  await page.waitForTimeout(2300);
-  await page.evaluate(() => window.scrollTo(0, 0));
-  await page.screenshot({ path: `qa-artifacts/${prefix}-day5-finale.png`, fullPage: false });
+  if (captureMilestones) {
+    await page.waitForTimeout(2300);
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.screenshot({ path: `qa-artifacts/${prefix}-day5-finale.png`, fullPage: false });
+  }
 
   const chapterEvents = [
     { day: 6, button: "六日目へ", id: "day6_festival_cleanup" },
@@ -198,12 +200,14 @@ async function completeDay1ToDay10(page, prefix) {
         `Day${chapter.day} town-event panel exceeds mobile stage: ${JSON.stringify(eventPanelBounds)}`
       );
     }
-    await page.waitForTimeout(2300);
-    await page.evaluate(() => window.scrollTo(0, 0));
-    await page.screenshot({
-      path: `qa-artifacts/${prefix}-day${chapter.day}-choice.png`,
-      fullPage: false,
-    });
+    if (captureMilestones) {
+      await page.waitForTimeout(2300);
+      await page.evaluate(() => window.scrollTo(0, 0));
+      await page.screenshot({
+        path: `qa-artifacts/${prefix}-day${chapter.day}-choice.png`,
+        fullPage: false,
+      });
+    }
     s = await state(page);
     assert(s?.day === chapter.day, `Day${chapter.day} did not start`);
     assert(s.activeTownEventId === chapter.id, `Day${chapter.day} event missing`);
@@ -220,7 +224,9 @@ async function completeDay1ToDay10(page, prefix) {
     }
   }
 
-  await page.screenshot({ path: `qa-artifacts/${prefix}-day10-world.png`, fullPage: false });
+  if (captureMilestones) {
+    await page.screenshot({ path: `qa-artifacts/${prefix}-day10-world.png`, fullPage: false });
+  }
   assert(s?.day === 10, "Day10 progression failed");
   assert(s.completedTownEventIds?.length >= 5, "town event completion history missing");
   assert(s.flags?.room_unlocked, "room unlock regressed");
@@ -427,11 +433,10 @@ async function runIPhoneWebKit() {
     screen: { width: 430, height: 932 },
   });
   const page = await context.newPage();
-  const finalState = await completeDay1ToDay10(page, "iphone-webkit-430");
+  const finalState = await completeDay1ToDay10(page, "iphone-webkit-430", { captureMilestones: false });
   const accessibility = await assertAccessibilityBasics(page);
   const layout = await assertMobileLayout(page);
   await page.screenshot({ path: "qa-artifacts/iphone-webkit-430-world.png", fullPage: false });
-  await captureAreas(page, "iphone-webkit-430");
   const s = await state(page);
   assert(s?.screen === "town" && s.day === 10, "WebKit Day10 flow did not return to town");
   await browser.close();
