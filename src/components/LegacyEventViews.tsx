@@ -58,7 +58,7 @@ export function FestivalChoiceView({
   onChoose: (choice: FestivalChoice) => void;
 }) {
   return (
-    <section className="panel festival-panel">
+    <section className="panel festival-panel legacy-choice-panel">
       <h2>春祭りの準備</h2>
       <p className="panel-desc">町の一員として、どこに手を貸す？</p>
       <div className="fire-choice-list">
@@ -106,7 +106,7 @@ export function PatrolChoiceView({
   onChoose: (choice: PatrolChoice) => void;
 }) {
   return (
-    <section className="panel">
+    <section className="panel legacy-choice-panel">
       <h2>火消し小屋の見回り</h2>
       <p className="panel-desc">町を守るために、今日はどこを見る？</p>
       <div className="fire-choice-list">
@@ -188,7 +188,7 @@ export function FireChoiceView({
   onChoose: (choice: FireChoice) => void;
 }) {
   return (
-    <section className="panel">
+    <section className="panel legacy-choice-panel">
       <h2>小火騒ぎ</h2>
       <p className="panel-desc">
         火消し組が来るまでのわずかな間、どう動く？
