@@ -8,7 +8,6 @@ interface Props {
   onSelect: (npc: NPCId) => void;
   selectedNpc: NPCId | null;
   activeSpeaker?: string | null;
-  objective: string;
 }
 
 const AREA_BACKGROUND: Record<Exclude<AreaId, "room">, string> = {
@@ -134,7 +133,6 @@ export function TownPresentation({
   onSelect,
   selectedNpc,
   activeSpeaker,
-  objective,
 }: Props) {
   const area = state.currentArea === "room" ? "nagaya" : state.currentArea;
   const npcs = npcIdsForArea(state);
