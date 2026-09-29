@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { TownEventDef, TownEventResult } from "../types";
 import { ChoiceImpact } from "./ChoiceImpact";
 
@@ -8,6 +9,7 @@ export function TownEventChoiceView({
   event: TownEventDef;
   onChoose: (choiceId: string) => void;
 }) {
+  const [showIntro, setShowIntro] = useState(false);
   return (
     <section className="panel town-event-panel">
       <header className="town-event-heading">
@@ -17,7 +19,17 @@ export function TownEventChoiceView({
           <h2>{event.title}</h2>
         </div>
       </header>
-      <div className="town-event-intro">
+      <button
+        type="button"
+        className="town-event-intro-toggle"
+        aria-expanded={showIntro}
+        onClick={() => setShowIntro((current) => !current)}
+      >
+        <span>関係者の声</span>
+        <small>{event.intro.length}人</small>
+        <b aria-hidden="true">{showIntro ? "−" : "＋"}</b>
+      </button>
+      <div className={`town-event-intro ${showIntro ? "is-open" : ""}`}>
         {event.intro.map((line, index) => (
           <p key={`${line.speaker}-${index}`}>
             <strong>{line.speaker}</strong>
