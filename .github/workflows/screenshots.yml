@@ -26,6 +26,11 @@ jobs:
       - run: npm ci
       - run: npm run verify
       - run: npm install --no-save playwright@1.55.0
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-1.55.0-chromium-webkit
       - run: npx playwright install --with-deps chromium webkit
       - name: Start preview
         run: |
