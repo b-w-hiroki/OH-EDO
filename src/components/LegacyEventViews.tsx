@@ -85,7 +85,7 @@ export function FestivalResultView({
   onNext: () => void;
 }) {
   return (
-    <section className="panel festival-result">
+    <section className="panel festival-result legacy-result-panel">
       <h2>祭りの準備、そのあと</h2>
       <p>{result.resultText}</p>
       {result.bonusText && <p className="reputation-bonus">{result.bonusText}</p>}
@@ -130,7 +130,7 @@ export function PatrolResultView({
   onNext: () => void;
 }) {
   return (
-    <section className="panel">
+    <section className="panel patrol-result legacy-result-panel">
       <h2>見回り完了</h2>
       <p>{result.resultText}</p>
       <p className="muted">{result.nextDayText}</p>
@@ -155,7 +155,7 @@ export function FireAftermathView({
   onNext: () => void;
 }) {
   return (
-    <section className="panel fire-aftermath">
+    <section className="panel fire-aftermath legacy-result-panel">
       <h2>小火騒ぎ、そのあと</h2>
       <p>{aftermath.resultText}</p>
       <div className="aftermath-card">

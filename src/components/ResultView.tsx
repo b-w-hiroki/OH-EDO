@@ -22,7 +22,7 @@ export function ResultView({
 }: Props) {
   const d = result.delta;
   return (
-    <section className="resultview">
+    <section className="resultview legacy-result-panel">
       <div className="area-card">
         <h2 className="area-name">仕事の結末</h2>
         <p className="area-desc">{result.resultText}</p>
