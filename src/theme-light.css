@@ -9011,3 +9011,10 @@ body::before {
     display: none !important;
   }
 }
+
+
+@media (min-width: 900px) {
+  .controls-hint {
+    display: none !important;
+  }
+}
