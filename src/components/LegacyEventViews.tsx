@@ -260,10 +260,13 @@ export function StatusPanel({
   };
 
   return (
-    <section className="panel">
-      <h2>覚え書き</h2>
+    <section className="panel status-book">
+      <header className="status-book-heading">
+        <span className="status-book-seal">覚</span>
+        <div><small>たろうの帳面</small><h2>覚え書き</h2></div>
+      </header>
       <div className="status-grid">
-        <div>
+        <div className="status-sheet status-self">
           <h3>身の上</h3>
           <ul>
             <li>位：{state.player.rankName}（Rank {state.player.rank}）</li>
@@ -274,7 +277,7 @@ export function StatusPanel({
             <li>腕前：{state.player.skill}</li>
           </ul>
         </div>
-        <div>
+        <div className="status-sheet status-town">
           <h3>町の様子</h3>
           <ul>
             <li>衛生：{state.town.hygiene}</li>
@@ -283,7 +286,7 @@ export function StatusPanel({
             <li>景気：{state.town.economy}</li>
           </ul>
         </div>
-        <div>
+        <div className="status-sheet status-relations">
           <h3>町の人との関係</h3>
           <ul>
             <li>
@@ -313,7 +316,7 @@ export function StatusPanel({
             </li>
           </ul>
         </div>
-        <div>
+        <div className="status-sheet status-reputation">
           <h3>評判</h3>
           {state.reputationTags.length === 0 ? (
             <p className="muted">まだ町に定着した評判はない。</p>
@@ -321,7 +324,7 @@ export function StatusPanel({
             <ul>{state.reputationTags.map((r) => <li key={r}>{r}</li>)}</ul>
           )}
         </div>
-        <div>
+        <div className="status-sheet status-rumors">
           <h3>身についた噂</h3>
           {state.activeRumors.length === 0 ? (
             <p className="muted">まだ何の噂にもなっていない。</p>
@@ -346,14 +349,16 @@ export function StatusPanel({
         </ul>
       )}
 
-      <details className="decision-debug">
-        <summary>Decisionログ（開発用）</summary>
-        {state.decisionLogs.length === 0 ? (
-          <p className="muted">まだ判断ログはない。</p>
-        ) : (
-          <pre>{JSON.stringify(state.decisionLogs.slice(-2), null, 2)}</pre>
-        )}
-      </details>
+      {playtestMode && (
+        <details className="decision-debug">
+          <summary>Decisionログ（プレイテスト用）</summary>
+          {state.decisionLogs.length === 0 ? (
+            <p className="muted">まだ判断ログはない。</p>
+          ) : (
+            <pre>{JSON.stringify(state.decisionLogs.slice(-2), null, 2)}</pre>
+          )}
+        </details>
+      )}
 
       <h3>これまでの覚え書き</h3>
       {state.log.length === 0 ? (
