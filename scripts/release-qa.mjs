@@ -276,7 +276,7 @@ async function captureAreas(page, prefix) {
   await move(page, "部屋");
   await page.waitForSelector(".room-panel", { timeout: 5000 });
   await page.evaluate(() => window.scrollTo(0, 0));
-  await page.waitForTimeout(80);
+  await page.waitForTimeout(300);
   await page.screenshot({ path: `qa-artifacts/${prefix}-room.png`, fullPage: false });
   await page.getByRole("button", { name: "町へ出る" }).evaluate((el) => el.click());
 
