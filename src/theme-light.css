@@ -8682,3 +8682,59 @@ body::before {
     width: 100% !important;
   }
 }
+
+
+/* Low-height landscape must never hide progression cards. */
+@media (min-width: 600px) and (max-height: 500px) {
+  .town-side-panel:has(.town-next-event-card) > .rumor-card,
+  .town-side-panel:has(.town-finale-card) > .rumor-card {
+    display: none !important;
+  }
+
+  .town-side-panel > .town-next-event-card,
+  .town-side-panel > .town-finale-card {
+    display: block !important;
+    min-height: 0 !important;
+    padding: 5px 6px !important;
+  }
+
+  .town-side-panel > .town-next-event-card .side-card-title,
+  .town-side-panel > .town-finale-card .side-card-title {
+    margin-bottom: 3px !important;
+  }
+
+  .town-side-panel > .town-next-event-card strong,
+  .town-side-panel > .town-finale-card .town-finale-rank {
+    display: block;
+    margin: 0 34px 2px 0 !important;
+    padding: 0 !important;
+    font-size: 11px !important;
+    line-height: 1.2 !important;
+  }
+
+  .town-side-panel > .town-next-event-card p,
+  .town-side-panel > .town-finale-card p,
+  .town-side-panel > .town-finale-card .town-finale-memory,
+  .town-side-panel > .town-finale-card .town-finale-stats {
+    display: none !important;
+  }
+
+  .town-side-panel > .town-next-event-card .town-next-day,
+  .town-side-panel > .town-finale-card .town-next-day {
+    width: 100% !important;
+    min-height: 32px !important;
+    margin: 4px 0 0 !important;
+    padding: 4px 8px !important;
+    border-radius: 16px !important;
+    font-size: 9px !important;
+  }
+
+  .town-side-panel > .town-next-event-card::before,
+  .town-side-panel > .town-finale-card::before {
+    top: 6px !important;
+    right: 6px !important;
+    width: 25px !important;
+    height: 25px !important;
+    font-size: 10px !important;
+  }
+}
