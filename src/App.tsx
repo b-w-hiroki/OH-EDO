@@ -45,6 +45,7 @@ import { ResultView } from "./components/ResultView";
 import { TownPresentation } from "./components/TownPresentation";
 import { TownSidePanel } from "./components/TownSidePanel";
 import { AreaNav } from "./components/AreaNav";
+import { DesktopStageControls } from "./components/DesktopStageControls";
 import { TownEventChoiceView, TownEventResultView } from "./components/TownEventViews";
 import {
   FireAftermathView,
@@ -1389,6 +1390,34 @@ function App() {
                   EventBus.emit("npc-interact", npc);
                 }}
               />
+
+              {state.screen === "town" && (
+                <DesktopStageControls
+                  state={state}
+                  activeTalkNpc={activeTalkNpc}
+                  onMove={(area) => {
+                    uiSound.startAmbience();
+                    uiSound.move();
+                    const label = AREAS[area].name;
+                    setAreaTransition(label);
+                    window.setTimeout(() => setAreaTransition(null), 900);
+                    setState((s) => ({ ...s, currentArea: area }));
+                    setSelectedNpcId(null);
+                    EventBus.emit("warp", area);
+                  }}
+                  onRoom={() =>
+                    setState((s) =>
+                      s.flags.room_unlocked
+                        ? { ...s, screen: "room", currentArea: "room" }
+                        : s
+                    )
+                  }
+                  onMap={openStatus}
+                  onTalk={() => {
+                    if (activeTalkNpc) EventBus.emit("npc-interact", activeTalkNpc);
+                  }}
+                />
+              )}
 
             {state.screen === "town" && (
               <p className="controls-hint">
