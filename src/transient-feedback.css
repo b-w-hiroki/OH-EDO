@@ -513,3 +513,92 @@
     font-size: 9px !important;
   }
 }
+
+
+/* ── Area travel: compact Edo sign instead of a generic toast ───── */
+.area-transition {
+  top: 50% !important;
+  min-width: 190px !important;
+  padding: 10px 24px 11px !important;
+  border: 2px solid #6f4a31 !important;
+  border-radius: 5px !important;
+  background:
+    linear-gradient(180deg, rgba(255,245,219,.98), rgba(219,190,142,.98)),
+    url("/assets/edo/ui/ui-sheet.webp") center/520px 390px !important;
+  box-shadow:
+    inset 0 0 0 3px rgba(255,248,228,.48),
+    0 4px 0 #513823,
+    0 13px 26px rgba(47,32,22,.22) !important;
+  animation: edoAreaReveal .9s ease both !important;
+}
+
+.area-transition::before,
+.area-transition::after {
+  content: "";
+  position: absolute;
+  top: -8px;
+  bottom: -8px;
+  width: 10px;
+  border: 1px solid #533923;
+  background: linear-gradient(90deg, #704a2f, #a27549 50%, #65422c);
+  box-shadow: inset 0 0 0 1px rgba(255,235,198,.12);
+}
+
+.area-transition::before {
+  left: -8px;
+  border-radius: 5px 1px 1px 5px;
+}
+
+.area-transition::after {
+  right: -8px;
+  border-radius: 1px 5px 5px 1px;
+}
+
+.area-transition span {
+  color: #8b6748 !important;
+  font-size: 8px !important;
+  letter-spacing: .16em !important;
+}
+
+.area-transition strong {
+  margin-top: 2px !important;
+  color: #7a3d2e !important;
+  font-family: var(--font-serif);
+  font-size: 20px !important;
+  letter-spacing: .10em !important;
+}
+
+@keyframes edoAreaReveal {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -44%) scale(.94);
+  }
+  18% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.02);
+  }
+  26%, 72% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -56%) scale(.98);
+  }
+}
+
+@media (max-width: 599px) {
+  .area-transition {
+    min-width: 156px !important;
+    padding: 8px 18px 9px !important;
+  }
+
+  .area-transition strong {
+    font-size: 17px !important;
+  }
+
+  .area-transition::before,
+  .area-transition::after {
+    width: 8px;
+  }
+}
