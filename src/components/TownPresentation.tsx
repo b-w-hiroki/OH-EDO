@@ -8,7 +8,6 @@ interface Props {
   onSelect: (npc: NPCId) => void;
   selectedNpc: NPCId | null;
   activeSpeaker?: string | null;
-  objective: string;
 }
 
 const AREA_BACKGROUND: Record<Exclude<AreaId, "room">, string> = {
@@ -62,6 +61,13 @@ const AREA_NOTE: Record<Exclude<AreaId, "room">, string> = {
   well: "水を汲めば、噂も汲める。井戸端は今日もにぎやか。",
   market: "声と商いが行き交えば、町はもっと面白くなる。",
   firehouse: "町を守る手は、ひとりじゃ足りない。声を掛け合っていこう。",
+};
+
+const AREA_MOTTO: Record<Exclude<AreaId, "room">, string> = {
+  nagaya: "人のつながりが、町をつくる。",
+  well: "水を汲めば、噂も汲める。",
+  market: "声と商いが、町を動かす。",
+  firehouse: "守る手は、ひとりじゃ足りない。",
 };
 
 function npcIdsForArea(state: GameState): NPCId[] {
@@ -127,7 +133,6 @@ export function TownPresentation({
   onSelect,
   selectedNpc,
   activeSpeaker,
-  objective,
 }: Props) {
   const area = state.currentArea === "room" ? "nagaya" : state.currentArea;
   const npcs = npcIdsForArea(state);
@@ -160,9 +165,9 @@ export function TownPresentation({
         <span>{AREA_BANNER[area]}</span>
       </div>
 
-      <aside className="presentation-hanging-note">
-        <small>今日の目当て</small>
-        <strong>{objective}</strong>
+      <aside className="presentation-hanging-note" aria-label="町のひとこと">
+        <small>町のひとこと</small>
+        <strong>{AREA_MOTTO[area]}</strong>
         <span>{AREA_NOTE[area]}</span>
       </aside>
 
