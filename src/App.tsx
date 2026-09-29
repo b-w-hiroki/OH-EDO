@@ -816,6 +816,7 @@ function App() {
   }, []);
 
   const startFireEvent = useCallback(() => {
+    setDayTransition(null);
     setState((s) => {
       if (
         s.day < 2 ||
