@@ -346,6 +346,13 @@ async function verifyLegacySaveMigration(page) {
   assert(migrated?.day === 10 && migrated.completedTownEventIds?.includes("day10_town_council"), "legacy save migration lost progression");
 }
 
+async function captureStatusBook(page, prefix) {
+  await page.getByRole("button", { name: /メニュー/ }).click();
+  await page.locator(".status-book").waitFor({ state: "visible", timeout: 5000 });
+  await page.screenshot({ path: `qa-artifacts/${prefix}-status-book.png`, fullPage: false });
+  await page.getByRole("button", { name: "町へ戻る" }).click();
+}
+
 async function verifyPlaytestMode(page) {
   await page.goto(`${baseURL}?playtest=1`, { waitUntil: "networkidle" });
   await page.getByRole("button", { name: /メニュー/ }).click();
@@ -375,6 +382,7 @@ async function runDesktop() {
   const accessibility = await assertAccessibilityBasics(page);
   await verifyLegacySaveMigration(page);
   await captureAreas(page, "desktop-1600");
+  await captureStatusBook(page, "desktop-1600");
   await verifyPlaytestMode(page);
   await verifyPwaOfflineRestore(page, context);
   await browser.close();
@@ -395,6 +403,7 @@ async function runMobileChromium() {
   const accessibility = await assertAccessibilityBasics(page);
   const layout = await assertMobileLayout(page);
   await captureAreas(page, "mobile-430");
+  await captureStatusBook(page, "mobile-430");
   await browser.close();
   return { day: finalState.day, provider: finalState.fireAftermath?.provider ?? finalState.lastDecision?.provider, layout, accessibility };
 }
