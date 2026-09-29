@@ -406,6 +406,8 @@ async function runIPhoneLandscapeWebKit() {
     ...iphone,
     viewport: { width: 844, height: 390 },
     screen: { width: 844, height: 390 },
+    deviceScaleFactor: 1,
+    serviceWorkers: "block",
   });
   const page = await context.newPage();
   await freshStart(page);
@@ -431,6 +433,8 @@ async function runIPhoneWebKit() {
     ...iphone,
     viewport: { width: 430, height: 932 },
     screen: { width: 430, height: 932 },
+    deviceScaleFactor: 1,
+    serviceWorkers: "block",
   });
   const page = await context.newPage();
   const finalState = await completeDay1ToDay10(page, "iphone-webkit-430", { captureMilestones: false });
