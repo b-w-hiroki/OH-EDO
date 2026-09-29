@@ -224,3 +224,203 @@
     min-width: 130px;
   }
 }
+
+
+/* ── Early chapter choices: same visual grammar as Day6+ ─────────── */
+.legacy-choice-panel {
+  width: min(820px, calc(100% - 24px));
+  max-height: min(720px, calc(100vh - 110px));
+  overflow-y: auto;
+  padding: 20px;
+  border: 2px solid #80583b;
+  border-radius: 9px;
+  background:
+    linear-gradient(180deg, rgba(255,252,241,.99), rgba(238,223,193,.99)),
+    url("/assets/edo/ui/ui-sheet.webp") center/560px 420px;
+  box-shadow:
+    inset 0 0 0 4px rgba(255,248,226,.64),
+    0 5px 0 #61422e,
+    0 17px 38px rgba(48,34,24,.24);
+}
+
+.legacy-choice-panel > h2,
+.legacy-choice-panel .area-name {
+  margin: 0 0 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #d0b58a;
+  color: #4a3528;
+  font-family: var(--font-serif);
+  font-size: 27px;
+}
+
+.legacy-choice-panel .panel-desc,
+.legacy-choice-panel .area-desc {
+  margin: 0 0 12px;
+  color: #675343;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.legacy-choice-panel .fire-choice-list {
+  gap: 10px;
+}
+
+.legacy-choice-panel .fire-choice,
+.legacy-choice-panel .legacy-choice-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 150px;
+  padding: 16px;
+  border: 1px solid #c4a06e;
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255,252,241,.98), rgba(239,223,192,.98)),
+    url("/assets/edo/ui/ui-sheet.webp") center/520px 390px;
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.85),
+    inset 0 -7px 13px rgba(104,72,38,.05),
+    0 3px 0 #a98353,
+    0 7px 14px rgba(70,51,33,.08);
+}
+
+.legacy-choice-panel .fire-choice::after,
+.legacy-choice-panel .legacy-choice-card::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  pointer-events: none;
+  border: 1px solid rgba(119,84,47,.10);
+  border-radius: 4px;
+}
+
+.legacy-choice-panel .fire-choice:hover,
+.legacy-choice-panel .fire-choice:focus-visible,
+.legacy-choice-panel .legacy-choice-card:hover,
+.legacy-choice-panel .legacy-choice-card:focus-within {
+  border-color: #b76147;
+  background:
+    linear-gradient(180deg, rgba(255,249,232,.99), rgba(242,213,164,.99)),
+    url("/assets/edo/ui/ui-sheet.webp") center/520px 390px;
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.88),
+    0 4px 0 #9d573f,
+    0 10px 18px rgba(100,60,38,.11);
+}
+
+.legacy-choice-panel .fire-choice > strong,
+.legacy-choice-panel .legacy-choice-card h3 {
+  position: relative;
+  z-index: 1;
+  margin: 0 0 5px;
+  color: #69422c;
+  font-family: var(--font-serif);
+  font-size: 17px;
+  letter-spacing: .025em;
+}
+
+.legacy-choice-panel .fire-choice > span,
+.legacy-choice-panel .legacy-choice-card > p {
+  position: relative;
+  z-index: 1;
+  color: #675546;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.legacy-choice-panel .choice-impact,
+.legacy-choice-panel .choice-effects,
+.legacy-choice-panel .favored-reputation {
+  position: relative;
+  z-index: 1;
+}
+
+.legacy-choice-panel .choice-effects {
+  margin-top: auto;
+  border-style: solid;
+  border-color: #d2b78e;
+  background: rgba(255,249,235,.72);
+  color: #80563c;
+  font-family: var(--font-ui);
+  font-size: 9px;
+}
+
+.jobview.legacy-choice-panel .area-card {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.jobview.legacy-choice-panel .choice-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.jobview.legacy-choice-panel .legacy-choice-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.jobview.legacy-choice-panel .legacy-choice-card .primary {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  margin-top: 9px;
+  border-radius: 7px;
+}
+
+@media (max-width: 599px) {
+  .legacy-choice-panel {
+    width: 100%;
+    max-height: 100%;
+    padding: 11px;
+    border-radius: 8px;
+  }
+
+  .legacy-choice-panel > h2,
+  .legacy-choice-panel .area-name {
+    margin-bottom: 6px;
+    font-size: 20px;
+  }
+
+  .legacy-choice-panel .panel-desc,
+  .legacy-choice-panel .area-desc {
+    margin-bottom: 7px;
+    font-size: 9px;
+    line-height: 1.45;
+  }
+
+  .legacy-choice-panel .fire-choice-list,
+  .jobview.legacy-choice-panel .choice-list {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .legacy-choice-panel .fire-choice,
+  .legacy-choice-panel .legacy-choice-card {
+    min-height: 0;
+    padding: 9px 10px;
+  }
+
+  .legacy-choice-panel .fire-choice > strong,
+  .legacy-choice-panel .legacy-choice-card h3 {
+    margin-bottom: 3px;
+    font-size: 13px;
+  }
+
+  .legacy-choice-panel .fire-choice > span,
+  .legacy-choice-panel .legacy-choice-card > p {
+    margin: 0;
+    font-size: 9px;
+    line-height: 1.35;
+  }
+
+  .jobview.legacy-choice-panel .legacy-choice-card .primary {
+    min-height: 38px;
+    margin-top: 5px;
+  }
+}
