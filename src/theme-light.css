@@ -7514,3 +7514,382 @@ body::before {
     right: -5px;
   }
 }
+
+
+/* ── Composition balance pass: scenery first, supporting UI second ── */
+@media (min-width: 1181px) {
+  .world-layout {
+    grid-template-columns: minmax(0, 1fr) 338px !important;
+    gap: 8px !important;
+  }
+
+  .town-side-panel {
+    gap: 5px !important;
+  }
+
+  .town-side-panel > .side-card:first-child {
+    min-height: 260px !important;
+  }
+
+  .town-side-panel > .town-flavor-card {
+    min-height: 78px !important;
+  }
+
+  .town-side-panel > .yesterday-card {
+    min-height: 82px !important;
+  }
+
+  .town-side-panel > .rumor-card {
+    min-height: 122px !important;
+  }
+
+  .reference-action-dock {
+    grid-template-columns: minmax(0, 1fr) 184px !important;
+  }
+
+  .reference-talk-cta {
+    min-height: 66px !important;
+  }
+
+  .reference-area-nav button {
+    min-height: 66px !important;
+  }
+
+  .presentation-stage {
+    aspect-ratio: 16 / 8.7 !important;
+  }
+}
+
+@media (max-width: 599px) {
+  /* Header: one compact game chrome band, not two stacked dashboards. */
+  .reference-header {
+    grid-template-columns: 74px minmax(0, 1fr) 38px !important;
+    min-height: 66px !important;
+    gap: 5px !important;
+    margin-bottom: 4px !important;
+  }
+
+  .reference-logo {
+    min-width: 70px !important;
+    min-height: 42px !important;
+    padding-inline: 3px !important;
+  }
+
+  .reference-logo .logo-oh {
+    font-size: 10px !important;
+  }
+
+  .reference-logo .logo-edo {
+    font-size: 20px !important;
+  }
+
+  .reference-logo::after {
+    width: 19px !important;
+    height: 19px !important;
+    font-size: 7px !important;
+    right: -1px !important;
+    bottom: -5px !important;
+  }
+
+  .reference-day-card {
+    min-height: 62px !important;
+    padding: 5px 8px !important;
+    gap: 3px 6px !important;
+    font-size: 10px !important;
+    line-height: 1.15 !important;
+  }
+
+  .reference-day-card b {
+    font-size: 13px !important;
+  }
+
+  .day-weather {
+    font-size: 15px !important;
+  }
+
+  .reference-location {
+    padding-top: 3px !important;
+    font-size: 10px !important;
+  }
+
+  .reference-header-actions .ghost {
+    width: 38px !important;
+    min-width: 38px !important;
+    min-height: 42px !important;
+  }
+
+  .reference-hud-row {
+    margin-bottom: 4px !important;
+  }
+
+  /* Player HUD: compact identity + four crest stats in one shallow strip. */
+  .mobile-player-summary {
+    grid-template-columns: 112px minmax(0, 1fr) !important;
+    gap: 4px !important;
+    min-height: 66px !important;
+    padding: 5px 6px !important;
+    border-radius: 8px !important;
+  }
+
+  .mobile-player-main {
+    grid-template-columns: 38px minmax(0, 1fr) !important;
+    gap: 5px !important;
+  }
+
+  .mobile-player-portrait {
+    width: 38px !important;
+    height: 38px !important;
+    border-width: 2px !important;
+  }
+
+  .mobile-player-name {
+    margin: 0 0 1px !important;
+    font-size: 12px !important;
+    line-height: 1.05 !important;
+  }
+
+  .mobile-profile-row {
+    grid-template-columns: 20px minmax(0, 1fr) 13px !important;
+    gap: 2px !important;
+    margin: 0 !important;
+    font-size: 7px !important;
+  }
+
+  .mobile-profile-meter {
+    height: 4px !important;
+  }
+
+  .mobile-money {
+    margin-top: 1px !important;
+    font-size: 7px !important;
+  }
+
+  .mobile-money strong {
+    font-size: 9px !important;
+  }
+
+  .mobile-skill-grid {
+    align-items: stretch;
+    gap: 3px !important;
+  }
+
+  .mobile-skill-card {
+    min-height: 52px !important;
+    padding: 3px 1px !important;
+    border-radius: 7px !important;
+  }
+
+  .mobile-skill-card > span {
+    width: 22px !important;
+    height: 22px !important;
+    font-size: 8px !important;
+  }
+
+  .mobile-skill-card small {
+    display: none !important;
+  }
+
+  .mobile-skill-card strong {
+    margin-top: 2px !important;
+    font-size: 8px !important;
+  }
+
+  /* Give the painted town more of the first screen. */
+  .presentation-stage {
+    aspect-ratio: 1 / .78 !important;
+    min-height: 0 !important;
+  }
+
+  .town-presentation.area-nagaya .presentation-player,
+  .town-presentation.area-market .presentation-player,
+  .town-presentation.area-firehouse .presentation-player {
+    left: -5% !important;
+    width: 60% !important;
+    height: 111% !important;
+    bottom: -14% !important;
+  }
+
+  .town-presentation.area-nagaya .presentation-primary.art-landlord {
+    right: -4% !important;
+    width: 57% !important;
+    height: 107% !important;
+    bottom: -11% !important;
+  }
+
+  .town-presentation.area-market .presentation-primary.art-fishmonger,
+  .town-presentation.area-market .presentation-primary.art-newsman,
+  .town-presentation.area-firehouse .presentation-primary.art-firechief {
+    right: -3% !important;
+    width: 57% !important;
+    height: 107% !important;
+    bottom: -11% !important;
+  }
+
+  .town-presentation.area-well .presentation-player {
+    left: -5% !important;
+    width: 60% !important;
+    height: 111% !important;
+    bottom: -14% !important;
+  }
+
+  .town-presentation.area-well .presentation-primary.art-child {
+    right: 2% !important;
+    width: 39% !important;
+    height: 68% !important;
+    bottom: -3% !important;
+  }
+
+  .presentation-hanging-note {
+    width: 88px !important;
+    min-height: 58px !important;
+    padding: 5px 6px !important;
+  }
+
+  .presentation-hanging-note strong {
+    font-size: 8px !important;
+  }
+
+  .presentation-speech-bubble {
+    top: 38% !important;
+    max-width: 86px !important;
+    padding: 5px 7px !important;
+    font-size: 9px !important;
+  }
+
+  /* Social information becomes one horizontal character strip, then rumors. */
+  .town-side-panel {
+    display: block !important;
+  }
+
+  .town-side-panel > .side-card {
+    width: 100% !important;
+    min-height: 0 !important;
+    margin-bottom: 6px !important;
+  }
+
+  .town-side-panel > .side-card:first-child {
+    padding: 6px 7px 7px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-list {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 4px !important;
+    overflow: visible !important;
+    padding: 0 !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-person {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto !important;
+    justify-items: center !important;
+    min-height: 78px !important;
+    padding: 2px 1px 3px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-avatar {
+    width: 44px !important;
+    height: 44px !important;
+    margin: 0 0 2px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-copy strong {
+    font-size: 9px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .relation-pill {
+    margin-top: 1px !important;
+    font-size: 6px !important;
+  }
+
+  .town-side-panel > .rumor-card {
+    padding: 6px 8px !important;
+    min-height: 0 !important;
+  }
+
+  .town-side-panel .side-card-title {
+    min-height: 23px !important;
+    margin-bottom: 4px !important;
+    padding: 2px 5px 3px 7px !important;
+    font-size: 10px !important;
+  }
+
+  .rumor-list {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 0 !important;
+  }
+
+  .rumor-list li {
+    min-height: 26px !important;
+    padding: 3px 0 !important;
+    font-size: 8px !important;
+    line-height: 1.3 !important;
+  }
+
+  .rumor-list li:nth-child(n+3) {
+    display: none !important;
+  }
+
+  /* CTA supports the scene instead of dominating it. */
+  .reference-action-dock {
+    gap: 5px !important;
+    margin-top: 5px !important;
+  }
+
+  .reference-talk-cta,
+  .reference-action-dock.is-dialogue .reference-talk-cta {
+    width: 58% !important;
+    min-height: 58px !important;
+    border-radius: 29px !important;
+  }
+
+  .reference-talk-cta .talk-bubble {
+    width: 38px !important;
+    height: 38px !important;
+  }
+
+  .reference-talk-cta strong {
+    font-size: 22px !important;
+  }
+
+  .reference-talk-cta small {
+    font-size: 8px !important;
+  }
+
+  .reference-area-nav {
+    gap: 3px !important;
+  }
+
+  .reference-area-nav button,
+  .reference-area-nav:has(button:nth-child(4):not(:disabled)) button {
+    min-height: 54px !important;
+    padding: 3px 2px !important;
+  }
+
+  .area-nav-icon,
+  .reference-area-nav:has(button:nth-child(4):not(:disabled)) .area-nav-icon {
+    width: 25px !important;
+    height: 25px !important;
+  }
+
+  .area-nav-icon svg,
+  .reference-area-nav:has(button:nth-child(4):not(:disabled)) .area-nav-icon svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .area-nav-copy strong,
+  .reference-area-nav:has(button:nth-child(4):not(:disabled)) .area-nav-copy strong {
+    font-size: 9px !important;
+  }
+
+  .area-nav-copy small {
+    display: none !important;
+  }
+
+  .logstrip {
+    display: none !important;
+  }
+}
