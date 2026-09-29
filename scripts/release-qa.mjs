@@ -86,7 +86,14 @@ async function talk(page, name) {
   await card.waitFor({ state: "visible", timeout: 5000 });
   await card.click();
   await page.waitForTimeout(80);
-  await page.locator(".reference-talk-cta:visible").click();
+  const dockTalk = page.locator(".reference-talk-cta:visible");
+  if (await dockTalk.count()) {
+    await dockTalk.click();
+  } else {
+    const railTalk = card.locator(".nearby-talk:visible");
+    assert((await railTalk.count()) > 0, `no visible talk affordance for ${name}`);
+    await railTalk.click();
+  }
   await page.waitForSelector(".mock-dialog:visible", { timeout: 5000 });
   await advanceDialogs(page);
 }
