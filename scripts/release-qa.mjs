@@ -454,6 +454,20 @@ async function runDesktop() {
   const page = await context.newPage();
   const finalState = await completeDay1ToDay10(page, "desktop-1600");
   const accessibility = await assertAccessibilityBasics(page);
+  const mockStructure = await page.evaluate(() => {
+    const minimap = document.querySelector(".stage-minimap");
+    const talk = document.querySelector(".stage-talk-prompt");
+    const dock = document.querySelector(".reference-action-dock");
+    const visible = (el) => Boolean(el) && getComputedStyle(el).display !== "none" && el.getBoundingClientRect().width > 0;
+    return {
+      minimapVisible: visible(minimap),
+      talkVisible: visible(talk),
+      legacyDockVisible: visible(dock),
+    };
+  });
+  assert(mockStructure.minimapVisible, `desktop mock minimap missing: ${JSON.stringify(mockStructure)}`);
+  assert(mockStructure.talkVisible, `desktop in-scene talk control missing: ${JSON.stringify(mockStructure)}`);
+  assert(!mockStructure.legacyDockVisible, `desktop legacy travel dock still visible: ${JSON.stringify(mockStructure)}`);
   await verifyLegacySaveMigration(page);
   await captureAreas(page, "desktop-1600");
   await captureStatusBook(page, "desktop-1600");
