@@ -443,8 +443,10 @@ async function runIPhoneWebKit() {
   return { day: finalState.day, layout, accessibility };
 }
 
-const desktop = await runDesktop();
-const mobile = await runMobileChromium();
+// Run WebKit first while the runner is fresh. Long Chromium through-plays can
+// leave enough transient memory pressure to destabilize WebKit on CI.
 const iphone = await runIPhoneWebKit();
 const iphoneLandscape = await runIPhoneLandscapeWebKit();
+const desktop = await runDesktop();
+const mobile = await runMobileChromium();
 console.log(JSON.stringify({ ok: true, desktop, mobile, iphone, iphoneLandscape }, null, 2));
