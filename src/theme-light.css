@@ -8405,3 +8405,334 @@ body::before {
     margin-top: 0;
   }
 }
+
+
+/* ── Approved desktop mock structure parity ─────────────────────── */
+.desktop-stage-controls {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  /* Match the approved mock's hierarchy: header → scene+rail → no bottom tab bar. */
+  .desktop-objective-strip {
+    display: none !important;
+  }
+
+  .world-layout {
+    grid-template-columns: minmax(0, 1fr) 360px !important;
+    gap: 10px !important;
+    align-items: stretch;
+  }
+
+  .presentation-stage {
+    position: relative;
+    aspect-ratio: 16 / 9 !important;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .desktop-stage-controls {
+    position: absolute;
+    inset: 0;
+    z-index: 16;
+    display: block;
+    pointer-events: none;
+  }
+
+  .stage-minimap {
+    position: absolute;
+    left: 12px;
+    bottom: 12px;
+    width: 292px;
+    height: 160px;
+    overflow: hidden;
+    border: 2px solid rgba(116,88,55,.76);
+    border-radius: 10px;
+    background:
+      linear-gradient(180deg, rgba(255,249,230,.96), rgba(229,215,178,.96)),
+      url("/assets/edo/ui/ui-sheet.webp") center/520px 390px;
+    box-shadow:
+      inset 0 0 0 3px rgba(255,248,226,.54),
+      0 7px 18px rgba(48,35,24,.22);
+    pointer-events: auto;
+  }
+
+  .stage-minimap-title {
+    position: absolute;
+    left: 8px;
+    top: 7px;
+    z-index: 4;
+    padding: 4px 10px;
+    border-radius: 5px;
+    background: rgba(45,65,77,.92);
+    color: #fff7e8;
+    font-family: var(--font-ui);
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: .05em;
+  }
+
+  .stage-minimap-canvas {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 18% 72%, rgba(114,170,109,.22) 0 16%, transparent 17%),
+      radial-gradient(circle at 72% 28%, rgba(114,170,109,.20) 0 18%, transparent 19%),
+      linear-gradient(35deg, transparent 0 42%, rgba(176,143,91,.24) 43% 47%, transparent 48% 100%),
+      linear-gradient(-24deg, transparent 0 46%, rgba(176,143,91,.22) 47% 51%, transparent 52% 100%),
+      linear-gradient(180deg, #e8dfbd, #d9cda5);
+  }
+
+  .map-river {
+    position: absolute;
+    left: -8%;
+    top: 44%;
+    width: 118%;
+    height: 20px;
+    transform: rotate(-9deg);
+    border: 1px solid rgba(75,128,154,.32);
+    background: linear-gradient(180deg, rgba(135,192,214,.56), rgba(91,155,185,.50));
+    border-radius: 50%;
+    opacity: .82;
+  }
+
+  .map-road {
+    position: absolute;
+    height: 7px;
+    border-radius: 999px;
+    background: rgba(173,132,80,.32);
+    box-shadow: inset 0 0 0 1px rgba(119,86,49,.12);
+  }
+
+  .road-a {
+    left: 10%;
+    top: 54%;
+    width: 78%;
+    transform: rotate(8deg);
+  }
+
+  .road-b {
+    left: 29%;
+    top: 19%;
+    width: 56%;
+    transform: rotate(73deg);
+  }
+
+  .stage-map-pin {
+    position: absolute;
+    z-index: 5;
+    display: grid;
+    grid-template-columns: auto auto;
+    align-items: center;
+    gap: 3px;
+    transform: translate(-50%, -50%);
+    min-height: 24px;
+    padding: 2px 5px;
+    border: 0;
+    border-radius: 5px;
+    background: rgba(255,250,236,.78);
+    color: #4d443a;
+    box-shadow: 0 1px 4px rgba(54,41,28,.09);
+    font-family: var(--font-ui);
+    white-space: nowrap;
+    pointer-events: auto;
+  }
+
+  .stage-map-pin > span {
+    color: #5f86a3;
+    font-size: 15px;
+    line-height: 1;
+  }
+
+  .stage-map-pin > small {
+    font-size: 9px;
+    font-weight: 800;
+  }
+
+  .stage-map-pin.active {
+    border: 1px solid #ce5b48;
+    background: rgba(255,246,226,.94);
+    color: #6d3d2e;
+  }
+
+  .stage-map-pin.active > span {
+    color: #df5e4b;
+  }
+
+  .stage-map-pin:disabled {
+    opacity: .42;
+  }
+
+  .stage-map-pin.map-open {
+    border: 1px solid #a7a092;
+    background: rgba(246,241,228,.92);
+  }
+
+  .stage-talk-prompt {
+    position: absolute;
+    left: 50%;
+    bottom: 18px;
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
+    align-items: center;
+    column-gap: 9px;
+    min-width: 160px;
+    min-height: 58px;
+    transform: translateX(-50%);
+    padding: 7px 16px;
+    border: 1px solid #b79b71;
+    border-radius: 8px;
+    background: rgba(255,250,238,.95);
+    color: #3c3731;
+    box-shadow:
+      inset 0 1px rgba(255,255,255,.85),
+      0 5px 14px rgba(47,34,24,.16);
+    font-family: var(--font-ui);
+    pointer-events: auto;
+  }
+
+  .stage-talk-key {
+    grid-row: 1 / 3;
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid #43525d;
+    border-radius: 6px;
+    background: #344551;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 900;
+  }
+
+  .stage-talk-prompt strong {
+    align-self: end;
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .stage-talk-prompt small {
+    color: #8b7562;
+    font-size: 9px;
+    line-height: 1.1;
+  }
+
+  .stage-talk-prompt:disabled {
+    opacity: .55;
+  }
+
+  .stage-touch-controls {
+    position: absolute;
+    right: 20px;
+    bottom: 12px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    pointer-events: none;
+  }
+
+  .stage-dpad {
+    display: grid;
+    place-items: center;
+    width: 96px;
+    height: 96px;
+    border: 2px solid rgba(255,255,255,.84);
+    border-radius: 50%;
+    background:
+      linear-gradient(45deg, transparent 42%, rgba(255,255,255,.16) 43% 57%, transparent 58%),
+      linear-gradient(-45deg, transparent 42%, rgba(255,255,255,.16) 43% 57%, transparent 58%),
+      rgba(48,64,76,.90);
+    color: #fff;
+    box-shadow: 0 7px 15px rgba(38,31,26,.22);
+    font-size: 24px;
+  }
+
+  .stage-action-bubble {
+    display: grid;
+    place-items: center;
+    width: 104px;
+    height: 104px;
+    overflow: hidden;
+    border: 3px solid rgba(255,255,255,.88);
+    border-radius: 50%;
+    background: linear-gradient(180deg, #eb6b58, #cf493f);
+    color: #fff;
+    box-shadow: 0 7px 16px rgba(102,44,37,.25);
+    font-size: 20px;
+  }
+
+  .stage-action-bubble img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 8%;
+    transform: scale(1.28);
+  }
+
+  /* Desktop mock does not use a large travel dock beneath the world. */
+  .reference-action-dock {
+    display: none !important;
+  }
+
+  .logstrip {
+    margin-top: 7px !important;
+    min-height: 34px;
+    border-width: 1px;
+    border-radius: 6px !important;
+    box-shadow: none !important;
+    background: rgba(255,249,235,.92) !important;
+  }
+
+  /* The approved right rail is people → memory/rumor → town mood. */
+  .town-side-panel {
+    display: flex !important;
+    flex-direction: column;
+    gap: 8px !important;
+  }
+
+  .town-side-panel > .town-flavor-card {
+    display: none !important;
+  }
+
+  .town-side-panel > .side-card:first-child {
+    order: 1;
+    min-height: 306px !important;
+  }
+
+  .town-side-panel > .town-finale-card,
+  .town-side-panel > .town-next-event-card,
+  .town-side-panel > .yesterday-card {
+    order: 2;
+  }
+
+  .town-side-panel > .rumor-card {
+    order: 3;
+    min-height: 158px !important;
+  }
+
+  .town-side-panel > .town-mood-card {
+    order: 4;
+    display: block !important;
+    min-height: 154px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-person {
+    min-height: 60px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-avatar {
+    width: 52px !important;
+    height: 52px !important;
+  }
+
+  .rumor-list li {
+    min-height: 34px;
+  }
+}
+
+@media (max-width: 899px) {
+  .desktop-stage-controls {
+    display: none !important;
+  }
+}
