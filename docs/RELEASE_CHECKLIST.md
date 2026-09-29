@@ -58,3 +58,24 @@
 - `main`: 0.2系開発線。Day1〜Day10。
 - 0.1.0正式tagは実機QA / Pages / 初見テストが完了した時点でrc3から作成する。
 - 0.2系正式化はDay1〜Day10の実機・初見QA完了後に判断する。
+
+
+## Visual parity gates
+
+Automated browser captures must cover both desktop 1600×900 and mobile 430×932 unless noted.
+
+- [ ] Title screen
+- [ ] Normal town world
+- [ ] NPC dialogue
+- [ ] Day1 job choice / result
+- [ ] Fire choice / aftermath
+- [ ] Patrol choice / result
+- [ ] Festival choice / result
+- [ ] Day5 finale
+- [ ] Day6–Day10 choice panels
+- [ ] Status / 覚え書き
+- [ ] Room interior and exit control
+- [ ] WebKit iPhone-class portrait world/dialogue
+- [ ] WebKit iPhone-class 844×390 landscape world/dialogue
+- [ ] No transient day/rank overlays obscuring captured decision/result states
+- [ ] No horizontal overflow and all primary actions remain reachable
