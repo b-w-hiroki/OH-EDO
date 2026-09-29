@@ -502,6 +502,7 @@ async function runIPhoneLandscapeWebKit() {
   assert(landscapeBounds, "landscape bounds missing");
   assert(landscapeBounds.stageBottom <= landscapeBounds.viewportHeight + 2, `landscape stage exceeds viewport: ${JSON.stringify(landscapeBounds)}`);
   assert(landscapeBounds.dockTop < landscapeBounds.viewportHeight, `landscape action dock is below fold: ${JSON.stringify(landscapeBounds)}`);
+  assert(landscapeBounds.dockBottom <= landscapeBounds.viewportHeight + 2, `landscape action dock is clipped: ${JSON.stringify(landscapeBounds)}`);
   await page.screenshot({ path: "qa-artifacts/iphone-webkit-landscape-world.png", fullPage: false });
   const talk = page.locator(".reference-talk-cta:visible");
   if (await talk.count()) {
