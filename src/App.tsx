@@ -1376,7 +1376,6 @@ function App() {
               <TownPresentation
                 key={state.currentArea}
                 state={state}
-                objective={currentObjective}
                 selectedNpc={activeTalkNpc}
                 activeSpeaker={
                   state.screen === "dialog" && state.dialog
