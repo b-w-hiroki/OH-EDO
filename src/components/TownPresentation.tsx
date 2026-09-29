@@ -64,6 +64,13 @@ const AREA_NOTE: Record<Exclude<AreaId, "room">, string> = {
   firehouse: "町を守る手は、ひとりじゃ足りない。声を掛け合っていこう。",
 };
 
+const AREA_MOTTO: Record<Exclude<AreaId, "room">, string> = {
+  nagaya: "人のつながりが、町をつくる。",
+  well: "水を汲めば、噂も汲める。",
+  market: "声と商いが、町を動かす。",
+  firehouse: "守る手は、ひとりじゃ足りない。",
+};
+
 function npcIdsForArea(state: GameState): NPCId[] {
   switch (state.currentArea) {
     case "market":
@@ -160,9 +167,9 @@ export function TownPresentation({
         <span>{AREA_BANNER[area]}</span>
       </div>
 
-      <aside className="presentation-hanging-note">
-        <small>今日の目当て</small>
-        <strong>{objective}</strong>
+      <aside className="presentation-hanging-note" aria-label="町のひとこと">
+        <small>町のひとこと</small>
+        <strong>{AREA_MOTTO[area]}</strong>
         <span>{AREA_NOTE[area]}</span>
       </aside>
 
