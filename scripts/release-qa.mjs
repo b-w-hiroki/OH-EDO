@@ -496,6 +496,17 @@ async function runIPhoneLandscapeWebKit() {
   await freshStart(page);
   const accessibility = await assertAccessibilityBasics(page);
   const layout = await assertMobileLayout(page);
+  const landscapeBounds = await page.evaluate(() => {
+    const stage = document.querySelector(".presentation-stage")?.getBoundingClientRect();
+    const dock = document.querySelector(".reference-action-dock")?.getBoundingClientRect();
+    return stage && dock
+      ? { viewportHeight: window.innerHeight, stageTop: stage.top, stageBottom: stage.bottom, dockTop: dock.top, dockBottom: dock.bottom }
+      : null;
+  });
+  assert(landscapeBounds, "landscape bounds missing");
+  assert(landscapeBounds.stageBottom <= landscapeBounds.viewportHeight + 2, `landscape stage exceeds viewport: ${JSON.stringify(landscapeBounds)}`);
+  assert(landscapeBounds.dockTop < landscapeBounds.viewportHeight, `landscape action dock is below fold: ${JSON.stringify(landscapeBounds)}`);
+  assert(landscapeBounds.dockBottom <= landscapeBounds.viewportHeight + 2, `landscape action dock is clipped: ${JSON.stringify(landscapeBounds)}`);
   await page.screenshot({ path: "qa-artifacts/iphone-webkit-landscape-world.png", fullPage: false });
   const talk = page.locator(".reference-talk-cta:visible");
   if (await talk.count()) {
