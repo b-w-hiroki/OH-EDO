@@ -146,3 +146,17 @@ Pages環境がGitHub側で有効になると公開URLへ反映される。
 - audio preference保存をSafari private storageでも安全化
 - production smokeへJS/CSS bundle budgetを追加
 - mainの次章実装はgeneric town-event engineに統一
+
+
+## 2026-09-29 Visual Balance Pass
+
+- Main town composition rebalanced so scenery and characters lead over HUD/chrome
+- Mobile header/player HUD compressed; people/rumor/action hierarchy simplified
+- Day1–Day5 choice and result screens aligned with Day6+ Edo paper/wood UI
+- Title screen aligned with in-game indigo/vermillion identity
+- Status menu rebuilt as an in-world 覚え書き notebook; dev logs only in playtest mode
+- Day5 finale promoted to a chapter milestone treatment
+- Area travel changed from generic toast to Edo sign transition
+- Mobile room controls constrained inside the scenic stage
+- Screenshot QA expanded to title, choices, results, status notebook, room, Day5 finale, Day6–Day10, and WebKit portrait/landscape
+- Full physical iPhone Day1–Day10 remains an external release gate
