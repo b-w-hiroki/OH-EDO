@@ -277,6 +277,28 @@ async function captureAreas(page, prefix) {
   await page.waitForSelector(".room-panel", { timeout: 5000 });
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.waitForTimeout(300);
+  const roomBounds = await page.evaluate(() => {
+    const panel = document.querySelector(".room-panel")?.getBoundingClientRect();
+    const content = document.querySelector(".room-content")?.getBoundingClientRect();
+    const stage = document.querySelector(".presentation-stage")?.getBoundingClientRect();
+    return panel && content && stage
+      ? {
+          viewportWidth: window.innerWidth,
+          panelTop: panel.top,
+          panelBottom: panel.bottom,
+          contentTop: content.top,
+          contentBottom: content.bottom,
+          stageTop: stage.top,
+          stageBottom: stage.bottom,
+        }
+      : null;
+  });
+  assert(roomBounds, "room bounds missing");
+  if (roomBounds.viewportWidth <= 599) {
+    assert(roomBounds.panelTop >= roomBounds.stageTop - 2, `room panel clipped above stage: ${JSON.stringify(roomBounds)}`);
+    assert(roomBounds.panelBottom <= roomBounds.stageBottom + 2, `room panel exceeds stage: ${JSON.stringify(roomBounds)}`);
+    assert(roomBounds.contentBottom <= roomBounds.stageBottom + 2, `room controls exceed stage: ${JSON.stringify(roomBounds)}`);
+  }
   await page.screenshot({ path: `qa-artifacts/${prefix}-room.png`, fullPage: false });
   await page.getByRole("button", { name: "町へ出る" }).evaluate((el) => el.click());
 
