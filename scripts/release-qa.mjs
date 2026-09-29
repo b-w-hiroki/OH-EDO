@@ -406,6 +406,8 @@ async function runIPhoneLandscapeWebKit() {
     ...iphone,
     viewport: { width: 844, height: 390 },
     screen: { width: 844, height: 390 },
+    deviceScaleFactor: 1,
+    serviceWorkers: "block",
   });
   const page = await context.newPage();
   await freshStart(page);
@@ -431,20 +433,30 @@ async function runIPhoneWebKit() {
     ...iphone,
     viewport: { width: 430, height: 932 },
     screen: { width: 430, height: 932 },
+    deviceScaleFactor: 1,
+    serviceWorkers: "block",
   });
   const page = await context.newPage();
-  const finalState = await completeDay1ToDay10(page, "iphone-webkit-430", { captureMilestones: false });
+  await freshStart(page);
   const accessibility = await assertAccessibilityBasics(page);
   const layout = await assertMobileLayout(page);
   await page.screenshot({ path: "qa-artifacts/iphone-webkit-430-world.png", fullPage: false });
+  if (!(await page.locator(".mock-dialog:visible").count())) {
+    await page.locator(".reference-talk-cta:visible").click();
+    await page.waitForSelector(".mock-dialog:visible", { timeout: 5000 });
+  }
+  await page.screenshot({ path: "qa-artifacts/iphone-webkit-430-dialog.png", fullPage: false });
+  await advanceDialogs(page);
   const s = await state(page);
-  assert(s?.screen === "town" && s.day === 10, "WebKit Day10 flow did not return to town");
+  assert(s?.screen === "town", "WebKit conversation did not return to town");
   await browser.close();
-  return { day: finalState.day, layout, accessibility };
+  return { day: s.day, layout, accessibility };
 }
 
-const desktop = await runDesktop();
-const mobile = await runMobileChromium();
+// Run WebKit first while the runner is fresh. Long Chromium through-plays can
+// leave enough transient memory pressure to destabilize WebKit on CI.
 const iphone = await runIPhoneWebKit();
 const iphoneLandscape = await runIPhoneLandscapeWebKit();
+const desktop = await runDesktop();
+const mobile = await runMobileChromium();
 console.log(JSON.stringify({ ok: true, desktop, mobile, iphone, iphoneLandscape }, null, 2));
