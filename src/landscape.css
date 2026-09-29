@@ -1,0 +1,402 @@
+/* ── Low-height landscape: keep scene, people and controls in one viewport ── */
+@media (min-width: 600px) and (max-height: 500px) {
+  .app {
+    max-width: none;
+    padding: 5px 7px 8px;
+  }
+
+  .reference-header {
+    grid-template-columns: 104px minmax(280px, 1fr) auto;
+    min-height: 48px;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+
+  .reference-logo-wrap {
+    min-height: 46px;
+  }
+
+  .reference-logo {
+    min-width: 96px;
+    min-height: 40px;
+    font-size: 25px;
+  }
+
+  .reference-logo::after {
+    width: 21px;
+    height: 21px;
+    font-size: 7px;
+  }
+
+  .reference-logo-wrap small,
+  .desktop-header-status,
+  .desktop-objective-strip,
+  .reference-hud-row {
+    display: none !important;
+  }
+
+  .reference-day-card {
+    min-height: 46px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    gap: 4px 7px;
+    font-size: 10px;
+  }
+
+  .reference-header-actions {
+    gap: 5px;
+  }
+
+  .reference-header-actions .ghost,
+  .reference-header-actions .sound-toggle,
+  .reference-header-actions .reset-compact {
+    min-height: 42px;
+    padding: 5px 10px;
+  }
+
+  .world-layout {
+    grid-template-columns: minmax(0, 1fr) 236px !important;
+    gap: 6px !important;
+    align-items: stretch;
+  }
+
+  .presentation-stage {
+    height: 228px;
+    aspect-ratio: auto !important;
+    min-height: 228px;
+  }
+
+  .presentation-hanging-note {
+    top: 8px !important;
+    left: 8px !important;
+    width: 108px !important;
+    min-height: 58px !important;
+    padding: 5px 7px !important;
+  }
+
+  .presentation-hanging-note small {
+    font-size: 7px !important;
+  }
+
+  .presentation-hanging-note strong {
+    font-size: 9px !important;
+    line-height: 1.3 !important;
+  }
+
+  .town-presentation .presentation-player {
+    left: 7% !important;
+    width: 34% !important;
+    height: 108% !important;
+    bottom: -14% !important;
+  }
+
+  .town-presentation .presentation-primary {
+    right: 5% !important;
+    width: 34% !important;
+    height: 105% !important;
+    bottom: -12% !important;
+  }
+
+  .town-presentation.area-well .presentation-primary.art-child {
+    right: 7% !important;
+    width: 25% !important;
+    height: 69% !important;
+    bottom: -3% !important;
+  }
+
+  .presentation-speech-bubble {
+    top: 34% !important;
+    right: 29% !important;
+    max-width: 96px;
+    padding: 4px 6px;
+    font-size: 8px;
+  }
+
+  .controls-hint {
+    display: none !important;
+  }
+
+  .town-side-panel {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 5px !important;
+    max-height: 228px;
+    overflow: hidden;
+  }
+
+  .town-side-panel > .side-card {
+    min-height: 0 !important;
+    padding: 5px 6px !important;
+    margin: 0 !important;
+  }
+
+  .town-side-panel > .side-card:first-child {
+    display: block !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-list {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 3px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-person {
+    min-height: 48px !important;
+    grid-template-columns: 34px minmax(0,1fr) !important;
+    padding: 2px 3px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-person:nth-child(n+3) {
+    display: none !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-avatar {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-copy strong {
+    font-size: 8px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .npc-subtitle,
+  .town-side-panel > .side-card:first-child .relation-pill,
+  .town-side-panel > .side-card:first-child .nearby-talk {
+    display: none !important;
+  }
+
+  .town-side-panel .side-card-title {
+    min-height: 20px !important;
+    margin-bottom: 3px !important;
+    padding: 2px 4px !important;
+    font-size: 9px !important;
+  }
+
+  .town-side-panel > .yesterday-card,
+  .town-side-panel > .town-flavor-card,
+  .town-side-panel > .town-mood-card,
+  .town-side-panel > .town-next-event-card,
+  .town-side-panel > .town-finale-card {
+    display: none !important;
+  }
+
+  .town-side-panel > .rumor-card {
+    display: block !important;
+  }
+
+  .rumor-list li {
+    min-height: 22px !important;
+    padding: 2px 0 !important;
+    font-size: 8px !important;
+    line-height: 1.25 !important;
+  }
+
+  .rumor-list li:nth-child(n+3) {
+    display: none !important;
+  }
+
+  .reference-action-dock {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 170px !important;
+    gap: 5px !important;
+    margin-top: 4px !important;
+  }
+
+  .reference-area-nav {
+    gap: 3px !important;
+  }
+
+  .reference-area-nav button,
+  .reference-area-nav:has(button:nth-child(4):not(:disabled)) button {
+    min-height: 50px !important;
+    padding: 2px 4px !important;
+  }
+
+  .area-nav-icon,
+  .reference-area-nav:has(button:nth-child(4):not(:disabled)) .area-nav-icon {
+    width: 23px !important;
+    height: 23px !important;
+  }
+
+  .area-nav-copy strong {
+    font-size: 8px !important;
+  }
+
+  .area-nav-copy small {
+    display: none !important;
+  }
+
+  .reference-talk-cta {
+    min-height: 50px !important;
+    border-radius: 25px !important;
+  }
+
+  .reference-talk-cta .talk-bubble {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .reference-talk-cta strong {
+    font-size: 18px !important;
+  }
+
+  .reference-talk-cta small {
+    font-size: 7px !important;
+  }
+
+  .logstrip,
+  .next-lead {
+    display: none !important;
+  }
+
+  .dialogue-overlay {
+    padding: 0 8px 5px !important;
+  }
+
+  .dialogue-overlay .mock-dialog {
+    min-height: 96px !important;
+    padding: 9px 12px 7px !important;
+  }
+
+  .dialogue-overlay .mock-dialog .dialog-text {
+    min-height: 42px !important;
+    font-size: 11px !important;
+    line-height: 1.4 !important;
+  }
+
+  .dialogue-overlay .dialog-cutin {
+    display: none !important;
+  }
+
+  .dialogue-overlay .mock-dialog {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+}
+
+
+/* Low-height landscape must never hide progression cards. */
+@media (min-width: 600px) and (max-height: 500px) {
+  .town-side-panel:has(.town-next-event-card) > .rumor-card,
+  .town-side-panel:has(.town-finale-card) > .rumor-card {
+    display: none !important;
+  }
+
+  .town-side-panel > .town-next-event-card,
+  .town-side-panel > .town-finale-card {
+    display: block !important;
+    min-height: 0 !important;
+    padding: 5px 6px !important;
+  }
+
+  .town-side-panel > .town-next-event-card .side-card-title,
+  .town-side-panel > .town-finale-card .side-card-title {
+    margin-bottom: 3px !important;
+  }
+
+  .town-side-panel > .town-next-event-card strong,
+  .town-side-panel > .town-finale-card .town-finale-rank {
+    display: block;
+    margin: 0 34px 2px 0 !important;
+    padding: 0 !important;
+    font-size: 11px !important;
+    line-height: 1.2 !important;
+  }
+
+  .town-side-panel > .town-next-event-card p,
+  .town-side-panel > .town-finale-card p,
+  .town-side-panel > .town-finale-card .town-finale-memory,
+  .town-side-panel > .town-finale-card .town-finale-stats {
+    display: none !important;
+  }
+
+  .town-side-panel > .town-next-event-card .town-next-day,
+  .town-side-panel > .town-finale-card .town-next-day {
+    width: 100% !important;
+    min-height: 32px !important;
+    margin: 4px 0 0 !important;
+    padding: 4px 8px !important;
+    border-radius: 16px !important;
+    font-size: 9px !important;
+  }
+
+  .town-side-panel > .town-next-event-card::before,
+  .town-side-panel > .town-finale-card::before {
+    top: 6px !important;
+    right: 6px !important;
+    width: 25px !important;
+    height: 25px !important;
+    font-size: 10px !important;
+  }
+}
+
+
+/* Final low-height landscape dock: one row, fully visible. */
+@media (min-width: 600px) and (max-height: 500px) {
+  .reference-action-dock {
+    grid-template-columns: minmax(0, 1fr) 150px !important;
+    align-items: stretch;
+    min-height: 48px !important;
+    max-height: 52px !important;
+  }
+
+  .reference-area-nav,
+  .reference-area-nav:has(button:nth-child(4):not(:disabled)) {
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    gap: 3px !important;
+    overflow: visible !important;
+  }
+
+  .reference-area-nav button,
+  .reference-area-nav:has(button:nth-child(4):not(:disabled)) button {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 48px !important;
+    height: 48px !important;
+    padding: 2px 3px !important;
+  }
+
+  .area-nav-icon,
+  .reference-area-nav:has(button:nth-child(4):not(:disabled)) .area-nav-icon {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .area-nav-icon svg,
+  .reference-area-nav:has(button:nth-child(4):not(:disabled)) .area-nav-icon svg {
+    width: 17px !important;
+    height: 17px !important;
+  }
+
+  .area-nav-copy strong,
+  .reference-area-nav:has(button:nth-child(4):not(:disabled)) .area-nav-copy strong {
+    font-size: 7px !important;
+    line-height: 1.05 !important;
+  }
+
+  .reference-talk-cta {
+    min-height: 48px !important;
+    height: 48px !important;
+    padding: 3px 9px !important;
+    grid-template-columns: 28px minmax(0, 1fr) !important;
+    grid-template-rows: auto auto !important;
+    column-gap: 6px !important;
+    border-radius: 24px !important;
+  }
+
+  .reference-talk-cta .talk-bubble {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  .reference-talk-cta strong {
+    font-size: 16px !important;
+    line-height: 1 !important;
+  }
+
+  .reference-talk-cta small {
+    font-size: 6px !important;
+    line-height: 1 !important;
+  }
+}
