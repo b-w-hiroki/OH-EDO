@@ -1,0 +1,110 @@
+/* Illustrated micro-details for the approved mock direction. */
+
+.side-icon-art {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  flex: none;
+  background-image: url("/assets/edo/ui/generated/runtime/rail-icon-sprite.svg");
+  background-repeat: no-repeat;
+  background-size: 500% 100%;
+  filter: drop-shadow(0 1px 0 rgba(255,255,255,.55));
+}
+.side-icon-people { background-position: 0% 50%; }
+.side-icon-change { background-position: 25% 50%; }
+.side-icon-story { background-position: 50% 50%; }
+.side-icon-rumor { background-position: 75% 50%; }
+.side-icon-mood { background-position: 100% 50%; }
+
+.scene-props {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.scene-prop {
+  position: absolute;
+  display: block;
+  opacity: .95;
+  filter: drop-shadow(0 4px 5px rgba(55,39,25,.18));
+}
+
+.prop-lantern {
+  width: 34px;
+  height: 48px;
+  border-radius: 42% 42% 45% 45%;
+  background:
+    linear-gradient(90deg, transparent 0 18%, rgba(115,39,33,.22) 19% 22%, transparent 23% 78%, rgba(115,39,33,.22) 79% 82%, transparent 83%),
+    linear-gradient(180deg, #ef7d61, #c94d43);
+  border: 2px solid #8f4539;
+}
+.prop-lantern::before,
+.prop-lantern::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  right: 5px;
+  height: 3px;
+  background: #61442f;
+}
+.prop-lantern::before { top: -4px; }
+.prop-lantern::after { bottom: -4px; }
+
+.prop-crate {
+  width: 70px;
+  height: 38px;
+  border: 2px solid #785336;
+  border-radius: 3px;
+  background:
+    linear-gradient(90deg, transparent 0 31%, rgba(94,60,33,.25) 32% 35%, transparent 36% 64%, rgba(94,60,33,.25) 65% 68%, transparent 69%),
+    linear-gradient(180deg, #c08b54, #9a6c40);
+  box-shadow: inset 0 0 0 4px rgba(255,229,180,.13);
+}
+
+.prop-sign {
+  width: 44px;
+  height: 74px;
+  border: 3px solid #765039;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #f0d5a6, #d6b27b);
+}
+.prop-sign::after {
+  content: "商";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #68402c;
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.area-market .prop-lantern { right: 8%; top: 17%; }
+.area-market .prop-crate { left: 5%; bottom: 5%; }
+.area-market .prop-sign { right: 3%; bottom: 19%; }
+
+.area-nagaya .prop-lantern { right: 7%; top: 15%; }
+.area-nagaya .prop-crate { right: 4%; bottom: 7%; }
+.area-nagaya .prop-sign { left: 3%; bottom: 20%; }
+
+.area-well .prop-lantern { right: 4%; top: 18%; }
+.area-well .prop-crate { left: 8%; bottom: 5%; }
+.area-well .prop-sign { right: 7%; bottom: 22%; }
+
+.area-firehouse .prop-lantern { left: 5%; top: 15%; }
+.area-firehouse .prop-crate { right: 6%; bottom: 5%; }
+.area-firehouse .prop-sign { left: 3%; bottom: 18%; }
+.area-nagaya .prop-sign::after { content: "長"; }
+.area-well .prop-sign::after { content: "井"; }
+.area-market .prop-sign::after { content: "魚"; }
+.area-firehouse .prop-sign::after { content: "火"; }
+
+@media (max-width: 599px) {
+  .scene-props { opacity: .72; }
+  .prop-lantern { width: 24px; height: 34px; }
+  .prop-crate { width: 48px; height: 27px; }
+  .prop-sign { width: 30px; height: 50px; }
+  .prop-sign::after { font-size: 17px; }
+}

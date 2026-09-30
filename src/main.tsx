@@ -11,6 +11,7 @@ import "./scene-cast.css";
 import "./header-parity.css";
 import "./generated-surfaces.css";
 import "./approved-mock-final.css";
+import "./scene-detail-art.css";
 import "./landscape.css";
 import "./nav-parity.css";
 import "./mobile-talk-parity.css";

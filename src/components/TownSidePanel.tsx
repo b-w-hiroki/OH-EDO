@@ -60,20 +60,7 @@ function relationPercent(state: GameState, npc: NPCId): number {
 }
 
 function SideIcon({ kind }: { kind: "people" | "change" | "story" | "rumor" | "mood" }) {
-  const common = {
-    width: 16,
-    height: 16,
-    viewBox: "0 0 16 16",
-    fill: "none",
-    xmlns: "http://www.w3.org/2000/svg",
-    "aria-hidden": true,
-  } as const;
-
-  if (kind === "people") return <svg {...common}><circle cx="5" cy="5" r="2.2" stroke="currentColor" strokeWidth="1.4"/><circle cx="11" cy="5.4" r="1.8" stroke="currentColor" strokeWidth="1.3"/><path d="M1.8 13c.4-3 2-4.5 3.7-4.5S8.8 10 9.2 13M9 12.8c.2-2.3 1.3-3.5 2.7-3.5 1.2 0 2.2.9 2.5 2.7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>;
-  if (kind === "change") return <svg {...common}><path d="M2 4h7M7 2l2 2-2 2M14 12H7m2-2-2 2 2 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>;
-  if (kind === "story") return <svg {...common}><path d="M3 2.5h8.5A1.5 1.5 0 0 1 13 4v9H4.5A1.5 1.5 0 0 1 3 11.5v-9z" stroke="currentColor" strokeWidth="1.4"/><path d="M5.5 5h5M5.5 7.5h4M5.5 10h3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>;
-  if (kind === "rumor") return <svg {...common}><path d="M2.5 4.5h11v6h-6L4 13v-2.5H2.5v-6z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/><circle cx="5.5" cy="7.5" r=".7" fill="currentColor"/><circle cx="8" cy="7.5" r=".7" fill="currentColor"/><circle cx="10.5" cy="7.5" r=".7" fill="currentColor"/></svg>;
-  return <svg {...common}><path d="M2.5 10.5c2-2.8 3.7-2.8 5.5 0s3.5 2.8 5.5 0" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><path d="M2.5 6.5c2-2.8 3.7-2.8 5.5 0s3.5 2.8 5.5 0" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg>;
+  return <span className={`side-icon-art side-icon-${kind}`} aria-hidden="true" />;
 }
 
 export function TownSidePanel({
