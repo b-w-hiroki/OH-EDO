@@ -1,0 +1,61 @@
+/* Character presence pass: keep approved art, improve foreground separation. */
+
+.presentation-character-image {
+  filter:
+    drop-shadow(0 1px 0 rgba(255,248,229,.72))
+    drop-shadow(0 3px 2px rgba(255,248,229,.34))
+    drop-shadow(0 13px 13px rgba(49,32,20,.24));
+}
+
+.presentation-character::before {
+  content: "";
+  position: absolute;
+  left: 19%;
+  right: 19%;
+  bottom: 2%;
+  height: 7%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(66,42,25,.25), rgba(66,42,25,0) 72%);
+  transform: scaleX(1.16);
+  pointer-events: none;
+}
+
+.presentation-character.presentation-secondary::before {
+  opacity: .58;
+}
+
+.presentation-character.is-selected .presentation-character-image,
+.presentation-character.is-speaking .presentation-character-image {
+  filter:
+    drop-shadow(0 1px 0 rgba(255,250,233,.95))
+    drop-shadow(0 3px 3px rgba(255,241,211,.58))
+    drop-shadow(0 16px 16px rgba(52,34,21,.28));
+}
+
+.presentation-character.is-selected {
+  transform: translateY(-3px) scale(1.018);
+}
+
+.presentation-character.presentation-secondary {
+  filter: saturate(.95);
+}
+
+@media (max-width: 599px) {
+  .presentation-character-image {
+    filter:
+      drop-shadow(0 1px 0 rgba(255,248,229,.65))
+      drop-shadow(0 8px 9px rgba(49,32,20,.22));
+  }
+
+  .presentation-character::before {
+    bottom: 1%;
+    height: 6%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .presentation-character.is-selected {
+    transform: none;
+  }
+}
