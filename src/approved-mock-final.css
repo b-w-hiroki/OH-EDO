@@ -1,0 +1,236 @@
+/* Final approved-mock balance overrides.
+   Source of truth: 桜咲く江戸町の暮らし画面.png */
+
+@media (min-width: 1100px) and (min-height: 650px) {
+  .app {
+    max-width: 1640px !important;
+    padding: 8px 12px 14px !important;
+  }
+
+  .reference-header {
+    grid-template-columns: 178px 342px minmax(0, 1fr) 66px !important;
+    min-height: 76px !important;
+    gap: 7px !important;
+    margin-bottom: 5px !important;
+  }
+
+  .reference-logo-wrap {
+    min-height: 74px !important;
+  }
+
+  .reference-logo-image {
+    width: 168px !important;
+    max-height: 72px !important;
+  }
+
+  .reference-logo-wrap > small {
+    margin-top: 0 !important;
+    font-size: 9px !important;
+  }
+
+  .reference-day-card,
+  .reference-statusbar {
+    min-height: 74px !important;
+    border-radius: 5px !important;
+  }
+
+  .reference-day-card {
+    padding: 8px 14px !important;
+  }
+
+  .reference-statusbar {
+    padding: 4px 6px !important;
+  }
+
+  .reference-stat-row {
+    grid-template-columns: repeat(6, minmax(82px, 1fr)) !important;
+  }
+
+  .reference-stat {
+    min-height: 58px !important;
+    padding-inline: 7px !important;
+  }
+
+  .reference-stat-icon {
+    width: 34px !important;
+    height: 34px !important;
+  }
+
+  .reference-stat-key {
+    font-size: 9px !important;
+  }
+
+  .reference-stat-copy strong {
+    font-size: 15px !important;
+  }
+
+  .desktop-objective-strip,
+  .objective-strip {
+    width: 690px !important;
+    min-height: 37px !important;
+    margin: 0 0 7px 218px !important;
+    padding: 6px 12px !important;
+    border-radius: 5px !important;
+    font-size: 11px !important;
+  }
+
+  .world-layout {
+    grid-template-columns: minmax(0, 1fr) 370px !important;
+    gap: 9px !important;
+  }
+
+  .presentation-stage {
+    aspect-ratio: 16 / 8.55 !important;
+    border-radius: 6px !important;
+  }
+
+  .town-presentation .presentation-player {
+    left: 13% !important;
+    width: 34% !important;
+    height: 106% !important;
+    bottom: -13% !important;
+  }
+
+  .town-presentation .presentation-primary {
+    width: 34% !important;
+    height: 104% !important;
+    bottom: -11% !important;
+  }
+
+  .town-presentation.area-nagaya .presentation-primary.art-landlord {
+    right: 8% !important;
+  }
+
+  .town-presentation.area-market .presentation-primary.art-fishmonger,
+  .town-presentation.area-firehouse .presentation-primary.art-firechief {
+    right: 6% !important;
+  }
+
+  .town-presentation.area-well .presentation-primary.art-child {
+    right: 9% !important;
+    width: 25% !important;
+    height: 70% !important;
+    bottom: -3% !important;
+  }
+
+  .presentation-hanging-note {
+    left: 10px !important;
+    top: 14px !important;
+    width: 150px !important;
+    min-height: 84px !important;
+    padding: 10px 12px !important;
+  }
+
+  .presentation-hanging-note small {
+    font-size: 8px !important;
+  }
+
+  .presentation-hanging-note strong {
+    font-size: 12px !important;
+    line-height: 1.45 !important;
+  }
+
+  .town-side-panel {
+    gap: 6px !important;
+  }
+
+  .town-side-panel > .side-card:first-child {
+    min-height: 322px !important;
+    padding: 8px 9px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-list {
+    gap: 4px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-person {
+    min-height: 67px !important;
+    grid-template-columns: 54px minmax(0, 1fr) 54px !important;
+    padding: 5px 6px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-avatar {
+    width: 52px !important;
+    height: 52px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-copy strong {
+    font-size: 12px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .npc-subtitle {
+    display: block !important;
+    font-size: 8px !important;
+  }
+
+  .npc-memory-line {
+    font-size: 8px !important;
+    line-height: 1.25 !important;
+  }
+
+  .npc-relation-meter {
+    height: 5px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-talk {
+    min-width: 52px !important;
+    min-height: 38px !important;
+    font-size: 10px !important;
+  }
+
+  .yesterday-card {
+    min-height: 96px !important;
+  }
+
+  .town-flavor-card {
+    min-height: 82px !important;
+  }
+
+  .rumor-card {
+    min-height: 128px !important;
+  }
+
+  .side-card-title {
+    min-height: 26px !important;
+    font-size: 11px !important;
+  }
+
+  .reference-area-nav {
+    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+    gap: 5px !important;
+  }
+
+  .reference-area-nav button {
+    min-height: 78px !important;
+    padding: 6px 8px !important;
+  }
+
+  .area-nav-icon {
+    width: 46px !important;
+    height: 42px !important;
+  }
+
+  .area-nav-copy strong {
+    font-size: 12px !important;
+  }
+
+  .area-nav-copy small {
+    font-size: 8px !important;
+  }
+
+  .dialogue-overlay .mock-dialog {
+    width: min(920px, 82%) !important;
+    min-height: 168px !important;
+    padding: 16px 20px 14px !important;
+  }
+
+  .dialogue-overlay .dialog-portrait {
+    width: 86px !important;
+    height: 86px !important;
+  }
+
+  .dialogue-overlay .mock-dialog .dialog-text {
+    font-size: 17px !important;
+    line-height: 1.7 !important;
+  }
+}
