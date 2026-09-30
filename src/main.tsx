@@ -9,6 +9,7 @@ import "./result-panels.css";
 import "./interaction-polish.css";
 import "./scene-cast.css";
 import "./header-parity.css";
+import "./generated-surfaces.css";
 import "./landscape.css";
 import "./nav-parity.css";
 import "./title-viewport.css";
