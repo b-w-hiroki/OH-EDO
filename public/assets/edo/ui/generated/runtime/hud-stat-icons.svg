@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 100">
+<g stroke-linecap="round" stroke-linejoin="round">
+ <g transform="translate(0)">
+  <circle cx="50" cy="50" r="43" fill="#f6e4bd" stroke="#b78d58" stroke-width="4"/>
+  <path d="M35 40c6-14 24-14 30 0l-4 29H39z" fill="#c79243" stroke="#7a552d" stroke-width="4"/>
+  <path d="M40 36c5-7 15-7 20 0M42 49h16M50 44v12" stroke="#fff2d2" stroke-width="3"/>
+ </g>
+ <g transform="translate(100)">
+  <circle cx="50" cy="50" r="43" fill="#e5eef7" stroke="#6e91b3" stroke-width="4"/>
+  <path d="M28 59c9-18 23-28 44-31-4 20-16 35-37 45z" fill="#5c89b5" stroke="#355c84" stroke-width="4"/>
+  <path d="M34 58l31-22M41 63l18-26M49 66l7-31" stroke="#eaf5ff" stroke-width="3"/>
+ </g>
+ <g transform="translate(200)">
+  <circle cx="50" cy="50" r="43" fill="#eee7f5" stroke="#8b73aa" stroke-width="4"/>
+  <path d="M35 38c7-10 23-10 30 0l-7 8 7 8c-7 10-23 10-30 0l7-8z" fill="#7c66a4" stroke="#564574" stroke-width="4"/>
+  <circle cx="50" cy="46" r="7" fill="#f7ead4"/>
+ </g>
+ <g transform="translate(300)">
+  <circle cx="50" cy="50" r="43" fill="#e2eef7" stroke="#6488ad" stroke-width="4"/>
+  <circle cx="39" cy="40" r="9" fill="#5d83ad"/><circle cx="61" cy="40" r="9" fill="#5d83ad"/>
+  <path d="M24 73c2-16 10-24 17-24s15 8 17 24M48 73c2-16 10-24 17-24s15 8 17 24" fill="none" stroke="#3f6287" stroke-width="6"/>
+ </g>
+ <g transform="translate(400)">
+  <circle cx="50" cy="50" r="43" fill="#e6edf1" stroke="#6b8493" stroke-width="4"/>
+  <path d="M35 70L58 29M43 74L66 33" stroke="#405c6c" stroke-width="6"/>
+  <path d="M31 66l11 6M54 27l10 6" stroke="#8da8b8" stroke-width="5"/>
+  <path d="M63 64L42 31M56 70L35 37" stroke="#556e7c" stroke-width="4"/>
+ </g>
+ <g transform="translate(500)">
+  <circle cx="50" cy="50" r="43" fill="#f3ead4" stroke="#aa8e58" stroke-width="4"/>
+  <path d="M50 27v45" stroke="#8a6337" stroke-width="5"/>
+  <path d="M39 36h22" stroke="#8a6337" stroke-width="5"/>
+  <path d="M34 70c7-8 25-8 32 0l-5 10H39z" fill="#caa55d" stroke="#806332" stroke-width="4"/>
+  <path d="M39 72v8M45 70v12M51 69v13M57 70v12M63 72v8" stroke="#806332" stroke-width="3"/>
+ </g>
+</g>
+</svg>
