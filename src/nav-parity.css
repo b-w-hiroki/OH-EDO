@@ -1,0 +1,53 @@
+/* ── Approved mock parity: keep all six travel slots visible ─────── */
+.reference-area-nav button:disabled {
+  display: flex !important;
+  opacity: .46;
+  filter: saturate(.55) grayscale(.18);
+  cursor: not-allowed;
+}
+
+.reference-area-nav button:disabled .area-nav-copy small {
+  display: block;
+  color: #8a7e6f;
+}
+
+@media (min-width: 900px) {
+  .reference-area-nav,
+  .reference-area-nav:not(:has(button:nth-child(4):not(:disabled))),
+  .reference-area-nav:has(button:nth-child(4):not(:disabled)) {
+    display: grid !important;
+    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+    gap: 4px !important;
+    overflow: visible !important;
+  }
+
+  .reference-area-nav button,
+  .reference-area-nav button:disabled {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+}
+
+@media (max-width: 599px) {
+  .reference-area-nav,
+  .reference-area-nav:not(:has(button:nth-child(4):not(:disabled))),
+  .reference-area-nav:has(button:nth-child(4):not(:disabled)) {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 3px !important;
+    overflow: visible !important;
+  }
+
+  .reference-area-nav button,
+  .reference-area-nav button:disabled,
+  .reference-area-nav:has(button:nth-child(4):not(:disabled)) button {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 48px !important;
+    padding: 3px 2px !important;
+  }
+
+  .reference-area-nav button:disabled .area-nav-copy small {
+    display: none !important;
+  }
+}
