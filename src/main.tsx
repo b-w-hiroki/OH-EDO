@@ -17,6 +17,7 @@ import "./familiarity-badges.css";
 import "./visual-consequence.css";
 import "./town-mood-dressing.css";
 import "./ambient-town-motion.css";
+import "./background-crowd.css";
 import "./festival-dressing.css";
 import "./character-presence.css";
 import "./landscape.css";
