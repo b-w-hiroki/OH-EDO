@@ -117,6 +117,14 @@ function characterClass(npc: NPCId): string {
   return "";
 }
 
+function townMoodClasses(state: GameState): string {
+  const classes: string[] = [];
+  if (state.town.hygiene >= 55) classes.push("is-town-clean");
+  if (state.town.economy >= 55) classes.push("is-town-bustling");
+  if (state.town.safety >= 55) classes.push("is-town-calm");
+  return classes.join(" ");
+}
+
 function visualConsequenceClass(state: GameState): string {
   const yesterday = state.playerActions.filter((action) => action.day === state.day - 1).slice(-1)[0];
   const type = yesterday?.type ?? "";
@@ -162,7 +170,7 @@ export function TownPresentation({
 
   return (
     <section
-      className={`town-presentation area-${area} ${dialogOpen ? "is-dialogue" : ""} ${playerSpeaking ? "is-player-speaking" : ""} ${state.day === 5 && state.flags.festival_done ? "is-festival-after" : state.day >= 4 && state.flags.festival_started ? "is-festival-prep" : ""} ${visualConsequenceClass(state)}`}
+      className={`town-presentation area-${area} ${dialogOpen ? "is-dialogue" : ""} ${playerSpeaking ? "is-player-speaking" : ""} ${state.day === 5 && state.flags.festival_done ? "is-festival-after" : state.day >= 4 && state.flags.festival_started ? "is-festival-prep" : ""} ${visualConsequenceClass(state)} ${townMoodClasses(state)}`}
       aria-label={`${AREAS[state.currentArea].name}の情景`}
     >
       <div
