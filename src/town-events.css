@@ -549,3 +549,26 @@
     -webkit-line-clamp: unset;
   }
 }
+
+
+.choice-relations {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  margin-top: 5px;
+  padding-top: 5px;
+  border-top: 1px solid rgba(145,104,62,.16);
+  color: #7d5f47;
+  font-size: 8px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+@media (max-width: 599px) {
+  .choice-relations {
+    margin-top: 3px;
+    padding-top: 3px;
+    font-size: 7px;
+  }
+}
