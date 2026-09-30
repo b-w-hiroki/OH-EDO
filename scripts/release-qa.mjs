@@ -609,7 +609,14 @@ async function runIPhoneWebKit() {
   const layout = await assertMobileLayout(page);
   await page.screenshot({ path: "qa-artifacts/iphone-webkit-430-world.png", fullPage: false });
   if (!(await page.locator(".mock-dialog:visible").count())) {
-    await page.locator(".reference-talk-cta:visible").click();
+    const dockTalk = page.locator(".reference-talk-cta:visible");
+    if (await dockTalk.count()) {
+      await dockTalk.click();
+    } else {
+      const peopleTalk = page.locator(".nearby-talk:visible").first();
+      assert((await peopleTalk.count()) > 0, "portrait WebKit has no visible talk affordance");
+      await peopleTalk.click();
+    }
     await page.waitForSelector(".mock-dialog:visible", { timeout: 5000 });
   }
   await page.screenshot({ path: "qa-artifacts/iphone-webkit-430-dialog.png", fullPage: false });
