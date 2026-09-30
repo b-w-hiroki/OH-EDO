@@ -30,7 +30,7 @@ export function TitleView({
       <h1 className="title-main title-main-generated">
         <img
           className="title-logo-image"
-          src="/assets/edo/ui/generated/runtime/logo-approved-mock.webp"
+          src="/assets/edo/ui/generated/runtime/logo-oh-edo-approved.svg"
           alt="OH！EDO！"
           draggable={false}
         />
