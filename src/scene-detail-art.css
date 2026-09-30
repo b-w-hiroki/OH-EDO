@@ -96,6 +96,9 @@
 .area-firehouse .prop-lantern { left: 5%; top: 15%; }
 .area-firehouse .prop-crate { right: 6%; bottom: 5%; }
 .area-firehouse .prop-sign { left: 3%; bottom: 18%; }
+.area-nagaya .prop-sign::after { content: "長"; }
+.area-well .prop-sign::after { content: "井"; }
+.area-market .prop-sign::after { content: "魚"; }
 .area-firehouse .prop-sign::after { content: "火"; }
 
 @media (max-width: 599px) {
