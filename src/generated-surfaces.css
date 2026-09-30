@@ -105,3 +105,28 @@
     max-height: 96px;
   }
 }
+
+
+/* Extend the generated surface system beyond the town screen. */
+.legacy-result-panel,
+.status-book {
+  border: 0 !important;
+  background:
+    url("/assets/edo/ui/generated/runtime/paper-panel-frame.svg") center / 100% 100% no-repeat !important;
+  box-shadow: 0 14px 32px rgba(54,39,28,.18) !important;
+}
+
+.day-transition,
+.area-transition {
+  border: 0 !important;
+  background:
+    url("/assets/edo/ui/generated/runtime/notice-frame.svg") center / 100% 100% no-repeat !important;
+  box-shadow: 0 14px 30px rgba(47,32,22,.22) !important;
+}
+
+.rank-transition {
+  border: 0 !important;
+  background:
+    url("/assets/edo/ui/generated/runtime/nav-tab-frame-active.svg") center / 100% 100% no-repeat !important;
+  box-shadow: 0 8px 18px rgba(55,41,27,.14) !important;
+}
