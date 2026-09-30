@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { TownEventDef, TownEventResult } from "../types";
 import { ChoiceImpact } from "./ChoiceImpact";
+import { townEventRelationSummary } from "../town/townEventRelations";
 
 export function TownEventChoiceView({
   event,
@@ -39,14 +40,20 @@ export function TownEventChoiceView({
       </div>
       <p className="panel-desc">町の顔として、今日はどこから手をつける？</p>
       <div className="fire-choice-list">
-        {event.choices.map((choice, index) => (
-          <button className="fire-choice town-event-choice" key={choice.id} onClick={() => onChoose(choice.id)}>
-            <span className="town-event-choice-mark" aria-hidden="true">{["壱", "弐", "参"][index] ?? index + 1}</span>
-            <strong>{choice.label}</strong>
-            <span>{choice.description}</span>
-            <ChoiceImpact effects={choice.effects} />
-          </button>
-        ))}
+        {event.choices.map((choice, index) => {
+          const relationSummary = townEventRelationSummary(choice.id);
+          return (
+            <button className="fire-choice town-event-choice" key={choice.id} onClick={() => onChoose(choice.id)}>
+              <span className="town-event-choice-mark" aria-hidden="true">{["壱", "弐", "参"][index] ?? index + 1}</span>
+              <strong>{choice.label}</strong>
+              <span>{choice.description}</span>
+              <ChoiceImpact effects={choice.effects} />
+              {relationSummary && (
+                <small className="choice-relations">人間関係：{relationSummary}</small>
+              )}
+            </button>
+          );
+        })}
       </div>
     </section>
   );
