@@ -12,6 +12,7 @@ import "./header-parity.css";
 import "./generated-surfaces.css";
 import "./approved-mock-final.css";
 import "./scene-detail-art.css";
+import "./festival-dressing.css";
 import "./landscape.css";
 import "./nav-parity.css";
 import "./mobile-talk-parity.css";
