@@ -515,11 +515,15 @@ async function assertGeneratedSurfaceStyles(page, { desktop = false } = {}) {
     const activeTab = document.querySelector(".reference-area-nav button.active");
     const lifeProp = [...document.querySelectorAll(".scene-life-prop")]
       .find((el) => getComputedStyle(el).display !== "none");
+    const statIcon = document.querySelector(".reference-stat-icon");
+    const logo = document.querySelector(".reference-logo-image");
     const background = (el) => el ? getComputedStyle(el).backgroundImage : "";
     return {
       sidePanel: background(side),
       activeTab: isDesktop ? background(activeTab) : "",
       lifeProp: background(lifeProp),
+      statIcon: isDesktop ? background(statIcon) : "",
+      logoSrc: logo?.getAttribute("src") ?? "",
     };
   }, desktop);
 
@@ -531,10 +535,18 @@ async function assertGeneratedSurfaceStyles(page, { desktop = false } = {}) {
     surfaces.lifeProp.includes("life-prop-sprite.svg"),
     `generated lived-in prop sprite missing: ${JSON.stringify(surfaces)}`
   );
+  assert(
+    surfaces.logoSrc.includes("logo-oh-edo-approved.svg"),
+    `approved OH EDO logo missing: ${JSON.stringify(surfaces)}`
+  );
   if (desktop) {
     assert(
       surfaces.activeTab.includes("nav-tab-frame-active.svg"),
       `generated active navigation surface missing: ${JSON.stringify(surfaces)}`
+    );
+    assert(
+      surfaces.statIcon.includes("hud-stat-icons.svg"),
+      `generated HUD stat icon sprite missing: ${JSON.stringify(surfaces)}`
     );
   }
 }
