@@ -1,0 +1,24 @@
+/* Approved mock six-stat icon sprite. */
+.reference-stat-icon {
+  background-image: url("/assets/edo/ui/generated/runtime/hud-stat-icons.svg") !important;
+  background-repeat: no-repeat !important;
+  background-size: 600% 100% !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+.reference-stat-icon::after { display: none !important; }
+.reference-stat-icon svg { display: none !important; }
+
+.stat-icon-money { background-position: 0% 50% !important; }
+.stat-icon-trust { background-position: 20% 50% !important; }
+.stat-icon-iki { background-position: 40% 50% !important; }
+.stat-icon-network { background-position: 60% 50% !important; }
+.stat-icon-skill { background-position: 80% 50% !important; }
+.stat-icon-hygiene { background-position: 100% 50% !important; }
+
+@media (min-width: 1100px) and (min-height: 650px) {
+  .reference-stat-icon {
+    width: 39px !important;
+    height: 39px !important;
+  }
+}
