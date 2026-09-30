@@ -27,7 +27,14 @@ export function TitleView({
       <div className="title-hero" aria-hidden="true"></div>
       <div className="title-copy">
       <p className="title-kicker">あの頃も、きっと、たのしい。</p>
-      <h1 className="title-main">OH！EDO！</h1>
+      <h1 className="title-main title-main-generated">
+        <img
+          className="title-logo-image"
+          src="/assets/edo/ui/generated/runtime/logo-approved-mock.webp"
+          alt="OH！EDO！"
+          draggable={false}
+        />
+      </h1>
       <p className="title-sub">江戸ライフ成り上がり</p>
       <p className="title-flavor">
         流れ着いたのは、騒がしくも妙に居心地のいい大江戸の長屋。

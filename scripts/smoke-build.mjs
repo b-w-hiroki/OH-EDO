@@ -23,6 +23,23 @@ if (!serviceWorker.includes("oh-edo-v1")) {
   throw new Error("service worker cache version missing");
 }
 
+
+
+const generatedRuntimeAssets = [
+  "assets/edo/ui/generated/runtime/logo-approved-mock.webp",
+  "assets/edo/ui/generated/runtime/nav-icon-sprite.webp",
+  "assets/edo/ui/generated/runtime/paper-panel-frame.svg",
+  "assets/edo/ui/generated/runtime/nav-tab-frame.svg",
+  "assets/edo/ui/generated/runtime/nav-tab-frame-active.svg",
+  "assets/edo/ui/generated/runtime/dialog-frame.svg",
+  "assets/edo/ui/generated/runtime/notice-frame.svg",
+];
+for (const relative of generatedRuntimeAssets) {
+  const path = new URL(relative, dist);
+  const info = await stat(path);
+  if (info.size === 0) throw new Error(`empty generated runtime asset: ${relative}`);
+}
+
 const assetsDir = new URL("assets/", dist);
 const files = await readdir(assetsDir);
 const js = files.filter((name) => name.endsWith(".js"));
