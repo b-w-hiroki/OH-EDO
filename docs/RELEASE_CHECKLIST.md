@@ -2,19 +2,19 @@
 
 ## 自動確認
 
-- [ ] npm test
-- [ ] npm run typecheck
-- [ ] npm run build
-- [ ] npm run smoke
-- [ ] Chromium desktop Day1→Day10
-- [ ] Chromium 430×932 Day1→Day10
-- [ ] WebKit iPhone-class portrait smoke
-- [ ] WebKit iPhone-class landscape smoke
-- [ ] desktop/mobile Day5 finale capture
-- [ ] Day10 completion state / final town-event result
-- [ ] save schema migration check
-- [ ] manifest / service worker production smoke
-- [ ] PWA offline reload + Day10 save restore
+- [x] npm test
+- [x] npm run typecheck
+- [x] npm run build
+- [x] npm run smoke
+- [x] Chromium desktop Day1→Day10
+- [x] Chromium 430×932 Day1→Day10
+- [x] WebKit iPhone-class portrait smoke
+- [x] WebKit iPhone-class landscape smoke
+- [x] desktop/mobile Day5 finale capture
+- [x] Day10 completion state / final town-event result
+- [x] save schema migration check
+- [x] manifest / service worker production smoke
+- [x] PWA offline reload + Day10 save restore
 
 ## 物理iPhone Safari
 
@@ -64,18 +64,29 @@
 
 Automated browser captures must cover both desktop 1600×900 and mobile 430×932 unless noted.
 
-- [ ] Title screen
-- [ ] Normal town world
-- [ ] NPC dialogue
-- [ ] Day1 job choice / result
-- [ ] Fire choice / aftermath
-- [ ] Patrol choice / result
-- [ ] Festival choice / result
-- [ ] Day5 finale
-- [ ] Day6–Day10 choice panels
-- [ ] Status / 覚え書き
-- [ ] Room interior and exit control
-- [ ] WebKit iPhone-class portrait world/dialogue
-- [ ] WebKit iPhone-class 844×390 landscape world/dialogue
-- [ ] No transient day/rank overlays obscuring captured decision/result states
-- [ ] No horizontal overflow and all primary actions remain reachable
+- [x] Title screen
+- [x] Normal town world
+- [x] NPC dialogue
+- [x] Day1 job choice / result
+- [x] Fire choice / aftermath
+- [x] Patrol choice / result
+- [x] Festival choice / result
+- [x] Day5 finale
+- [x] Day6–Day10 choice panels
+- [x] Status / 覚え書き
+- [x] Room interior and exit control
+- [x] WebKit iPhone-class portrait world/dialogue
+- [x] WebKit iPhone-class 844×390 landscape world/dialogue
+- [x] No transient day/rank overlays obscuring captured decision/result states
+- [x] No horizontal overflow and all primary actions remain reachable
+
+
+## 2026-10-01 current gates
+
+Automated app/browser gates above are green on the mock-density consolidated development line. Remaining release gates are intentionally external:
+
+- Issue #76: physical iPhone Safari Day1→Day10 final QA
+- Issue #77: first-time user playtest (3–5 people)
+- Issue #62: GitHub Pages final deploy / repository environment configuration
+
+Do not work around these by weakening app QA or replacing physical/user validation with CI.
