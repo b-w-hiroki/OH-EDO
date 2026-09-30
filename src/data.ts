@@ -682,6 +682,37 @@ export const NPC_EPISODES: Record<
   ],
 };
 
+export const NPC_BOND_EPISODES: Record<
+  "landlord" | "fishmonger" | "child" | "newsman" | "firechief",
+  DialogLine[]
+> = {
+  landlord: [
+    { speaker: "大家", text: "祭りの後始末まで付き合ってくれたね。あんたが来る前は、こういう面倒は皆で押しつけ合ってたもんだよ。" },
+    { speaker: "主人公", text: "俺がやったのは、散らかったものを片づけただけだ。" },
+    { speaker: "大家", text: "そういう『だけ』を黙ってやる顔を、長屋の連中はよく見てる。もう居候扱いじゃ済まないね。" },
+  ],
+  child: [
+    { speaker: "長屋の子ども", text: "井戸の順番、今日はみんなちゃんとしてたよ！ たろうが昨日言ったこと、まだ残ってる！" },
+    { speaker: "主人公", text: "俺がいなくても続くなら、その方がいい。" },
+    { speaker: "長屋の子ども", text: "じゃあ次は、ぼくが誰かに教える番だね！" },
+  ],
+  fishmonger: [
+    { speaker: "魚屋", text: "品薄の日を越えてから、隣の店と在庫の話をするようになった。前なら考えもしなかったぜ。" },
+    { speaker: "主人公", text: "商売敵じゃなかったのか。" },
+    { speaker: "魚屋", text: "敵でも町の仲間でもある。そこを分けずに見られるようになったのは、お前のせいかもな。" },
+  ],
+  firechief: [
+    { speaker: "火消し頭", text: "昨日の見回りで、火が出てから走るだけが火消しじゃないって少しは分かったか。" },
+    { speaker: "主人公", text: "町の連中が自分で気をつける方が早い。" },
+    { speaker: "火消し頭", text: "そういうことだ。守る側と守られる側を分けないやつは、組の外でも頼りになる。" },
+  ],
+  newsman: [
+    { speaker: "瓦版屋", text: "町内の相談で皆の話を背負った顔、悪くなかったぜ。もう『流れ者』だけじゃ記事にならねえ。" },
+    { speaker: "主人公", text: "勝手に肩書きを増やすな。" },
+    { speaker: "瓦版屋", text: "肩書きじゃねえ。町がそう呼び始めたってだけだ。次は何を背負うか、見せてもらうぜ。" },
+  ],
+};
+
 export const FESTIVAL_INTRO_LINES: DialogLine[] = [
   { speaker: "瓦版屋", text: "春祭りの準備が始まったぞ。商店通りは朝から大騒ぎだ。" },
   { speaker: "主人公", text: "祭りくらい、のんびり楽しめないのか。" },
