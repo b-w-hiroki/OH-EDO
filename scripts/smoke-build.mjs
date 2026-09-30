@@ -27,6 +27,7 @@ if (!serviceWorker.includes("oh-edo-v1")) {
 
 const generatedRuntimeAssets = [
   "assets/edo/ui/generated/runtime/logo-approved-mock.webp",
+  "assets/edo/ui/generated/runtime/logo-oh-edo-approved.svg",
   "assets/edo/ui/generated/runtime/nav-icon-sprite.webp",
   "assets/edo/ui/generated/runtime/paper-panel-frame.svg",
   "assets/edo/ui/generated/runtime/nav-tab-frame.svg",
