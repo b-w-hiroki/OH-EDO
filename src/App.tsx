@@ -529,7 +529,6 @@ function pickNPCDialog(s: GameState, npc: NPCId): NPCDialogPick | null {
   if (s.day >= 6) {
     if (
       npc === "landlord" &&
-      s.flags.episode_landlord_done &&
       s.completedTownEventIds.includes("day6_festival_cleanup") &&
       !bondDone("bond_landlord")
     ) {
@@ -537,7 +536,6 @@ function pickNPCDialog(s: GameState, npc: NPCId): NPCDialogPick | null {
     }
     if (
       npc === "child" &&
-      s.flags.episode_child_done &&
       s.completedTownEventIds.includes("day7_well_order") &&
       !bondDone("bond_child")
     ) {
@@ -545,7 +543,6 @@ function pickNPCDialog(s: GameState, npc: NPCId): NPCDialogPick | null {
     }
     if (
       npc === "fishmonger" &&
-      s.flags.episode_fishmonger_done &&
       s.completedTownEventIds.includes("day8_market_shortage") &&
       !bondDone("bond_fishmonger")
     ) {
@@ -561,7 +558,6 @@ function pickNPCDialog(s: GameState, npc: NPCId): NPCDialogPick | null {
     }
     if (
       npc === "newsman" &&
-      s.flags.episode_newsman_done &&
       s.completedTownEventIds.includes("day10_town_council") &&
       !bondDone("bond_newsman")
     ) {
