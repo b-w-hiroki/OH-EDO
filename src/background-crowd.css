@@ -1,0 +1,74 @@
+/* Background townspeople layer inspired by the approved mock.
+   Decorative only: no interaction, low contrast, behind foreground cast. */
+
+.town-presentation::before {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  width: 200px;
+  height: 180px;
+  display: block;
+  background-image: url("/assets/edo/ui/generated/runtime/background-crowd-sprite.svg");
+  background-repeat: no-repeat;
+  background-size: 400% 100%;
+  pointer-events: none;
+  opacity: .42;
+  filter: saturate(.82) brightness(.96) drop-shadow(0 3px 4px rgba(52,38,26,.12));
+}
+
+.area-nagaya::before {
+  left: 2%;
+  top: 34%;
+  background-position: 0% 50%;
+  transform: scale(.88);
+}
+
+.area-well::before {
+  right: 7%;
+  top: 35%;
+  background-position: 33.333% 50%;
+  transform: scale(.78);
+}
+
+.area-market::before {
+  left: 45%;
+  top: 31%;
+  background-position: 66.666% 50%;
+  transform: scale(.92);
+  opacity: .5;
+}
+
+.area-firehouse::before {
+  right: 13%;
+  top: 34%;
+  background-position: 100% 50%;
+  transform: scale(.82);
+}
+
+.town-presentation.is-dialogue::before {
+  opacity: .24;
+}
+
+.town-presentation.is-town-bustling::before {
+  opacity: .56;
+}
+
+@media (max-width: 599px) {
+  .town-presentation::before {
+    width: 128px;
+    height: 116px;
+    opacity: .24;
+  }
+
+  .area-nagaya::before { left: 0; top: 37%; transform: scale(.78); }
+  .area-well::before { right: 3%; top: 39%; transform: scale(.68); }
+  .area-market::before { left: 48%; top: 34%; transform: scale(.72); opacity: .30; }
+  .area-firehouse::before { right: 5%; top: 37%; transform: scale(.68); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .town-presentation::before {
+    transition: none !important;
+    animation: none !important;
+  }
+}
