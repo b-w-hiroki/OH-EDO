@@ -1,14 +1,16 @@
-# Generated OH! EDO! UI source pack
+# Generated Edo UI source sheets
 
-This folder stores generated visual source material used to move the implementation toward the approved OH! EDO! mock.
+These compact source sheets were generated to move OH! EDO! closer to the approved visual mock.
 
-The ZIP contains four optimized source sheets:
+## Files
 
-- `hud-navigation-sheet.png` — logo, date/time, top HUD, menu controls, six-tab navigation.
-- `interaction-dialog-sheet.png` — town note, objective strip, dialogue panel, talk/search/move controls, toast.
-- `people-rumor-sheet.png` — people rail, rumor rail, relationship meters, yesterday→today / place-story / next-event cards.
-- `result-status-sheet.png` — result headings, status/notebook motifs, rank/completion stamps, next-day actions.
+- `hud-navigation-sheet.webp` — logo, date/time, status, settings/menu and six-tab navigation motifs.
+- `interaction-dialog-sheet.webp` — town motto, objective strip, dialogue, talk/investigate and notification motifs.
+- `people-rumor-sheet.webp` — people rail, rumor cards, yesterday-to-today memory cards and relationship meters.
+- `result-status-sheet.webp` — result headers, notebook/status, rank-up seals and result notification motifs.
 
-These are source/reference sheets rather than final sliced runtime sprites. Runtime assets should be extracted into sibling folders with stable semantic names before wiring them into components.
+## Usage
 
-Generated for the approved mock-parity pass on 2026-09-30.
+These are source/reference sheets, not final whole-screen textures. Production UI should crop or derive only the needed transparent parts, optimize them, and place those parts as normal game assets.
+
+The approved mock remains the structural source of truth. Do not replace scene hierarchy or interaction structure merely to match a generated sheet.
