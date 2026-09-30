@@ -486,16 +486,23 @@ async function assertGeneratedSurfaceStyles(page, { desktop = false } = {}) {
   const surfaces = await page.evaluate((isDesktop) => {
     const side = document.querySelector(".side-card");
     const activeTab = document.querySelector(".reference-area-nav button.active");
+    const lifeProp = [...document.querySelectorAll(".scene-life-prop")]
+      .find((el) => getComputedStyle(el).display !== "none");
     const background = (el) => el ? getComputedStyle(el).backgroundImage : "";
     return {
       sidePanel: background(side),
       activeTab: isDesktop ? background(activeTab) : "",
+      lifeProp: background(lifeProp),
     };
   }, desktop);
 
   assert(
     surfaces.sidePanel.includes("paper-panel-frame.svg"),
     `generated side-panel surface missing: ${JSON.stringify(surfaces)}`
+  );
+  assert(
+    surfaces.lifeProp.includes("life-prop-sprite.svg"),
+    `generated lived-in prop sprite missing: ${JSON.stringify(surfaces)}`
   );
   if (desktop) {
     assert(
