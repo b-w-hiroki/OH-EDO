@@ -294,6 +294,11 @@ async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = 
     s = await state(page);
     assert(s?.day === chapter.day, `Day${chapter.day} did not start`);
     assert(s.activeTownEventId === chapter.id, `Day${chapter.day} event missing`);
+    if (chapter.day === 10) {
+      const firstChoiceText = (await page.locator(".town-event-panel .fire-choice").first().textContent()) ?? "";
+      assert(firstChoiceText.includes("熊さん +2"), `Day10 trade relationship gain missing: ${firstChoiceText}`);
+      assert(firstChoiceText.includes("火消し頭 -1"), `Day10 trade relationship cost missing: ${firstChoiceText}`);
+    }
     const relationsBeforeChoice = Object.fromEntries(
       Object.entries(s.npcRelations).map(([npcId, relation]) => [npcId, relation.affinity])
     );
