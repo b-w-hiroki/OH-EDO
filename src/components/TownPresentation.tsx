@@ -194,7 +194,7 @@ export function TownPresentation({
       {secondaryNpc && (
         <button
           key={`secondary-${secondaryNpc}`}
-          className={`presentation-character presentation-npc presentation-secondary ${characterClass(secondaryNpc)} ${selectedNpc === secondaryNpc ? "is-selected" : ""}`}
+          className={`presentation-character presentation-npc presentation-secondary ${characterClass(secondaryNpc)} ${state.npcRelations[secondaryNpc]?.familiarity >= 3 ? "is-familiar" : ""} ${selectedNpc === secondaryNpc ? "is-selected" : ""}`}
           aria-label={`${displayName(secondaryNpc)}を選ぶ`}
           aria-pressed={selectedNpc === secondaryNpc}
           onClick={() => {
@@ -215,7 +215,7 @@ export function TownPresentation({
         </div>
         <button
           key={featuredNpc}
-          className={`presentation-character presentation-npc presentation-primary presentation-featured ${characterClass(featuredNpc)} ${activeNpc === featuredNpc ? "is-speaking" : ""} ${selectedNpc === featuredNpc ? "is-selected" : ""}`}
+          className={`presentation-character presentation-npc presentation-primary presentation-featured ${characterClass(featuredNpc)} ${state.npcRelations[featuredNpc]?.familiarity >= 3 ? "is-familiar" : ""} ${activeNpc === featuredNpc ? "is-speaking" : ""} ${selectedNpc === featuredNpc ? "is-selected" : ""}`}
           aria-label={
             selectedNpc === featuredNpc
               ? `${displayName(featuredNpc)}と話す`
