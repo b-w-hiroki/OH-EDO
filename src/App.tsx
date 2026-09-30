@@ -1297,9 +1297,13 @@ function App() {
     <div className="app">
       <header className={`reference-header ${state.screen === "title" ? "is-title" : ""}`}>
         <div className="reference-logo-wrap">
-          <span className="reference-logo" aria-label="OH! EDO!">
-            <span className="logo-oh">OH!</span>
-            <strong className="logo-edo">EDO!</strong>
+          <span className="reference-logo">
+            <img
+              className="reference-logo-image"
+              src="/assets/edo/ui/generated/runtime/logo-approved-mock.webp"
+              alt="OH! EDO!"
+              draggable={false}
+            />
           </span>
           <small>大江戸町</small>
         </div>
