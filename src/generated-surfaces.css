@@ -130,3 +130,106 @@
     url("/assets/edo/ui/generated/runtime/nav-tab-frame-active.svg") center / 100% 100% no-repeat !important;
   box-shadow: 0 8px 18px rgba(55,41,27,.14) !important;
 }
+
+
+/* Dialogue parity: make conversation composition match the approved mock. */
+@media (min-width: 900px) and (min-height: 560px) {
+  .dialogue-overlay .mock-dialog {
+    width: min(950px, 82%) !important;
+    min-height: 176px !important;
+    padding: 22px 24px 15px 126px !important;
+    border-radius: 8px !important;
+  }
+
+  .dialogue-overlay .dialog-portrait {
+    display: grid !important;
+    position: absolute !important;
+    left: 18px !important;
+    top: 28px !important;
+    width: 90px !important;
+    height: 90px !important;
+    border-radius: 8px !important;
+  }
+
+  .dialogue-overlay .dialog-portrait img {
+    object-fit: cover !important;
+    object-position: 50% 8% !important;
+    transform: none !important;
+  }
+
+  .dialogue-overlay .mock-dialog .dialog-speaker {
+    display: inline-flex !important;
+    position: absolute !important;
+    left: 24px !important;
+    top: -22px !important;
+    min-width: 178px;
+    min-height: 39px;
+    align-items: center;
+    justify-content: center;
+    margin: 0 !important;
+    padding: 7px 22px !important;
+    border-radius: 5px !important;
+    background:
+      linear-gradient(180deg, #5c4a3a, #3f332a) !important;
+    border-color: #8d6b48 !important;
+    color: #fff7e8 !important;
+    font-family: var(--font-serif);
+    font-size: 16px !important;
+    letter-spacing: .06em !important;
+    box-shadow:
+      inset 0 1px rgba(255,255,255,.12),
+      0 3px 0 #2e251f,
+      0 6px 12px rgba(54,36,24,.15) !important;
+  }
+
+  .dialogue-overlay .mock-dialog .dialog-speaker::after {
+    display: none !important;
+  }
+
+  .dialogue-overlay .mock-dialog .dialog-text {
+    min-height: 94px !important;
+    padding-top: 6px;
+    font-family: var(--font-serif);
+    font-size: 17px !important;
+    line-height: 1.78 !important;
+    letter-spacing: .015em;
+  }
+
+  .dialogue-overlay .mock-dialog .dialog-foot {
+    margin-top: auto !important;
+    padding-top: 8px;
+  }
+
+  .dialogue-overlay .dialog-next-cue {
+    font-size: 12px !important;
+  }
+}
+
+@media (max-width: 599px) {
+  .dialogue-overlay .mock-dialog {
+    min-height: 138px !important;
+    padding: 15px 12px 10px 78px !important;
+  }
+
+  .dialogue-overlay .dialog-portrait {
+    left: 12px !important;
+    top: 24px !important;
+    width: 56px !important;
+    height: 56px !important;
+    border-radius: 7px !important;
+  }
+
+  .dialogue-overlay .mock-dialog .dialog-speaker {
+    min-width: 108px;
+    margin-top: -30px !important;
+    margin-left: -66px !important;
+    padding: 4px 12px !important;
+    font-size: 11px !important;
+  }
+
+  .dialogue-overlay .mock-dialog .dialog-text {
+    min-height: 72px !important;
+    font-size: 13.5px !important;
+    line-height: 1.62 !important;
+  }
+}
