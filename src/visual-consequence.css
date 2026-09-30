@@ -1,0 +1,49 @@
+/* Visual memory of yesterday's choices. */
+.scene-memory-prop {
+  position: absolute;
+  z-index: 2;
+  width: 72px;
+  height: 72px;
+  display: none;
+  background-image: url("/assets/edo/ui/generated/runtime/consequence-prop-sprite.svg");
+  background-repeat: no-repeat;
+  background-size: 500% 100%;
+  pointer-events: none;
+  opacity: .72;
+  filter: drop-shadow(0 3px 4px rgba(54,39,25,.13));
+}
+.memory-cleanup { background-position: 0% 50%; left: 10%; bottom: 3%; }
+.memory-well { background-position: 25% 50%; right: 8%; bottom: 3%; }
+.memory-market { background-position: 50% 50%; right: 6%; bottom: 3%; }
+.memory-watch { background-position: 75% 50%; right: 7%; bottom: 4%; }
+.memory-council { background-position: 100% 50%; left: 49%; bottom: 4%; transform: translateX(-50%); }
+
+.has-cleanup-memory .memory-cleanup,
+.has-well-memory .memory-well,
+.has-market-memory .memory-market,
+.has-watch-memory .memory-watch,
+.has-council-memory .memory-council {
+  display: block;
+}
+
+.has-cleanup-memory .prop-crate {
+  opacity: .46;
+}
+.has-well-memory.area-well .life-buckets {
+  opacity: .9;
+}
+.has-market-memory.area-market .life-goods,
+.has-market-memory.area-market .life-basket {
+  opacity: .92;
+}
+.has-watch-memory .prop-lantern {
+  filter: saturate(1.1) brightness(1.02) drop-shadow(0 4px 5px rgba(78,40,30,.2));
+}
+
+@media (max-width: 599px) {
+  .scene-memory-prop {
+    width: 48px;
+    height: 48px;
+    opacity: .55;
+  }
+}

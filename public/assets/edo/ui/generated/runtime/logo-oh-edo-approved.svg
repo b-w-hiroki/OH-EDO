@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 132" role="img" aria-label="OH! EDO!">
+  <defs>
+    <radialGradient id="sun" cx="40%" cy="34%" r="68%">
+      <stop offset="0" stop-color="#f57b62"/>
+      <stop offset=".6" stop-color="#e34f3f"/>
+      <stop offset="1" stop-color="#b92f29"/>
+    </radialGradient>
+    <filter id="ink" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="3" stdDeviation="1.2" flood-color="#ffffff" flood-opacity=".72"/>
+      <feDropShadow dx="0" dy="5" stdDeviation="2" flood-color="#4e3526" flood-opacity=".18"/>
+    </filter>
+  </defs>
+  <circle cx="70" cy="52" r="44" fill="url(#sun)"/>
+  <circle cx="70" cy="52" r="39" fill="none" stroke="#8e261f" stroke-width="3" opacity=".55"/>
+  <g transform="rotate(-9 66 45)" filter="url(#ink)">
+    <text x="19" y="55" font-family="Arial Black, Helvetica, sans-serif" font-size="39" font-weight="900" fill="#9f2f28" stroke="#fff3df" stroke-width="2.2" paint-order="stroke">OH!</text>
+  </g>
+  <g filter="url(#ink)">
+    <text x="57" y="101" font-family="Arial Black, Helvetica, sans-serif" font-size="67" font-weight="950" font-style="italic" fill="#151515" stroke="#fff7e7" stroke-width="2.8" paint-order="stroke">EDO!</text>
+  </g>
+  <g transform="rotate(4 222 105)">
+    <rect x="211" y="92" width="31" height="31" rx="3" fill="#c8473d" stroke="#8d302a" stroke-width="2"/>
+    <text x="226.5" y="113" text-anchor="middle" font-family="serif" font-size="11" font-weight="900" fill="#fff1dc">江戸</text>
+  </g>
+</svg>

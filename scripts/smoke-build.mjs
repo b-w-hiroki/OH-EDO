@@ -27,6 +27,7 @@ if (!serviceWorker.includes("oh-edo-v1")) {
 
 const generatedRuntimeAssets = [
   "assets/edo/ui/generated/runtime/logo-approved-mock.webp",
+  "assets/edo/ui/generated/runtime/logo-oh-edo-approved.svg",
   "assets/edo/ui/generated/runtime/nav-icon-sprite.webp",
   "assets/edo/ui/generated/runtime/paper-panel-frame.svg",
   "assets/edo/ui/generated/runtime/nav-tab-frame.svg",
@@ -34,7 +35,10 @@ const generatedRuntimeAssets = [
   "assets/edo/ui/generated/runtime/dialog-frame.svg",
   "assets/edo/ui/generated/runtime/notice-frame.svg",
   "assets/edo/ui/generated/runtime/rail-icon-sprite.svg",
+  "assets/edo/ui/generated/runtime/hud-stat-icons.svg",
   "assets/edo/ui/generated/runtime/life-prop-sprite.svg",
+  "assets/edo/ui/generated/runtime/consequence-prop-sprite.svg",
+  "assets/edo/ui/generated/runtime/festival-garland.svg",
 ];
 for (const relative of generatedRuntimeAssets) {
   const path = new URL(relative, dist);

@@ -8,7 +8,7 @@
   }
 
   .reference-header {
-    grid-template-columns: 178px 342px minmax(0, 1fr) 66px !important;
+    grid-template-columns: 178px 342px minmax(0, 1fr) 82px !important;
     min-height: 76px !important;
     gap: 7px !important;
     margin-bottom: 5px !important;
@@ -176,6 +176,7 @@
     min-width: 52px !important;
     min-height: 38px !important;
     font-size: 10px !important;
+    white-space: nowrap !important;
   }
 
   .yesterday-card {
@@ -233,4 +234,33 @@
     font-size: 17px !important;
     line-height: 1.7 !important;
   }
+}
+
+
+/* menu plaque final */
+@media (min-width: 1100px) and (min-height: 650px) {
+  .reference-header-actions {
+    width: 82px !important;
+    min-width: 82px !important;
+  }
+
+  .reference-header-actions > .ghost:not(.sound-toggle):not(.reset-compact) {
+    width: 78px !important;
+    min-width: 78px !important;
+    min-height: 68px !important;
+    padding: 5px 6px !important;
+    white-space: nowrap !important;
+    line-height: 1.15 !important;
+  }
+}
+
+
+/* relationship copy in the approved mock reads like a warm character note */
+.npc-memory-line::before {
+  content: "♥";
+  display: inline-block;
+  margin-right: 4px;
+  color: #df6872;
+  font-size: .9em;
+  transform: translateY(-.5px);
 }

@@ -1,0 +1,22 @@
+/* Ambient town mood: use prop density, not dashboard chrome. */
+.town-presentation.is-town-bustling .life-passerby {
+  opacity: .48;
+}
+.town-presentation.is-town-bustling.area-market .life-goods,
+.town-presentation.is-town-bustling.area-market .life-basket {
+  opacity: 1;
+  filter: saturate(1.04) drop-shadow(0 3px 4px rgba(54,39,25,.14));
+}
+.town-presentation.is-town-clean .life-buckets {
+  opacity: .82;
+}
+.town-presentation.is-town-clean .town-background {
+  filter: saturate(1.015) brightness(1.012);
+}
+.town-presentation.is-town-calm .prop-lantern {
+  opacity: 1;
+  filter: saturate(1.06) drop-shadow(0 3px 4px rgba(78,40,30,.15));
+}
+@media (max-width: 599px) {
+  .town-presentation.is-town-bustling .life-passerby { opacity: .28; }
+}

@@ -117,6 +117,33 @@ function characterClass(npc: NPCId): string {
   return "";
 }
 
+function festivalVisualClass(state: GameState): string {
+  if (state.day === 4 && state.flags.festival_started) return "is-festival-prep";
+  if (state.day === 5 && state.flags.festival_done) return "is-festival-after";
+  if (state.day === 6 && state.flags.festival_done && !state.flags.day6_cleanup_done) return "is-festival-leftover";
+  if (state.day === 6 && state.flags.day6_cleanup_done) return "is-festival-cleaned";
+  return "";
+}
+
+function townMoodClasses(state: GameState): string {
+  const classes: string[] = [];
+  if (state.town.hygiene >= 55) classes.push("is-town-clean");
+  if (state.town.economy >= 55) classes.push("is-town-bustling");
+  if (state.town.safety >= 55) classes.push("is-town-calm");
+  return classes.join(" ");
+}
+
+function visualConsequenceClass(state: GameState): string {
+  const yesterday = state.playerActions.filter((action) => action.day === state.day - 1).slice(-1)[0];
+  const type = yesterday?.type ?? "";
+  if (/cleanup_/.test(type)) return "has-cleanup-memory";
+  if (/well_/.test(type)) return "has-well-memory";
+  if (/market_/.test(type)) return "has-market-memory";
+  if (/watch_/.test(type)) return "has-watch-memory";
+  if (/council_/.test(type)) return "has-council-memory";
+  return "";
+}
+
 function speakerToNpc(speaker?: string | null): NPCId | null {
   if (!speaker) return null;
   if (speaker.includes("大家")) return "landlord";
@@ -151,7 +178,7 @@ export function TownPresentation({
 
   return (
     <section
-      className={`town-presentation area-${area} ${dialogOpen ? "is-dialogue" : ""} ${playerSpeaking ? "is-player-speaking" : ""} ${state.day === 5 && state.flags.festival_done ? "is-festival-after" : state.day >= 4 && state.flags.festival_started ? "is-festival-prep" : ""}`}
+      className={`town-presentation area-${area} ${dialogOpen ? "is-dialogue" : ""} ${playerSpeaking ? "is-player-speaking" : ""} ${festivalVisualClass(state)} ${visualConsequenceClass(state)} ${townMoodClasses(state)}`}
       aria-label={`${AREAS[state.currentArea].name}の情景`}
     >
       <div
@@ -171,6 +198,11 @@ export function TownPresentation({
         <span className="scene-life-prop life-buckets" />
         <span className="scene-life-prop life-goods" />
         <span className="scene-life-prop life-passerby" />
+        <span className="scene-memory-prop memory-cleanup" />
+        <span className="scene-memory-prop memory-well" />
+        <span className="scene-memory-prop memory-market" />
+        <span className="scene-memory-prop memory-watch" />
+        <span className="scene-memory-prop memory-council" />
       </div>
 
       <div className="presentation-noren" aria-hidden="true">
@@ -194,7 +226,7 @@ export function TownPresentation({
       {secondaryNpc && (
         <button
           key={`secondary-${secondaryNpc}`}
-          className={`presentation-character presentation-npc presentation-secondary ${characterClass(secondaryNpc)} ${selectedNpc === secondaryNpc ? "is-selected" : ""}`}
+          className={`presentation-character presentation-npc presentation-secondary ${characterClass(secondaryNpc)} ${state.npcRelations[secondaryNpc]?.familiarity >= 3 ? "is-familiar" : ""} ${selectedNpc === secondaryNpc ? "is-selected" : ""}`}
           aria-label={`${displayName(secondaryNpc)}を選ぶ`}
           aria-pressed={selectedNpc === secondaryNpc}
           onClick={() => {
@@ -215,7 +247,7 @@ export function TownPresentation({
         </div>
         <button
           key={featuredNpc}
-          className={`presentation-character presentation-npc presentation-primary presentation-featured ${characterClass(featuredNpc)} ${activeNpc === featuredNpc ? "is-speaking" : ""} ${selectedNpc === featuredNpc ? "is-selected" : ""}`}
+          className={`presentation-character presentation-npc presentation-primary presentation-featured ${characterClass(featuredNpc)} ${state.npcRelations[featuredNpc]?.familiarity >= 3 ? "is-familiar" : ""} ${activeNpc === featuredNpc ? "is-speaking" : ""} ${selectedNpc === featuredNpc ? "is-selected" : ""}`}
           aria-label={
             selectedNpc === featuredNpc
               ? `${displayName(featuredNpc)}と話す`

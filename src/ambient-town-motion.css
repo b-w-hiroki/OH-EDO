@@ -1,0 +1,38 @@
+/* Minimal ambient motion. Keep scenery calm and readable. */
+@keyframes edoNorenSway {
+  0%, 100% { transform: rotate(-.25deg) translateY(0); }
+  50% { transform: rotate(.25deg) translateY(.5px); }
+}
+
+@keyframes edoLanternSway {
+  0%, 100% { transform: rotate(-1.2deg); }
+  50% { transform: rotate(1.2deg); }
+}
+
+.presentation-noren {
+  transform-origin: 50% 0%;
+  animation: edoNorenSway 6.8s ease-in-out infinite;
+}
+
+.prop-lantern {
+  transform-origin: 50% -8%;
+  animation: edoLanternSway 5.6s ease-in-out infinite;
+}
+
+.town-presentation.is-festival-prep .prop-lantern,
+.town-presentation.is-festival-after .prop-lantern {
+  animation-duration: 4.8s;
+}
+
+@media (max-width: 599px) {
+  .presentation-noren { animation-duration: 7.6s; }
+  .prop-lantern { animation-duration: 6.5s; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .presentation-noren,
+  .prop-lantern {
+    animation: none !important;
+    transform: none !important;
+  }
+}
