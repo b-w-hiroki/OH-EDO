@@ -163,6 +163,11 @@ export function TownPresentation({
       <div className="scene-petals" aria-hidden="true">
         <i /><i /><i /><i /><i /><i /><i />
       </div>
+      <div className="scene-props" aria-hidden="true">
+        <span className="scene-prop prop-lantern" />
+        <span className="scene-prop prop-crate" />
+        <span className="scene-prop prop-sign" />
+      </div>
 
       <div className="presentation-noren" aria-hidden="true">
         <span>{AREA_BANNER[area]}</span>
