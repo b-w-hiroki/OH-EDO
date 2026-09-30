@@ -505,8 +505,9 @@ function rememberedByTownLines(s: GameState, npc: NPCId): DialogLine[] | null {
 function pickNPCDialog(s: GameState, npc: NPCId): NPCDialogPick | null {
   if (npc === "kumitori_master") return null;
 
-  // Day 4+: short personal episodes make the town feel inhabited.
-  if (s.day >= 4) {
+  // Day4–5: early personal episodes belong to the first chapter.
+  // From Day6 onward, newer bond episodes take over instead of replaying missed old errands.
+  if (s.day >= 4 && s.day <= 5) {
     if (npc === "landlord" && !s.flags.episode_landlord_done) {
       return { kind: "episode_landlord", lines: NPC_EPISODES.landlord };
     }
