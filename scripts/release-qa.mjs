@@ -377,9 +377,13 @@ async function captureAreas(page, prefix) {
     }
   }
 
-  const postAreaState = await state(page);
+  let postAreaState = await state(page);
   if ((postAreaState?.day ?? 0) >= 10) {
-    for (const marker of ["bond_landlord", "bond_child", "bond_fishmonger", "bond_firechief"]) {
+    if (!postAreaState.completedTownEventIds?.includes("bond_newsman")) {
+      await talk(page, "瓦版屋");
+      postAreaState = await state(page);
+    }
+    for (const marker of ["bond_landlord", "bond_child", "bond_fishmonger", "bond_firechief", "bond_newsman"]) {
       assert(
         postAreaState.completedTownEventIds?.includes(marker),
         `Day10 area sweep should complete ${marker}: ${JSON.stringify(postAreaState.completedTownEventIds)}`
