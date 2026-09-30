@@ -236,11 +236,11 @@ async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = 
   }
 
   const chapterEvents = [
-    { day: 6, button: "六日目へ", id: "day6_festival_cleanup", memoryClass: null },
-    { day: 7, button: "7日目へ", id: "day7_well_order", memoryClass: "has-cleanup-memory" },
-    { day: 8, button: "8日目へ", id: "day8_market_shortage", memoryClass: "has-well-memory" },
-    { day: 9, button: "9日目へ", id: "day9_firehouse_watch", memoryClass: "has-market-memory" },
-    { day: 10, button: "10日目へ", id: "day10_town_council", memoryClass: "has-watch-memory" },
+    { day: 6, button: "六日目へ", id: "day6_festival_cleanup", memoryClass: null, relations: { fishmonger: 2, newsman: 1 } },
+    { day: 7, button: "7日目へ", id: "day7_well_order", memoryClass: "has-cleanup-memory", relations: { landlord: 2, child: 1 } },
+    { day: 8, button: "8日目へ", id: "day8_market_shortage", memoryClass: "has-well-memory", relations: { fishmonger: 2, landlord: 1, newsman: 1 } },
+    { day: 9, button: "9日目へ", id: "day9_firehouse_watch", memoryClass: "has-market-memory", relations: { firechief: 2, fishmonger: 1 } },
+    { day: 10, button: "10日目へ", id: "day10_town_council", memoryClass: "has-watch-memory", relations: { fishmonger: 2, newsman: 1, firechief: -1 } },
   ];
 
   for (const chapter of chapterEvents) {
@@ -294,6 +294,14 @@ async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = 
     s = await state(page);
     assert(s?.day === chapter.day, `Day${chapter.day} did not start`);
     assert(s.activeTownEventId === chapter.id, `Day${chapter.day} event missing`);
+    if (chapter.day === 10) {
+      const firstChoiceText = (await page.locator(".town-event-panel .fire-choice").first().textContent()) ?? "";
+      assert(firstChoiceText.includes("熊さん +2"), `Day10 trade relationship gain missing: ${firstChoiceText}`);
+      assert(firstChoiceText.includes("火消し頭 -1"), `Day10 trade relationship cost missing: ${firstChoiceText}`);
+    }
+    const relationsBeforeChoice = Object.fromEntries(
+      Object.entries(s.npcRelations).map(([npcId, relation]) => [npcId, relation.affinity])
+    );
     await page.locator(".town-event-panel .fire-choice").first().evaluate((el) => el.click());
     await page.waitForSelector(".town-event-result", { timeout: 5000 });
     await page.getByRole("button", { name: "町へ戻る" }).click();
@@ -302,6 +310,14 @@ async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = 
       s.completedTownEventIds?.includes(chapter.id),
       `Day${chapter.day} event did not complete`
     );
+    for (const [npcId, expectedDelta] of Object.entries(chapter.relations)) {
+      const before = relationsBeforeChoice[npcId];
+      const after = s.npcRelations?.[npcId]?.affinity;
+      assert(
+        typeof before === "number" && typeof after === "number" && after - before === expectedDelta,
+        `Day${chapter.day} relation ripple mismatch for ${npcId}: before=${before} after=${after} expected=${expectedDelta}`
+      );
+    }
     if (chapter.day === 6) {
       assert(s.flags?.day6_started && s.flags?.day6_cleanup_done, "Day6 compatibility flags missing");
       const className = await page.locator(".town-presentation").getAttribute("class");
