@@ -391,6 +391,12 @@ async function assertMobileLayout(page) {
     const doc = document.documentElement;
     const stage = document.querySelector(".presentation-stage")?.getBoundingClientRect();
     const talk = document.querySelector(".reference-talk-cta")?.getBoundingClientRect();
+    const nearbyTalk = [...document.querySelectorAll(".nearby-talk")]
+      .filter((el) => getComputedStyle(el).display !== "none")
+      .map((el) => el.getBoundingClientRect());
+    const nearbyCards = [...document.querySelectorAll(".nearby-person")]
+      .filter((el) => getComputedStyle(el).display !== "none")
+      .map((el) => el.getBoundingClientRect());
     const navButtons = [...document.querySelectorAll(".reference-area-nav button:not(:disabled)")].map((el) => el.getBoundingClientRect());
     return {
       viewportWidth: window.innerWidth,
@@ -399,6 +405,8 @@ async function assertMobileLayout(page) {
       stageHeight: stage?.height ?? null,
       talkWidth: talk?.width ?? null,
       talkHeight: talk?.height ?? null,
+      nearbyTalkCount: nearbyTalk.length,
+      nearbyCardMinHeight: nearbyCards.length ? Math.min(...nearbyCards.map((r) => r.height)) : 0,
       navMinHeight: navButtons.length ? Math.min(...navButtons.map((r) => r.height)) : 0,
       navOverflow: navButtons.some((r) => r.left < -1 || r.right > window.innerWidth + 1),
     };
@@ -406,7 +414,9 @@ async function assertMobileLayout(page) {
 
   assert(result.scrollWidth <= result.viewportWidth + 1, `horizontal overflow: ${JSON.stringify(result)}`);
   assert(result.stageTop !== null && result.stageTop < 220, `scene starts too low: ${JSON.stringify(result)}`);
-  assert(result.talkHeight === null || result.talkHeight >= 44, `talk CTA too small: ${JSON.stringify(result)}`);
+  const hasLargeDockTalk = (result.talkHeight ?? 0) >= 44;
+  const hasPeopleTalk = result.nearbyTalkCount > 0 && result.nearbyCardMinHeight >= 44;
+  assert(hasLargeDockTalk || hasPeopleTalk, `no mobile talk affordance with a 44px touch region: ${JSON.stringify(result)}`);
   assert(result.navMinHeight >= 44, `nav touch targets too small: ${JSON.stringify(result)}`);
   assert(!result.navOverflow, `nav overflows viewport: ${JSON.stringify(result)}`);
   return result;
