@@ -253,3 +253,14 @@
     line-height: 1.15 !important;
   }
 }
+
+
+/* relationship copy in the approved mock reads like a warm character note */
+.npc-memory-line::before {
+  content: "♥";
+  display: inline-block;
+  margin-right: 4px;
+  color: #df6872;
+  font-size: .9em;
+  transform: translateY(-.5px);
+}
