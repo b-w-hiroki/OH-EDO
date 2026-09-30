@@ -8,7 +8,7 @@
   }
 
   .reference-header {
-    grid-template-columns: 178px 342px minmax(0, 1fr) 66px !important;
+    grid-template-columns: 178px 342px minmax(0, 1fr) 82px !important;
     min-height: 76px !important;
     gap: 7px !important;
     margin-bottom: 5px !important;
@@ -176,6 +176,7 @@
     min-width: 52px !important;
     min-height: 38px !important;
     font-size: 10px !important;
+    white-space: nowrap !important;
   }
 
   .yesterday-card {
