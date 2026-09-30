@@ -13,6 +13,7 @@ const STATS: Array<{ label: string; key: StatKey }> = [
   { label: "粋", key: "iki" },
   { label: "人脈", key: "network" },
   { label: "腕前", key: "skill" },
+  { label: "衛生", key: "hygiene" },
 ];
 
 function ResourceIcon({ kind }: { kind: StatKey }) {

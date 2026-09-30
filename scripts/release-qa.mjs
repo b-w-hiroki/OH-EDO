@@ -514,7 +514,7 @@ async function runDesktop() {
   });
   assert(mockParity.navButtons >= 5, `approved mock travel tabs missing: ${JSON.stringify(mockParity)}`);
   assert(!mockParity.talkCtaVisible, `oversized desktop talk CTA returned: ${JSON.stringify(mockParity)}`);
-  assert(mockParity.topStats === 5, `desktop HUD should expose five core stats: ${JSON.stringify(mockParity)}`);
+  assert(mockParity.topStats === 6, `desktop HUD should expose six approved-mock stats: ${JSON.stringify(mockParity)}`);
   assert(mockParity.storyVisible && mockParity.rumorVisible, `approved mock side rail hierarchy missing: ${JSON.stringify(mockParity)}`);
   await verifyLegacySaveMigration(page);
   await captureAreas(page, "desktop-1600");
