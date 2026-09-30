@@ -39,6 +39,7 @@ const generatedRuntimeAssets = [
   "assets/edo/ui/generated/runtime/life-prop-sprite.svg",
   "assets/edo/ui/generated/runtime/consequence-prop-sprite.svg",
   "assets/edo/ui/generated/runtime/festival-garland.svg",
+  "assets/edo/ui/generated/runtime/background-crowd-sprite.svg",
 ];
 for (const relative of generatedRuntimeAssets) {
   const path = new URL(relative, dist);
