@@ -1,6 +1,6 @@
 import type { AreaId, GameState, NPCId, RumorTag } from "../types";
 import { AREAS, NPCS } from "../data";
-import { nextTownEvent } from "../events/townEvents";
+import { nextTownEvent, townEventConsequence } from "../events/townEvents";
 import { characterArtPath } from "../characterArt";
 import {
   actionTagLabel,
@@ -31,6 +31,32 @@ function sidePanelNpcIds(state: GameState): NPCId[] {
   };
   const merged = [...local, ...(nearbyByArea[state.currentArea] ?? [])];
   return Array.from(new Set(merged)).slice(0, 4);
+}
+
+
+function npcRailLine(state: GameState, npc: NPCId): string {
+  const yesterday = state.playerActions.filter((action) => action.day === state.day - 1).slice(-1)[0];
+  const specific = townEventConsequence(yesterday?.type)?.npcReactions[npc];
+  if (specific) return specific;
+
+  const relation = state.npcRelations[npc];
+  if (state.day >= 5 && relation.familiarity >= 3) {
+    switch (npc) {
+      case "landlord": return "最近、顔つきが変わったねぇ。";
+      case "fishmonger": return "昨日は助かったよ。また頼むぜ。";
+      case "child": return "たろう、またなんかしてるの？";
+      case "newsman": return "次の話も、お前の名前が出そうだな。";
+      case "firechief": return "あんたの動き、ちゃんと見てたぜ。";
+    }
+  }
+  if (relation.affinity >= 3) return "この町にも、だいぶ馴染んできたな。";
+  if (relation.familiarity >= 2) return "また顔を見たな。今日はどうした？";
+  return "まだ新入りの顔だな。";
+}
+
+function relationPercent(state: GameState, npc: NPCId): number {
+  const relation = state.npcRelations[npc];
+  return Math.max(8, Math.min(100, 18 + relation.familiarity * 13 + relation.affinity * 8));
 }
 
 function SideIcon({ kind }: { kind: "people" | "change" | "story" | "rumor" | "mood" }) {
@@ -129,6 +155,10 @@ export function TownSidePanel({
               <div className="nearby-copy">
                 <strong>{npcDisplayName(npcId)}</strong>
                 <span className="npc-subtitle">{npcSubtitle(npcId)}</span>
+                <span className="npc-memory-line">{npcRailLine(state, npcId)}</span>
+                <span className="npc-relation-meter" aria-label={`関係度 ${relationPercent(state, npcId)}%`}>
+                  <i style={{ width: `${relationPercent(state, npcId)}%` }} />
+                </span>
                 <small className={`relation-pill ${isNpcKnown(state, npcId) ? "is-known" : ""}`}>♥ {relationMemoryLabel(state, npcId)}</small>
               </div>
               <button

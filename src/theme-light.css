@@ -8935,3 +8935,70 @@ body::before {
     height: 43px;
   }
 }
+
+
+/* ── Mock parity: NPC rows show remembered town context ──────────── */
+.npc-memory-line {
+  display: block;
+  margin-top: 2px;
+  overflow: hidden;
+  color: #675546;
+  font-size: 9px;
+  font-weight: 650;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.npc-relation-meter {
+  display: block;
+  width: 100%;
+  max-width: 118px;
+  height: 5px;
+  margin-top: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(126,105,79,.35);
+  border-radius: 999px;
+  background: #d9d5ca;
+  box-shadow: inset 0 1px 2px rgba(69,53,37,.12);
+}
+
+.npc-relation-meter i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #e77b70, #df5c54);
+}
+
+.nearby-person:nth-child(2) .npc-relation-meter i {
+  background: linear-gradient(90deg, #67a8cc, #4e90ba);
+}
+
+.nearby-person:nth-child(3) .npc-relation-meter i {
+  background: linear-gradient(90deg, #69b67b, #4b9b62);
+}
+
+.nearby-person:nth-child(4) .npc-relation-meter i {
+  background: linear-gradient(90deg, #a784c6, #8464ad);
+}
+
+@media (min-width: 900px) {
+  .town-side-panel > .side-card:first-child .nearby-person {
+    min-height: 67px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-copy {
+    align-self: center;
+  }
+
+  .town-side-panel > .side-card:first-child .relation-pill {
+    display: none !important;
+  }
+}
+
+@media (max-width: 599px) {
+  .npc-memory-line,
+  .npc-relation-meter {
+    display: none !important;
+  }
+}
