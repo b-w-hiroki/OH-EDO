@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 220" preserveAspectRatio="none">
+<defs>
+ <linearGradient id="paper" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fffdf6"/><stop offset="1" stop-color="#efe1c3"/></linearGradient>
+ <linearGradient id="wood" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#765039"/><stop offset=".5" stop-color="#a57a4f"/><stop offset="1" stop-color="#684731"/></linearGradient>
+</defs>
+<rect x="3" y="4" width="894" height="212" rx="8" fill="url(#paper)" stroke="#8a603f" stroke-width="3"/>
+<rect x="4" y="4" width="12" height="212" rx="5" fill="url(#wood)"/><rect x="884" y="4" width="12" height="212" rx="5" fill="url(#wood)"/>
+<path d="M20 198h860" stroke="#d7bd92"/><path d="M690 165c50 8 90-10 180-6" stroke="#b9d6df" stroke-width="6" opacity=".35"/>
+<path d="M25 18h850" stroke="#fff" stroke-opacity=".65"/>
+</svg>
