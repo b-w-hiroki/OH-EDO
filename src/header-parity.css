@@ -1,0 +1,93 @@
+/* Approved mock header date plaque. */
+.reference-day-card {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  align-content: center;
+  justify-items: stretch;
+  gap: 4px !important;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.reference-day-primary {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.reference-day-primary > span:first-child {
+  font-size: 11px;
+  font-weight: 800;
+  color: #5c4a3d;
+}
+
+.reference-day-primary b {
+  flex: none;
+}
+
+.reference-day-primary .calendar-date {
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 800;
+  text-overflow: ellipsis;
+}
+
+.reference-day-primary .day-weather {
+  flex: none;
+  margin-left: auto;
+}
+
+.reference-day-primary .time-period {
+  flex: none;
+  font-size: 12px;
+}
+
+.reference-day-card .reference-location {
+  display: block;
+  min-width: 0;
+  margin: 0 !important;
+  padding: 4px 0 0 !important;
+  overflow: hidden;
+  border-left: 0 !important;
+  border-top: 1px solid rgba(196,165,120,.34);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 599px) {
+  .reference-day-card {
+    gap: 2px !important;
+  }
+
+  .reference-day-primary {
+    gap: 5px;
+  }
+
+  .reference-day-primary > span:first-child {
+    font-size: 8px;
+  }
+
+  .reference-day-primary b {
+    font-size: 12px !important;
+  }
+
+  .reference-day-primary .calendar-date {
+    font-size: 9px;
+  }
+
+  .reference-day-primary .day-weather {
+    font-size: 13px !important;
+  }
+
+  .reference-day-primary .time-period {
+    font-size: 9px;
+  }
+
+  .reference-day-card .reference-location {
+    padding-top: 2px !important;
+    font-size: 9px !important;
+  }
+}

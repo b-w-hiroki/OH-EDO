@@ -1309,11 +1309,13 @@ function App() {
         </div>
 
         <div className="reference-day-card">
-          <span>1年目</span>
-          <b>春</b>
-          <span className="calendar-date">{edoCalendarLabel(state.day)}</span>
-          <span className="day-weather">☀</span>
-          <strong className="time-period">{timePeriodLabel(state.time)}</strong>
+          <div className="reference-day-primary">
+            <span>1年目</span>
+            <b>春</b>
+            <span className="calendar-date">{edoCalendarLabel(state.day)}</span>
+            <span className="day-weather" aria-label="晴れ">☀</span>
+            <strong className="time-period">{timePeriodLabel(state.time)}</strong>
+          </div>
           {inWorld && (
             <span className="reference-location">⌖ {AREAS[state.currentArea].name}</span>
           )}
