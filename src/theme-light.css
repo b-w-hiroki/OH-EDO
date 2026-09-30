@@ -9045,3 +9045,36 @@ body::before {
     max-height: 46px;
   }
 }
+
+
+/* ── Generated runtime navigation art ────────────────────────────── */
+@media (min-width: 900px) and (min-height: 501px) {
+  .reference-area-nav .area-nav-icon {
+    width: 44px !important;
+    height: 40px !important;
+    flex: none;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background-color: transparent !important;
+    background-image: url("/assets/edo/ui/generated/runtime/nav-icon-sprite.webp") !important;
+    background-repeat: no-repeat !important;
+    background-size: 600% 100% !important;
+    box-shadow: none !important;
+  }
+
+  .reference-area-nav .area-nav-icon svg {
+    display: none !important;
+  }
+
+  .reference-area-nav button:nth-child(1) .area-nav-icon { background-position: 0% 50% !important; }
+  .reference-area-nav button:nth-child(2) .area-nav-icon { background-position: 20% 50% !important; }
+  .reference-area-nav button:nth-child(3) .area-nav-icon { background-position: 40% 50% !important; }
+  .reference-area-nav button:nth-child(4) .area-nav-icon { background-position: 60% 50% !important; }
+  .reference-area-nav button:nth-child(5) .area-nav-icon { background-position: 80% 50% !important; }
+  .reference-area-nav button:nth-child(6) .area-nav-icon { background-position: 100% 50% !important; }
+
+  .reference-area-nav button.active .area-nav-icon {
+    transform: translateY(-1px) scale(1.06);
+    filter: saturate(1.12) contrast(1.04);
+  }
+}
