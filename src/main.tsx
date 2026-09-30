@@ -14,6 +14,7 @@ import "./approved-mock-final.css";
 import "./hud-stat-art.css";
 import "./scene-detail-art.css";
 import "./familiarity-badges.css";
+import "./selected-npc-highlight.css";
 import "./visual-consequence.css";
 import "./town-mood-dressing.css";
 import "./ambient-town-motion.css";
