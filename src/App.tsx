@@ -23,6 +23,7 @@ import {
   FESTIVAL_CHOICES,
   FESTIVAL_INTRO_LINES,
   NPC_EPISODES,
+  NPC_BOND_EPISODES,
   REPUTATION_LINES,
   RANKS,
   JOB_CHOICES,
@@ -293,6 +294,91 @@ function applyDialogComplete(s: GameState, kind: DialogKind): GameState {
         log: appendLog(s.log, s.day, "瓦版屋と祭り前の町を歩いた。（粋 +1 / 人脈 +1）"),
       });
 
+    case "bond_landlord":
+      return withProgression({
+        ...closeToTown,
+        completedTownEventIds: [...s.completedTownEventIds, "bond_landlord"],
+        player: { ...s.player, trust: s.player.trust + 1 },
+        npcRelations: {
+          ...s.npcRelations,
+          landlord: {
+            ...s.npcRelations.landlord,
+            affinity: s.npcRelations.landlord.affinity + 1,
+            familiarity: s.npcRelations.landlord.familiarity + 1,
+            attitude: "friendly",
+          },
+        },
+        log: appendLog(s.log, s.day, "大家と、長屋での自分の立場について話した。（信用 +1）"),
+      });
+
+    case "bond_child":
+      return withProgression({
+        ...closeToTown,
+        completedTownEventIds: [...s.completedTownEventIds, "bond_child"],
+        player: { ...s.player, network: s.player.network + 1 },
+        npcRelations: {
+          ...s.npcRelations,
+          child: {
+            ...s.npcRelations.child,
+            affinity: s.npcRelations.child.affinity + 1,
+            familiarity: s.npcRelations.child.familiarity + 1,
+            attitude: "friendly",
+          },
+        },
+        log: appendLog(s.log, s.day, "源太が、昨日の井戸端のことを自分の言葉で話してくれた。（人脈 +1）"),
+      });
+
+    case "bond_fishmonger":
+      return withProgression({
+        ...closeToTown,
+        completedTownEventIds: [...s.completedTownEventIds, "bond_fishmonger"],
+        player: { ...s.player, skill: s.player.skill + 1 },
+        npcRelations: {
+          ...s.npcRelations,
+          fishmonger: {
+            ...s.npcRelations.fishmonger,
+            affinity: s.npcRelations.fishmonger.affinity + 1,
+            familiarity: s.npcRelations.fishmonger.familiarity + 1,
+            attitude: "friendly",
+          },
+        },
+        log: appendLog(s.log, s.day, "熊さんと、商店通りで助け合う意味を話した。（腕前 +1）"),
+      });
+
+    case "bond_firechief":
+      return withProgression({
+        ...closeToTown,
+        completedTownEventIds: [...s.completedTownEventIds, "bond_firechief"],
+        player: { ...s.player, trust: s.player.trust + 1 },
+        npcRelations: {
+          ...s.npcRelations,
+          firechief: {
+            ...s.npcRelations.firechief,
+            affinity: s.npcRelations.firechief.affinity + 1,
+            familiarity: s.npcRelations.firechief.familiarity + 1,
+            attitude: "friendly",
+          },
+        },
+        log: appendLog(s.log, s.day, "火消し頭と、町を守る側の責任について話した。（信用 +1）"),
+      });
+
+    case "bond_newsman":
+      return withProgression({
+        ...closeToTown,
+        completedTownEventIds: [...s.completedTownEventIds, "bond_newsman"],
+        player: { ...s.player, iki: s.player.iki + 1, network: s.player.network + 1 },
+        npcRelations: {
+          ...s.npcRelations,
+          newsman: {
+            ...s.npcRelations.newsman,
+            affinity: s.npcRelations.newsman.affinity + 1,
+            familiarity: s.npcRelations.newsman.familiarity + 1,
+            attitude: "friendly",
+          },
+        },
+        log: appendLog(s.log, s.day, "瓦版屋から、町での自分の呼ばれ方を聞いた。（粋 +1 / 人脈 +1）"),
+      });
+
     case "festival_intro":
       return {
         ...s,
@@ -435,6 +521,47 @@ function pickNPCDialog(s: GameState, npc: NPCId): NPCDialogPick | null {
     }
     if (npc === "newsman" && s.flags.episode_newsman_done && !s.flags.festival_started && !s.flags.festival_done) {
       return { kind: "festival_intro", lines: FESTIVAL_INTRO_LINES };
+    }
+  }
+
+  // Day6+: completing a town problem can unlock a deeper one-time bond conversation.
+  const bondDone = (id: string) => s.completedTownEventIds.includes(id);
+  if (s.day >= 6) {
+    if (
+      npc === "landlord" &&
+      s.completedTownEventIds.includes("day6_festival_cleanup") &&
+      !bondDone("bond_landlord")
+    ) {
+      return { kind: "bond_landlord", lines: NPC_BOND_EPISODES.landlord };
+    }
+    if (
+      npc === "child" &&
+      s.completedTownEventIds.includes("day7_well_order") &&
+      !bondDone("bond_child")
+    ) {
+      return { kind: "bond_child", lines: NPC_BOND_EPISODES.child };
+    }
+    if (
+      npc === "fishmonger" &&
+      s.completedTownEventIds.includes("day8_market_shortage") &&
+      !bondDone("bond_fishmonger")
+    ) {
+      return { kind: "bond_fishmonger", lines: NPC_BOND_EPISODES.fishmonger };
+    }
+    if (
+      npc === "firechief" &&
+      s.flags.met_firechief &&
+      s.completedTownEventIds.includes("day9_firehouse_watch") &&
+      !bondDone("bond_firechief")
+    ) {
+      return { kind: "bond_firechief", lines: NPC_BOND_EPISODES.firechief };
+    }
+    if (
+      npc === "newsman" &&
+      s.completedTownEventIds.includes("day10_town_council") &&
+      !bondDone("bond_newsman")
+    ) {
+      return { kind: "bond_newsman", lines: NPC_BOND_EPISODES.newsman };
     }
   }
 
