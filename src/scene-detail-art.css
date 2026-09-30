@@ -108,3 +108,55 @@
   .prop-sign { width: 30px; height: 50px; }
   .prop-sign::after { font-size: 17px; }
 }
+
+
+/* Lived-in town details: low-contrast set dressing, never interactive. */
+.scene-life-prop {
+  position: absolute;
+  z-index: 2;
+  display: block;
+  width: 76px;
+  height: 76px;
+  background-image: url("/assets/edo/ui/generated/runtime/life-prop-sprite.svg");
+  background-repeat: no-repeat;
+  background-size: 400% 100%;
+  pointer-events: none;
+  opacity: .78;
+  filter: saturate(.88) drop-shadow(0 3px 4px rgba(54,39,25,.14));
+}
+.life-basket { background-position: 0% 50%; }
+.life-buckets { background-position: 33.333% 50%; }
+.life-goods { background-position: 66.666% 50%; }
+.life-passerby { background-position: 100% 50%; opacity: .34; }
+
+.area-market .life-basket { left: 2%; bottom: 1%; }
+.area-market .life-goods { right: 13%; bottom: 2%; }
+.area-market .life-passerby { left: 67%; top: 34%; transform: scale(.82); }
+.area-market .life-buckets { display: none; }
+
+.area-well .life-buckets { left: 5%; bottom: 1%; }
+.area-well .life-passerby { right: 18%; top: 31%; transform: scale(.72); }
+.area-well .life-basket,
+.area-well .life-goods { display: none; }
+
+.area-nagaya .life-buckets { right: 2%; bottom: 1%; transform: scale(.78); }
+.area-nagaya .life-goods { left: 4%; bottom: 1%; transform: scale(.72); }
+.area-nagaya .life-passerby { right: 28%; top: 30%; transform: scale(.68); }
+.area-nagaya .life-basket { display: none; }
+
+.area-firehouse .life-buckets { right: 4%; bottom: 1%; }
+.area-firehouse .life-passerby { right: 22%; top: 30%; transform: scale(.7); }
+.area-firehouse .life-basket,
+.area-firehouse .life-goods { display: none; }
+
+@media (max-width: 599px) {
+  .scene-life-prop {
+    width: 52px;
+    height: 52px;
+    opacity: .58;
+  }
+
+  .life-passerby {
+    opacity: .22;
+  }
+}
