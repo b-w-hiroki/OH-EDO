@@ -8,6 +8,7 @@ import "./town-events.css";
 import "./result-panels.css";
 import "./interaction-polish.css";
 import "./scene-cast.css";
+import "./familiarity-badges.css";
 import "./header-parity.css";
 import "./generated-surfaces.css";
 import "./approved-mock-final.css";
