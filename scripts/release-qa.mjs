@@ -494,6 +494,21 @@ async function verifyPlaytestMode(page) {
   await page.getByRole("button", { name: "町へ戻る" }).click();
 }
 
+
+async function verifyAudioPreferencePersistence(page) {
+  await page.evaluate(() => localStorage.setItem("oh-edo-muted", "1"));
+  await page.reload({ waitUntil: "networkidle" });
+  await page.waitForSelector(".world-layout", { timeout: 10000 });
+  const mutedLabel = (await page.locator(".sound-toggle").textContent())?.trim();
+  assert(mutedLabel === "音 OFF", `muted audio preference was not restored: ${mutedLabel}`);
+
+  await page.evaluate(() => localStorage.setItem("oh-edo-muted", "0"));
+  await page.reload({ waitUntil: "networkidle" });
+  await page.waitForSelector(".world-layout", { timeout: 10000 });
+  const liveLabel = (await page.locator(".sound-toggle").textContent())?.trim();
+  assert(liveLabel === "音 ON", `unmuted audio preference was not restored: ${liveLabel}`);
+}
+
 async function verifyPwaOfflineRestore(page, context) {
   await page.goto(baseURL, { waitUntil: "networkidle" });
   await page.waitForFunction(() => Boolean(navigator.serviceWorker?.controller), null, { timeout: 10000 });
@@ -589,6 +604,7 @@ async function runDesktop() {
   await captureAreas(page, "desktop-1600");
   await captureStatusBook(page, "desktop-1600");
   await verifyPlaytestMode(page);
+  await verifyAudioPreferencePersistence(page);
   await verifyPwaOfflineRestore(page, context);
   await browser.close();
   return { day: finalState.day, provider: finalState.fireAftermath?.provider ?? finalState.lastDecision?.provider, accessibility };
