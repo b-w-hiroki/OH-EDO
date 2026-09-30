@@ -1,0 +1,63 @@
+/* Day10 next-chapter hook: tease the next map without adding a new nav slot yet. */
+.next-chapter-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.next-chapter-card::before {
+  content: "";
+  position: absolute;
+  right: -12px;
+  bottom: -18px;
+  width: 92px;
+  height: 72px;
+  border-radius: 50% 0 0 0;
+  background:
+    radial-gradient(circle at 25% 70%, rgba(92,149,177,.2) 0 6%, transparent 7%),
+    linear-gradient(145deg, transparent 30%, rgba(92,149,177,.16) 31% 36%, transparent 37% 46%, rgba(202,86,69,.12) 47% 52%, transparent 53%);
+  pointer-events: none;
+}
+
+.next-chapter-place {
+  display: inline-flex;
+  margin: 1px 0 6px;
+  padding: 2px 7px;
+  border: 1px solid #b9a078;
+  border-radius: 999px;
+  background: rgba(243,232,207,.8);
+  color: #735a42;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .05em;
+}
+
+.next-chapter-card > strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #5d3d2c;
+  font-family: var(--font-serif);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.next-chapter-card > p {
+  margin: 0;
+  color: #665346;
+  font-size: 9px;
+  line-height: 1.55;
+}
+
+@media (max-width: 599px) {
+  .next-chapter-card {
+    padding-bottom: 7px !important;
+  }
+
+  .next-chapter-card > strong {
+    font-size: 11px;
+  }
+
+  .next-chapter-card > p {
+    font-size: 8px;
+    line-height: 1.45;
+  }
+}
