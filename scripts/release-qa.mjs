@@ -206,6 +206,10 @@ async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = 
   await talk(page, "瓦版屋");
   await talk(page, "瓦版屋");
   await page.waitForSelector(".festival-panel", { timeout: 5000 });
+  {
+    const className = await page.locator(".town-presentation").getAttribute("class");
+    assert(className?.includes("is-festival-prep"), `Day4 festival prep dressing missing: ${className}`);
+  }
   if (captureMilestones) {
     await page.waitForTimeout(280);
     await page.screenshot({ path: `qa-artifacts/${prefix}-festival-choice.png`, fullPage: false });
@@ -221,6 +225,10 @@ async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = 
   s = await state(page);
   assert(s?.day === 5 && s.flags?.day5_started && s.flags?.festival_done, "Day5/festival progression failed");
   await page.waitForSelector(".town-finale-card", { timeout: 5000 });
+  {
+    const className = await page.locator(".town-presentation").getAttribute("class");
+    assert(className?.includes("is-festival-after"), `Day5 festival-after dressing missing: ${className}`);
+  }
   if (captureMilestones) {
     await page.waitForTimeout(2300);
     await page.evaluate(() => window.scrollTo(0, 0));
@@ -238,6 +246,10 @@ async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = 
   for (const chapter of chapterEvents) {
     await page.getByRole("button", { name: chapter.button }).click();
     await page.waitForSelector(".town-event-panel", { timeout: 5000 });
+    if (chapter.day === 6) {
+      const className = await page.locator(".town-presentation").getAttribute("class");
+      assert(className?.includes("is-festival-leftover"), `Day6 leftover festival dressing missing: ${className}`);
+    }
     if (chapter.memoryClass) {
       const townScene = page.locator(".town-presentation");
       await townScene.waitFor({ state: "visible", timeout: 5000 });
@@ -292,6 +304,8 @@ async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = 
     );
     if (chapter.day === 6) {
       assert(s.flags?.day6_started && s.flags?.day6_cleanup_done, "Day6 compatibility flags missing");
+      const className = await page.locator(".town-presentation").getAttribute("class");
+      assert(className?.includes("is-festival-cleaned"), `Day6 cleanup dressing did not clear: ${className}`);
     }
     if (captureMilestones && chapter.day === 7) {
       await page.waitForTimeout(280);
