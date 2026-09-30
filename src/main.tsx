@@ -11,6 +11,7 @@ import "./scene-cast.css";
 import "./header-parity.css";
 import "./generated-surfaces.css";
 import "./approved-mock-final.css";
+import "./hud-stat-art.css";
 import "./scene-detail-art.css";
 import "./familiarity-badges.css";
 import "./visual-consequence.css";
