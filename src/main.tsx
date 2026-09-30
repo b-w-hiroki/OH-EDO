@@ -10,6 +10,7 @@ import "./interaction-polish.css";
 import "./scene-cast.css";
 import "./header-parity.css";
 import "./landscape.css";
+import "./nav-parity.css";
 import "./title-viewport.css";
 
 // StrictMode is intentionally omitted: its dev-only double mount/unmount

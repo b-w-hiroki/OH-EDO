@@ -101,6 +101,22 @@ async function talk(page, name) {
 async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = {}) {
   await freshStart(page);
 
+  const initialNav = await page.evaluate(() => {
+    const width = window.innerWidth;
+    const buttons = [...document.querySelectorAll(".reference-area-nav button")];
+    const visible = buttons.filter((el) => getComputedStyle(el).display !== "none" && el.getBoundingClientRect().width > 0);
+    return {
+      width,
+      total: buttons.length,
+      visible: visible.length,
+      lockedVisible: visible.filter((el) => el.disabled).length,
+    };
+  });
+  if (initialNav.width <= 599 || initialNav.width >= 900) {
+    assert(initialNav.total === 6 && initialNav.visible === 6, `Day1 should preserve six navigation slots: ${JSON.stringify(initialNav)}`);
+    assert(initialNav.lockedVisible >= 1, `Day1 locked destination should remain visible: ${JSON.stringify(initialNav)}`);
+  }
+
   let initial = await state(page);
   if (!initial?.flags?.met_landlord) {
     await talk(page, "おかみさん");
