@@ -1,0 +1,57 @@
+/* Supporting cast: keep the approved mock's town scenes populated. */
+.presentation-secondary {
+  display: none;
+}
+
+@media (min-width: 900px) and (min-height: 501px) {
+  .presentation-secondary {
+    display: block;
+    z-index: 4;
+    opacity: .94;
+    filter: saturate(.94);
+  }
+
+  .presentation-secondary .presentation-name {
+    opacity: .92;
+  }
+
+  .town-presentation.area-nagaya .presentation-secondary.art-child {
+    right: 1.5%;
+    bottom: -1%;
+    width: 19%;
+    height: 47%;
+  }
+
+  .town-presentation.area-market .presentation-secondary.art-newsman {
+    right: 1.5%;
+    bottom: -3%;
+    width: 20%;
+    height: 53%;
+  }
+
+  .town-presentation.area-market:has(.presentation-primary.art-newsman) .presentation-secondary.art-fishmonger {
+    left: 1%;
+    right: auto;
+    bottom: -5%;
+    width: 25%;
+    height: 66%;
+  }
+
+  .town-presentation.area-nagaya:has(.presentation-primary.art-child) .presentation-secondary.art-landlord {
+    right: 1%;
+    bottom: -4%;
+    width: 27%;
+    height: 69%;
+  }
+
+  .presentation-secondary:hover .presentation-character-image,
+  .presentation-secondary.is-selected .presentation-character-image {
+    transform: translateY(-1%) scale(1.025);
+  }
+}
+
+@media (max-width: 899px), (max-height: 500px) {
+  .presentation-secondary {
+    display: none !important;
+  }
+}
