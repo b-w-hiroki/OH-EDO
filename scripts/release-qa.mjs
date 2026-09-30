@@ -471,12 +471,37 @@ async function verifyPwaOfflineRestore(page, context) {
   await context.setOffline(false);
 }
 
+
+async function assertGeneratedSurfaceStyles(page, { desktop = false } = {}) {
+  const surfaces = await page.evaluate((isDesktop) => {
+    const side = document.querySelector(".side-card");
+    const activeTab = document.querySelector(".reference-area-nav button.active");
+    const background = (el) => el ? getComputedStyle(el).backgroundImage : "";
+    return {
+      sidePanel: background(side),
+      activeTab: isDesktop ? background(activeTab) : "",
+    };
+  }, desktop);
+
+  assert(
+    surfaces.sidePanel.includes("paper-panel-frame.svg"),
+    `generated side-panel surface missing: ${JSON.stringify(surfaces)}`
+  );
+  if (desktop) {
+    assert(
+      surfaces.activeTab.includes("nav-tab-frame-active.svg"),
+      `generated active navigation surface missing: ${JSON.stringify(surfaces)}`
+    );
+  }
+}
+
 async function runDesktop() {
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({ viewport: { width: 1600, height: 900 }, deviceScaleFactor: 1 });
   const page = await context.newPage();
   const finalState = await completeDay1ToDay10(page, "desktop-1600");
   const accessibility = await assertAccessibilityBasics(page);
+  await assertGeneratedSurfaceStyles(page, { desktop: true });
   const mockParity = await page.evaluate(() => {
     const visible = (el) => Boolean(el) && getComputedStyle(el).display !== "none" && el.getBoundingClientRect().width > 0;
     return {
@@ -513,6 +538,7 @@ async function runMobileChromium() {
   const finalState = await completeDay1ToDay10(page, "mobile-430");
   const accessibility = await assertAccessibilityBasics(page);
   const layout = await assertMobileLayout(page);
+  await assertGeneratedSurfaceStyles(page);
   await captureAreas(page, "mobile-430");
   await captureStatusBook(page, "mobile-430");
   await browser.close();
