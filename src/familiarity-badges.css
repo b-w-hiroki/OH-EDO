@@ -1,0 +1,46 @@
+/* Familiarity seal: a small in-world visual reward for becoming known in town. */
+.presentation-character.presentation-npc.is-familiar .presentation-name {
+  padding-right: 30px;
+  border-color: rgba(221,181,123,.9);
+  background:
+    linear-gradient(180deg, rgba(84,62,45,.94), rgba(58,44,34,.94));
+}
+
+.presentation-character.presentation-npc.is-familiar .presentation-name::after {
+  content: "馴";
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 19px;
+  height: 19px;
+  transform: translateY(-50%) rotate(4deg);
+  border: 1px solid #8e342c;
+  border-radius: 4px 3px 5px 3px;
+  background: #c95145;
+  color: #fff2df;
+  box-shadow: inset 0 0 0 1px rgba(255,234,207,.18);
+  font-family: var(--font-serif);
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.presentation-character.presentation-npc.is-familiar .presentation-character-image {
+  filter:
+    drop-shadow(0 1px 0 rgba(255,248,229,.82))
+    drop-shadow(0 12px 13px rgba(49,32,20,.26));
+}
+
+@media (max-width: 599px) {
+  .presentation-character.presentation-npc.is-familiar .presentation-name {
+    padding-right: 24px;
+  }
+
+  .presentation-character.presentation-npc.is-familiar .presentation-name::after {
+    width: 16px;
+    height: 16px;
+    right: 4px;
+    font-size: 7px;
+  }
+}
