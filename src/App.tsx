@@ -1300,7 +1300,7 @@ function App() {
           <span className="reference-logo">
             <img
               className="reference-logo-image"
-              src="/assets/edo/ui/generated/runtime/logo-approved-mock.webp"
+              src="/assets/edo/ui/generated/runtime/logo-oh-edo-approved.svg"
               alt="OH! EDO!"
               draggable={false}
             />
