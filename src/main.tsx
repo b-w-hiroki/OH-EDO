@@ -13,6 +13,7 @@ import "./generated-surfaces.css";
 import "./approved-mock-final.css";
 import "./hud-stat-art.css";
 import "./scene-detail-art.css";
+import "./area-ambient-art.css";
 import "./familiarity-badges.css";
 import "./visual-consequence.css";
 import "./town-mood-dressing.css";
