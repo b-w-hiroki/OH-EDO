@@ -1095,7 +1095,6 @@ function App() {
           economy: s.town.economy + (e.economy ?? 0) + bonus,
         },
         flags: { ...s.flags, festival_done: true },
-        npcRelations: applyTownEventRelationDeltas(s.npcRelations, choice.id),
         activeRumors: Array.from(new Set([...s.activeRumors, ...choice.rumorTags])),
         rumorHistory: [
           ...s.rumorHistory,
@@ -1334,6 +1333,7 @@ function App() {
           trend: s.town.trend + (e.trend ?? 0),
           economy: s.town.economy + (e.economy ?? 0),
         },
+        npcRelations: applyTownEventRelationDeltas(s.npcRelations, choice.id),
         activeRumors: Array.from(new Set([...s.activeRumors, ...choice.rumorTags])),
         rumorHistory: [
           ...s.rumorHistory,
