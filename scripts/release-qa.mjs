@@ -228,16 +228,25 @@ async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = 
   }
 
   const chapterEvents = [
-    { day: 6, button: "六日目へ", id: "day6_festival_cleanup" },
-    { day: 7, button: "7日目へ", id: "day7_well_order" },
-    { day: 8, button: "8日目へ", id: "day8_market_shortage" },
-    { day: 9, button: "9日目へ", id: "day9_firehouse_watch" },
-    { day: 10, button: "10日目へ", id: "day10_town_council" },
+    { day: 6, button: "六日目へ", id: "day6_festival_cleanup", memoryClass: null },
+    { day: 7, button: "7日目へ", id: "day7_well_order", memoryClass: "has-cleanup-memory" },
+    { day: 8, button: "8日目へ", id: "day8_market_shortage", memoryClass: "has-well-memory" },
+    { day: 9, button: "9日目へ", id: "day9_firehouse_watch", memoryClass: "has-market-memory" },
+    { day: 10, button: "10日目へ", id: "day10_town_council", memoryClass: "has-watch-memory" },
   ];
 
   for (const chapter of chapterEvents) {
     await page.getByRole("button", { name: chapter.button }).click();
     await page.waitForSelector(".town-event-panel", { timeout: 5000 });
+    if (chapter.memoryClass) {
+      const townScene = page.locator(".town-presentation");
+      await townScene.waitFor({ state: "visible", timeout: 5000 });
+      const className = await townScene.getAttribute("class");
+      assert(
+        className?.includes(chapter.memoryClass),
+        `Day${chapter.day} missing visual consequence memory ${chapter.memoryClass}: ${className}`
+      );
+    }
     const eventPanelBounds = await page.evaluate(() => {
       const panel = document.querySelector(".town-event-panel")?.getBoundingClientRect();
       const stage = document.querySelector(".presentation-stage")?.getBoundingClientRect();
