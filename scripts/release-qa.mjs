@@ -376,6 +376,16 @@ async function captureAreas(page, prefix) {
       await advanceDialogs(page);
     }
   }
+
+  const postAreaState = await state(page);
+  if ((postAreaState?.day ?? 0) >= 10) {
+    for (const marker of ["bond_landlord", "bond_child", "bond_fishmonger", "bond_firechief"]) {
+      assert(
+        postAreaState.completedTownEventIds?.includes(marker),
+        `Day10 area sweep should complete ${marker}: ${JSON.stringify(postAreaState.completedTownEventIds)}`
+      );
+    }
+  }
 }
 
 async function assertAccessibilityBasics(page) {
