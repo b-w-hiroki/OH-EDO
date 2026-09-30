@@ -25,6 +25,7 @@ import "./character-presence.css";
 import "./landscape.css";
 import "./nav-parity.css";
 import "./mobile-talk-parity.css";
+import "./next-chapter-hook.css";
 import "./title-viewport.css";
 
 // StrictMode is intentionally omitted: its dev-only double mount/unmount

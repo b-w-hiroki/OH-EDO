@@ -59,6 +59,40 @@ function relationPercent(state: GameState, npc: NPCId): number {
   return Math.max(8, Math.min(100, 18 + relation.familiarity * 13 + relation.affinity * 8));
 }
 
+function nextChapterLead(state: GameState): { place: string; title: string; text: string } | null {
+  if (!state.completedTownEventIds.includes("day10_town_council")) return null;
+  const councilChoice = [...state.playerActions]
+    .reverse()
+    .find((action) => action.type.startsWith("council_"))?.type;
+
+  switch (councilChoice) {
+    case "council_trade":
+      return {
+        place: "河岸・船着場",
+        title: "町の外から、商いの話が届き始めた",
+        text: "熊さんが新しい仕入れ先を探している。次は町の中だけでなく、川向こうとのつながりが仕事になりそうだ。",
+      };
+    case "council_safety":
+      return {
+        place: "寺社前・裏路地",
+        title: "暮らしを守る相談が、町外れへ広がった",
+        text: "火消し頭が古い道と人の流れを気にしている。次は町内の安全を、外との境目まで見に行くことになりそうだ。",
+      };
+    case "council_balance":
+      return {
+        place: "湯屋・茶屋",
+        title: "人が集まる場所から、新しい相談が生まれそうだ",
+        text: "大家と瓦版屋が、町人の本音を拾える場所を探している。次章では『顔役』として人の間をつなぐ仕事が増えていく。",
+      };
+    default:
+      return {
+        place: "町の外れ",
+        title: "大江戸町の外からも、名前を呼ぶ声がする",
+        text: "十日間で築いた評判が、少しずつ町の外へ届き始めている。次は新しい場所と人間関係が待っている。",
+      };
+  }
+}
+
 function SideIcon({ kind }: { kind: "people" | "change" | "story" | "rumor" | "mood" }) {
   return <span className={`side-icon-art side-icon-${kind}`} aria-hidden="true" />;
 }
@@ -89,6 +123,7 @@ export function TownSidePanel({
     .filter((npc) => isNpcKnown(state, npc)).length;
   const finaleReady = state.day === 5 && state.flags.festival_done;
   const upcomingTownEvent = state.screen === "town" ? nextTownEvent(state) : null;
+  const nextChapter = nextChapterLead(state);
   const areaFlavor = AREAS[state.currentArea].flavor;
   const recentActionItems = state.playerActions
     .slice(-3)
@@ -187,6 +222,15 @@ export function TownSidePanel({
           <button className="primary town-next-day" onClick={onStartNextDay}>
             {upcomingTownEvent.day}日目へ
           </button>
+        </section>
+      )}
+
+      {nextChapter && (
+        <section className="side-card next-chapter-card">
+          <div className="side-card-title"><span><SideIcon kind="story" /> 次章の気配</span></div>
+          <small className="next-chapter-place">{nextChapter.place}</small>
+          <strong>{nextChapter.title}</strong>
+          <p>{nextChapter.text}</p>
         </section>
       )}
 
