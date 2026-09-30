@@ -322,6 +322,8 @@ async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = 
   assert(s.flags?.firehouse_unlocked, "firehouse unlock regressed");
   assert(Array.isArray(s.playerActions) && s.playerActions.length >= 8, "player action history missing");
   assert(Array.isArray(s.decisionLogs) && s.decisionLogs.length >= 2, "decision logs missing");
+  const nextChapterText = (await page.locator(".next-chapter-card").textContent()) ?? "";
+  assert(nextChapterText.includes("河岸・船着場"), `Day10 first-choice next chapter hook missing: ${nextChapterText}`);
   return s;
 }
 
