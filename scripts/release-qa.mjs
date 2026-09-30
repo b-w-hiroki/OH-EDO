@@ -517,11 +517,14 @@ async function assertGeneratedSurfaceStyles(page, { desktop = false } = {}) {
       .find((el) => getComputedStyle(el).display !== "none");
     const statIcon = document.querySelector(".reference-stat-icon");
     const logo = document.querySelector(".reference-logo-image");
+    const ambientAccent = [...document.querySelectorAll(".scene-ambient-accent")]
+      .find((el) => getComputedStyle(el).display !== "none");
     const background = (el) => el ? getComputedStyle(el).backgroundImage : "";
     return {
       sidePanel: background(side),
       activeTab: isDesktop ? background(activeTab) : "",
       lifeProp: background(lifeProp),
+      ambientAccent: background(ambientAccent),
       statIcon: isDesktop ? background(statIcon) : "",
       logoSrc: logo?.getAttribute("src") ?? "",
     };
@@ -534,6 +537,10 @@ async function assertGeneratedSurfaceStyles(page, { desktop = false } = {}) {
   assert(
     surfaces.lifeProp.includes("life-prop-sprite.svg"),
     `generated lived-in prop sprite missing: ${JSON.stringify(surfaces)}`
+  );
+  assert(
+    surfaces.ambientAccent.includes("ambient-area-sprite.svg"),
+    `generated area ambient accent missing: ${JSON.stringify(surfaces)}`
   );
   assert(
     surfaces.logoSrc.includes("logo-oh-edo-approved.svg"),
