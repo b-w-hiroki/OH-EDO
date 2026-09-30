@@ -70,6 +70,10 @@ import { clearGameState, loadGameState, saveGameState } from "./saveState";
 import { recordMetric } from "./game/metrics";
 import { nextTownEvent, townEventConsequence, TOWN_EVENTS } from "./events/townEvents";
 import { actionTagLabel, npcDisplayName, relationLabel, rumorLabel } from "./townLabels";
+import {
+  applyTownEventRelationDeltas,
+  townEventRelationSummary,
+} from "./town/townEventRelations";
 
 const decisionService = createDecisionService();
 
@@ -1091,6 +1095,7 @@ function App() {
           economy: s.town.economy + (e.economy ?? 0) + bonus,
         },
         flags: { ...s.flags, festival_done: true },
+        npcRelations: applyTownEventRelationDeltas(s.npcRelations, choice.id),
         activeRumors: Array.from(new Set([...s.activeRumors, ...choice.rumorTags])),
         rumorHistory: [
           ...s.rumorHistory,
@@ -1356,8 +1361,13 @@ function App() {
       return next;
     });
     uiSound.result();
-    setToast("祭り明けの働きが、次の町の評判へ残った");
-    window.setTimeout(() => setToast(null), 2000);
+    const relationSummary = townEventRelationSummary(choiceId);
+    setToast(
+      relationSummary
+        ? `町の反応：${relationSummary}`
+        : "この働きが、次の町の評判へ残った"
+    );
+    window.setTimeout(() => setToast(null), 2200);
   }, []);
 
   const finishTownEvent = useCallback(() => {
