@@ -60,6 +60,10 @@ function relationPercent(state: GameState, npc: NPCId): number {
 }
 
 function SideIcon({ kind }: { kind: "people" | "change" | "story" | "rumor" | "mood" }) {
+  return <span className={`side-icon-art side-icon-${kind}`} aria-hidden="true" />;
+}
+
+function LegacySideIcon({ kind }: { kind: "people" | "change" | "story" | "rumor" | "mood" }) {
   const common = {
     width: 16,
     height: 16,
