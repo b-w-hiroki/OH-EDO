@@ -167,6 +167,10 @@ export function TownPresentation({
         <span className="scene-prop prop-lantern" />
         <span className="scene-prop prop-crate" />
         <span className="scene-prop prop-sign" />
+        <span className="scene-life-prop life-basket" />
+        <span className="scene-life-prop life-buckets" />
+        <span className="scene-life-prop life-goods" />
+        <span className="scene-life-prop life-passerby" />
       </div>
 
       <div className="presentation-noren" aria-hidden="true">
