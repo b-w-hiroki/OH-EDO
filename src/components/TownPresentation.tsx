@@ -145,6 +145,9 @@ export function TownPresentation({
       : selectedNpc && npcs.includes(selectedNpc)
         ? selectedNpc
         : npcs[0];
+  const secondaryNpc = !dialogOpen
+    ? npcs.find((npc) => npc !== featuredNpc) ?? null
+    : null;
 
   return (
     <section
@@ -178,6 +181,23 @@ export function TownPresentation({
       >
         <CharacterImage id="player" />
       </button>
+
+      {secondaryNpc && (
+        <button
+          key={`secondary-${secondaryNpc}`}
+          className={`presentation-character presentation-npc presentation-secondary ${characterClass(secondaryNpc)} ${selectedNpc === secondaryNpc ? "is-selected" : ""}`}
+          aria-label={`${displayName(secondaryNpc)}を選ぶ`}
+          aria-pressed={selectedNpc === secondaryNpc}
+          onClick={() => {
+            if (selectedNpc === secondaryNpc) onTalk(secondaryNpc);
+            else onSelect(secondaryNpc);
+          }}
+          type="button"
+        >
+          <CharacterImage id={secondaryNpc} />
+          <span className="presentation-name">{displayName(secondaryNpc)}</span>
+        </button>
+      )}
 
       {featuredNpc && (
         <>
