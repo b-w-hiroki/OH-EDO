@@ -117,6 +117,18 @@ function characterClass(npc: NPCId): string {
   return "";
 }
 
+
+function visualConsequenceClass(state: GameState): string {
+  const yesterday = state.playerActions.filter((action) => action.day === state.day - 1).slice(-1)[0];
+  const type = yesterday?.type ?? "";
+  if (/cleanup_/.test(type)) return "has-cleanup-memory";
+  if (/well_/.test(type)) return "has-well-memory";
+  if (/market_/.test(type)) return "has-market-memory";
+  if (/watch_/.test(type)) return "has-watch-memory";
+  if (/council_/.test(type)) return "has-council-memory";
+  return "";
+}
+
 function speakerToNpc(speaker?: string | null): NPCId | null {
   if (!speaker) return null;
   if (speaker.includes("大家")) return "landlord";
@@ -151,7 +163,7 @@ export function TownPresentation({
 
   return (
     <section
-      className={`town-presentation area-${area} ${dialogOpen ? "is-dialogue" : ""} ${playerSpeaking ? "is-player-speaking" : ""} ${state.day === 5 && state.flags.festival_done ? "is-festival-after" : state.day >= 4 && state.flags.festival_started ? "is-festival-prep" : ""}`}
+      className={`town-presentation area-${area} ${dialogOpen ? "is-dialogue" : ""} ${playerSpeaking ? "is-player-speaking" : ""} ${state.day === 5 && state.flags.festival_done ? "is-festival-after" : state.day >= 4 && state.flags.festival_started ? "is-festival-prep" : ""} ${visualConsequenceClass(state)}`}
       aria-label={`${AREAS[state.currentArea].name}の情景`}
     >
       <div
@@ -171,6 +183,11 @@ export function TownPresentation({
         <span className="scene-life-prop life-buckets" />
         <span className="scene-life-prop life-goods" />
         <span className="scene-life-prop life-passerby" />
+        <span className="scene-memory-prop memory-cleanup" />
+        <span className="scene-memory-prop memory-well" />
+        <span className="scene-memory-prop memory-market" />
+        <span className="scene-memory-prop memory-watch" />
+        <span className="scene-memory-prop memory-council" />
       </div>
 
       <div className="presentation-noren" aria-hidden="true">
