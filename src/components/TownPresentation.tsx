@@ -203,6 +203,10 @@ export function TownPresentation({
         <span className="scene-memory-prop memory-market" />
         <span className="scene-memory-prop memory-watch" />
         <span className="scene-memory-prop memory-council" />
+        <span className="scene-ambient-accent accent-nagaya" />
+        <span className="scene-ambient-accent accent-well" />
+        <span className="scene-ambient-accent accent-market" />
+        <span className="scene-ambient-accent accent-firehouse" />
       </div>
 
       <div className="presentation-noren" aria-hidden="true">
