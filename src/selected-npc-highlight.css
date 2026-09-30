@@ -1,0 +1,53 @@
+/* Approved mock parity: selected NPC reads as the active conversation target. */
+
+.nearby-person.selected {
+  position: relative;
+  border-color: #77b9de !important;
+  background:
+    linear-gradient(180deg, rgba(235,248,255,.98), rgba(218,239,251,.98)) !important;
+  box-shadow:
+    inset 0 0 0 2px rgba(255,255,255,.72),
+    0 0 0 2px rgba(91,169,211,.16),
+    0 4px 10px rgba(67,120,150,.08) !important;
+}
+
+.nearby-person.selected::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 4px;
+  border-radius: 0 3px 3px 0;
+  background: linear-gradient(180deg, #65b6df, #3e8fbe);
+}
+
+.nearby-person.selected .nearby-avatar {
+  outline: 2px solid rgba(77,158,202,.42) !important;
+  outline-offset: 2px;
+}
+
+.nearby-person.selected .npc-subtitle,
+.nearby-person.selected .npc-memory-line {
+  color: #52778a !important;
+}
+
+.nearby-person.selected .npc-relation-meter {
+  border-color: rgba(75,145,182,.20);
+  background: rgba(255,255,255,.68);
+}
+
+.nearby-person.selected .nearby-talk {
+  border-color: #d26a5b !important;
+  background: linear-gradient(180deg, #fff1ec, #f5d2c9) !important;
+  color: #9d4238 !important;
+  box-shadow: 0 2px 0 rgba(149,65,54,.18);
+}
+
+@media (max-width: 599px) {
+  .nearby-person.selected::before {
+    top: 4px;
+    bottom: 4px;
+    width: 3px;
+  }
+}
