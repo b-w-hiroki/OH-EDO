@@ -160,3 +160,13 @@ Pages環境がGitHub側で有効になると公開URLへ反映される。
 - Mobile room controls constrained inside the scenic stage
 - Screenshot QA expanded to title, choices, results, status notebook, room, Day5 finale, Day6–Day10, and WebKit portrait/landscape
 - Full physical iPhone Day1–Day10 remains an external release gate
+
+
+## 2026-09-30 Generated Mock UI Assets
+
+- Generated Edo UI source sheets are stored under `public/assets/edo/ui/generated/source/`.
+- Production-ready derived assets are stored under `public/assets/edo/ui/generated/runtime/`.
+- Runtime assets currently cover the approved logo, six-tab navigation icon/surfaces, paper/wood side panels, dialogue frames, and notice/transient frames.
+- Generated assets are required by production smoke and verified in browser QA so future CSS refactors cannot silently remove them.
+- The approved town mock remains the structural source of truth; generated sheets are used as material/ornament sources, not as replacement layouts.
+- Final approved-mock balance now uses six desktop HUD stats, larger foreground characters, wider people rail, six persistent travel slots, and generated UI surfaces.
