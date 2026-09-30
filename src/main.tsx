@@ -13,6 +13,7 @@ import "./generated-surfaces.css";
 import "./approved-mock-final.css";
 import "./landscape.css";
 import "./nav-parity.css";
+import "./mobile-talk-parity.css";
 import "./title-viewport.css";
 
 // StrictMode is intentionally omitted: its dev-only double mount/unmount

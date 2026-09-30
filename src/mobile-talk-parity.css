@@ -1,0 +1,74 @@
+/* Mobile mock parity: conversation lives with people, not in a giant web-like CTA. */
+@media (max-width: 599px) {
+  .town-side-panel > .side-card:first-child .nearby-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 5px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-person {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto auto !important;
+    justify-items: center !important;
+    min-height: 102px !important;
+    padding: 5px 3px 6px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-avatar {
+    width: 46px !important;
+    height: 46px !important;
+    margin-bottom: 2px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-copy {
+    width: 100%;
+    text-align: center;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-copy strong {
+    display: block;
+    font-size: 9px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .npc-subtitle {
+    display: none !important;
+  }
+
+  .town-side-panel > .side-card:first-child .relation-pill,
+  .npc-memory-line,
+  .npc-relation-meter {
+    display: none !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-talk {
+    display: block !important;
+    min-width: 56px !important;
+    min-height: 28px !important;
+    margin-top: 3px;
+    padding: 3px 8px !important;
+    border-radius: 14px !important;
+    font-size: 8px !important;
+  }
+
+  .reference-talk-cta {
+    display: none !important;
+  }
+
+  .reference-action-dock,
+  .reference-action-dock.is-dialogue {
+    display: block !important;
+    margin-top: 4px !important;
+  }
+
+  .reference-area-nav {
+    margin-top: 0 !important;
+  }
+
+  .town-side-panel > .side-card:first-child {
+    margin-bottom: 5px !important;
+  }
+
+  .rumor-card {
+    margin-bottom: 4px !important;
+  }
+}
