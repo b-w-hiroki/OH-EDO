@@ -1,0 +1,361 @@
+/* Approved 2026-10-01 spring-town proposal: desktop conversation composition. */
+@media (min-width: 1100px) and (min-height: 700px) {
+  .app {
+    width: 100%;
+    max-width: 1720px !important;
+    padding: 6px 14px 10px !important;
+  }
+
+  .reference-header {
+    position: relative !important;
+    grid-template-columns: 280px 280px 548px minmax(0, 1fr) 178px !important;
+    grid-template-rows: 70px 38px !important;
+    min-height: 108px !important;
+    gap: 0 8px !important;
+    margin-bottom: 5px !important;
+  }
+
+  .reference-header::after {
+    content: "";
+    position: absolute;
+    z-index: 40;
+    inset: -3px;
+    border: 0;
+    border-radius: 5px;
+    background: url("/assets/edo/ui/approved-mock/header-wood-frame.png") center / 100% 100% no-repeat;
+    box-shadow: 0 3px 0 rgba(74, 39, 19, .28);
+    pointer-events: none;
+  }
+
+  .reference-logo-wrap,
+  .reference-day-card,
+  .reference-statusbar {
+    min-height: 0 !important;
+  }
+
+  .reference-logo-wrap {
+    grid-column: 1 / 3 !important;
+    grid-row: 1 / 3 !important;
+    min-height: 108px !important;
+    border-radius: 3px !important;
+    background: linear-gradient(180deg, rgba(255,248,224,.96), rgba(239,210,166,.92)) !important;
+  }
+
+  .reference-logo-image {
+    width: 260px !important;
+    max-height: 94px !important;
+  }
+
+  .reference-day-card {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    height: 68px !important;
+    padding: 6px 20px !important;
+    border: 3px solid #7f4b25 !important;
+    background: linear-gradient(180deg, #fff9e9, #f4dfbd) !important;
+  }
+
+  .reference-statusbar {
+    height: 36px !important;
+    padding: 2px 10px !important;
+    border: 3px solid #7f4b25 !important;
+    background: linear-gradient(180deg, #fff9ea, #f7e5c3) !important;
+  }
+
+  .desktop-header-status {
+    grid-column: 2 / 5 !important;
+    grid-row: 2 !important;
+    align-self: end !important;
+    min-width: 0 !important;
+  }
+
+  .reference-statusbar .reference-stat {
+    min-height: 30px !important;
+    padding-block: 1px !important;
+  }
+
+  .reference-statusbar .reference-stat-icon {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  .reference-header-actions {
+    grid-column: 5 !important;
+    grid-row: 1 !important;
+    align-self: start !important;
+    width: 178px !important;
+    min-width: 178px !important;
+    height: 68px !important;
+  }
+
+  .reference-header-actions > .ghost:not(.sound-toggle):not(.reset-compact) {
+    width: 174px !important;
+    min-width: 174px !important;
+    min-height: 64px !important;
+    font-size: 19px !important;
+    border: 4px solid #8a552d !important;
+    border-radius: 5px !important;
+    background: linear-gradient(180deg, #294f7f, #112e5b) !important;
+    color: #fff8e7 !important;
+    box-shadow: inset 0 0 0 2px #5f7fa4, 0 3px 0 rgba(64, 35, 18, .28) !important;
+  }
+
+  .desktop-objective-strip,
+  .objective-strip {
+    position: absolute !important;
+    z-index: 30;
+    top: 9px;
+    right: 202px;
+    width: 300px !important;
+    min-height: 58px !important;
+    margin: 0 !important;
+    padding: 9px 15px !important;
+    border: 3px solid #7f4b25 !important;
+    background: linear-gradient(180deg, #fff8e8, #f4dfbd) !important;
+    font-size: 14px !important;
+  }
+
+  .world-layout {
+    grid-template-columns: minmax(0, 3fr) minmax(330px, 1fr) !important;
+    gap: 8px !important;
+    align-items: stretch !important;
+  }
+
+  .presentation-stage {
+    height: clamp(580px, calc(100vh - 252px), 690px) !important;
+    min-height: 580px !important;
+    aspect-ratio: auto !important;
+    border: 4px solid #79502b !important;
+    border-radius: 3px !important;
+    box-shadow: 0 4px 12px rgba(69, 39, 17, .3) !important;
+  }
+
+  .town-presentation .presentation-player {
+    left: -6% !important;
+    width: 44% !important;
+    height: 112% !important;
+    bottom: -12% !important;
+  }
+
+  .town-presentation .presentation-primary {
+    right: 14% !important;
+    width: 37% !important;
+    height: 106% !important;
+    bottom: -12% !important;
+  }
+
+  .presentation-hanging-note,
+  .presentation-noren,
+  .presentation-speech-bubble,
+  .town-presentation .presentation-location-card,
+  .town-presentation .presentation-name,
+  .controls-hint {
+    display: none !important;
+  }
+
+  .dialogue-overlay {
+    inset: auto 0 8px 0 !important;
+    padding: 0 12px !important;
+    align-items: end !important;
+  }
+
+  .dialogue-overlay .mock-dialog {
+    width: 100% !important;
+    min-height: 170px !important;
+    margin: 0 !important;
+    padding: 38px 42px 20px !important;
+    border: 0 !important;
+    border-radius: 4px !important;
+    background:
+      url("/assets/edo/ui/approved-mock/dialog-paper-frame.png") center / 100% 100% no-repeat,
+      url("/assets/edo/ui/approved-mock/dialog-paper-texture.png") center / 128px 64px repeat !important;
+    box-shadow: 0 5px 0 rgba(73, 40, 17, .24) !important;
+  }
+
+  .dialogue-overlay .dialog-portrait,
+  .dialogue-overlay .dialog-cutin,
+  .dialogue-overlay .dialog-progress {
+    display: none !important;
+  }
+
+  .dialogue-overlay .mock-dialog .dialog-speaker {
+    position: absolute !important;
+    top: -62px !important;
+    left: -18px !important;
+    min-width: 260px !important;
+    padding: 9px 28px !important;
+    border: 0 !important;
+    border-radius: 2px !important;
+    background:
+      url("/assets/edo/ui/approved-mock/speaker-label-frame.png") center / 100% 100% no-repeat,
+      linear-gradient(180deg, #744a2d, #432719) !important;
+    color: #fff8e9 !important;
+    font-size: 20px !important;
+    text-align: center;
+    max-width: min(420px, calc(100% - 48px)) !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .dialogue-overlay .mock-dialog .dialog-text {
+    min-height: 72px !important;
+    margin: 0 !important;
+    color: #2e180d !important;
+    font-family: "Yu Mincho", "Hiragino Mincho ProN", serif !important;
+    font-size: 23px !important;
+    font-weight: 700 !important;
+    line-height: 1.65 !important;
+  }
+
+  .dialogue-overlay .dialog-next-cue {
+    color: #4b2512 !important;
+    font-size: 18px !important;
+    font-weight: 800 !important;
+  }
+
+  .town-side-panel {
+    height: clamp(580px, calc(100vh - 252px), 690px) !important;
+    max-height: 690px !important;
+    padding: 8px !important;
+    gap: 7px !important;
+    overflow: hidden !important;
+    border: 0 !important;
+    border-radius: 3px !important;
+    background:
+      url("/assets/edo/ui/approved-mock/right-rail-frame.png") center / 100% 100% no-repeat,
+      #f9ecd1 !important;
+  }
+
+  .town-side-panel > .side-card {
+    min-height: 0 !important;
+    padding: 7px 10px !important;
+    border: 0 !important;
+    border-radius: 2px !important;
+    background:
+      url("/assets/edo/ui/approved-mock/side-card-frame.png") center / 100% 100% no-repeat,
+      url("/assets/edo/ui/approved-mock/dialog-paper-texture.png") center / 128px 64px repeat !important;
+  }
+
+  .town-side-panel > .side-card:first-child {
+    order: 1 !important;
+    min-height: 238px !important;
+    background:
+      url("/assets/edo/ui/approved-mock/nearby-panel-frame.png") center / 100% 100% no-repeat,
+      url("/assets/edo/ui/approved-mock/dialog-paper-texture.png") center / 128px 64px repeat !important;
+  }
+
+  .town-side-panel > .yesterday-card { order: 2 !important; }
+  .town-side-panel > .town-flavor-card { order: 3 !important; }
+  .town-side-panel > .rumor-card { order: 4 !important; }
+  .town-side-panel > .town-mood-card { order: 5 !important; }
+
+  .town-side-panel > .side-card:first-child .nearby-person {
+    min-height: 76px !important;
+    grid-template-columns: 52px minmax(0, 1fr) 58px !important;
+    padding: 5px 7px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-person:nth-child(n+3) {
+    display: none !important;
+  }
+
+  .town-side-panel > .town-flavor-card,
+  .town-side-panel > .rumor-card,
+  .town-side-panel > .town-mood-card,
+  .town-side-panel > .yesterday-card {
+    display: block !important;
+    min-height: 82px !important;
+  }
+
+  .town-side-panel > .rumor-card .rumor-list li:nth-child(n+2) {
+    display: none !important;
+  }
+
+  .town-side-panel > .town-mood-card .mood-list {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 6px !important;
+  }
+
+  .town-side-panel > .town-mood-card .mood-row:nth-child(n+4) {
+    display: none !important;
+  }
+
+  .reference-action-dock,
+  .reference-action-dock.is-dialogue {
+    display: grid !important;
+    grid-template-columns: minmax(0, 3fr) minmax(330px, 1fr) !important;
+    gap: 8px !important;
+    margin-top: 6px !important;
+  }
+
+  .reference-area-nav,
+  .reference-area-nav:has(button:nth-child(4):not(:disabled)) {
+    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+    gap: 4px !important;
+  }
+
+  .reference-area-nav button,
+  .reference-area-nav:has(button:nth-child(4):not(:disabled)) button {
+    min-height: 104px !important;
+    padding: 8px 10px !important;
+    border: 0 !important;
+    border-radius: 3px !important;
+    background: url("/assets/edo/ui/generated/runtime/nav-tab-frame.svg") center / 100% 100% no-repeat !important;
+    box-shadow: none !important;
+  }
+
+  .reference-area-nav button.active,
+  .reference-area-nav:has(button:nth-child(4):not(:disabled)) button.active {
+    background: url("/assets/edo/ui/generated/runtime/nav-tab-frame-active.svg") center / 100% 100% no-repeat !important;
+  }
+
+  .area-nav-icon,
+  .reference-area-nav:has(button:nth-child(4):not(:disabled)) .area-nav-icon {
+    width: 54px !important;
+    height: 48px !important;
+  }
+
+  .area-nav-copy strong {
+    font-size: 17px !important;
+  }
+
+  .reference-talk-cta,
+  .reference-action-dock.is-dialogue .reference-talk-cta {
+    display: grid !important;
+    min-height: 104px !important;
+    border: 0 !important;
+    border-radius: 4px !important;
+    background:
+      url("/assets/edo/ui/approved-mock/talk-cta-frame.png") center / 100% 100% no-repeat,
+      linear-gradient(180deg, #ee6a4e, #bd302b) !important;
+    color: #fff !important;
+  }
+
+  .reference-talk-cta strong {
+    font-size: 28px !important;
+  }
+
+  .logstrip {
+    display: none !important;
+  }
+}
+
+/* Exact visible nav art from the approved sheet. Labels and hit areas stay live. */
+.approved-nav-icon {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.approved-nav-icon > svg {
+  visibility: hidden;
+}
+
+.nav-icon-nagaya { background-image: url("/assets/edo/ui/approved-mock/nav-icon-nagaya.png"); }
+.nav-icon-well { background-image: url("/assets/edo/ui/approved-mock/nav-icon-well.png"); }
+.nav-icon-market { background-image: url("/assets/edo/ui/approved-mock/nav-icon-market.png"); }
+.nav-icon-firehouse { background-image: url("/assets/edo/ui/approved-mock/nav-icon-firehouse.png"); }
+.nav-icon-room { background-image: url("/assets/edo/ui/approved-mock/nav-icon-room.png"); }
+.nav-icon-map { background-image: url("/assets/edo/ui/approved-mock/nav-icon-map.png"); }

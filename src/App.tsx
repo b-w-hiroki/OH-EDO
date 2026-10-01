@@ -46,6 +46,7 @@ import { ResultView } from "./components/ResultView";
 import { TownPresentation } from "./components/TownPresentation";
 import { TownSidePanel } from "./components/TownSidePanel";
 import { AreaNav } from "./components/AreaNav";
+import { ApprovedConversationFrame } from "./components/ApprovedConversationFrame";
 import { TownEventChoiceView, TownEventResultView } from "./components/TownEventViews";
 import {
   FireAftermathView,
@@ -1471,7 +1472,7 @@ function App() {
               {soundMuted ? "音 OFF" : "音 ON"}
             </button>
           )}
-          {state.screen === "town" && (
+          {(state.screen === "town" || state.screen === "dialog") && (
             <button className="ghost" onClick={openStatus}>☰ メニュー</button>
           )}
           {state.screen !== "title" && (
@@ -1515,6 +1516,7 @@ function App() {
         )}
 
         {inWorld && (
+          <ApprovedConversationFrame>
           <div className="world-layout">
             <div className="stage presentation-stage">
               <TownPresentation
@@ -1707,10 +1709,6 @@ function App() {
               onStartNextDay={startNextTownEvent}
             />
           </div>
-        )}
-
-        {inWorld && (
-          <>
           <div className={`reference-action-dock ${state.screen === "dialog" ? "is-dialogue" : ""}`}>
             <AreaNav
               state={state}
@@ -1756,6 +1754,11 @@ function App() {
               </small>
             </button>
           </div>
+          </ApprovedConversationFrame>
+        )}
+
+        {inWorld && (
+          <>
           <div className="logstrip">
             <span className="logstrip-label">町の声</span>
             <span className="logstrip-text">

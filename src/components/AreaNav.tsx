@@ -124,7 +124,7 @@ export function AreaNav({
               else onMove(item.id);
             }}
           >
-            <span className="area-nav-icon"><AreaNavIcon kind={item.icon} /></span>
+            <span className={`area-nav-icon approved-nav-icon nav-icon-${item.icon}`}><AreaNavIcon kind={item.icon} /></span>
             <span className="area-nav-copy">
               <strong>{item.label}</strong>
               <small>{item.locked ? "まだ行けない" : item.description}</small>

@@ -27,6 +27,8 @@ import "./nav-parity.css";
 import "./mobile-talk-parity.css";
 import "./next-chapter-hook.css";
 import "./title-viewport.css";
+import "./proposal-v1.css";
+import "./approved-conversation-live.css";
 
 // StrictMode is intentionally omitted: its dev-only double mount/unmount
 // conflicts with the Phaser canvas lifecycle.
