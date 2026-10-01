@@ -1,0 +1,268 @@
+/* Approved 2026-10-01 spring-town proposal: desktop conversation composition. */
+@media (min-width: 1100px) and (min-height: 700px) {
+  .app {
+    width: 100%;
+    max-width: 1720px !important;
+    padding: 6px 14px 10px !important;
+  }
+
+  .reference-header {
+    grid-template-columns: 280px 520px minmax(0, 1fr) 178px !important;
+    min-height: 108px !important;
+    gap: 8px !important;
+    margin-bottom: 5px !important;
+  }
+
+  .reference-logo-wrap,
+  .reference-day-card,
+  .reference-statusbar {
+    min-height: 102px !important;
+  }
+
+  .reference-logo-image {
+    width: 260px !important;
+    max-height: 94px !important;
+  }
+
+  .reference-day-card {
+    padding: 10px 20px !important;
+    border: 3px solid #7f4b25 !important;
+    background: linear-gradient(180deg, #fff9e9, #f4dfbd) !important;
+  }
+
+  .reference-statusbar {
+    padding: 8px 10px !important;
+    border: 3px solid #7f4b25 !important;
+    background: linear-gradient(180deg, #fff9ea, #f7e5c3) !important;
+  }
+
+  .reference-header-actions {
+    width: 178px !important;
+    min-width: 178px !important;
+  }
+
+  .reference-header-actions > .ghost:not(.sound-toggle):not(.reset-compact) {
+    width: 174px !important;
+    min-width: 174px !important;
+    min-height: 74px !important;
+    font-size: 19px !important;
+  }
+
+  .desktop-objective-strip,
+  .objective-strip {
+    position: absolute !important;
+    z-index: 30;
+    top: 9px;
+    right: 202px;
+    width: 300px !important;
+    min-height: 58px !important;
+    margin: 0 !important;
+    padding: 9px 15px !important;
+    border: 3px solid #7f4b25 !important;
+    background: linear-gradient(180deg, #fff8e8, #f4dfbd) !important;
+    font-size: 14px !important;
+  }
+
+  .world-layout {
+    grid-template-columns: minmax(0, 3fr) minmax(330px, 1fr) !important;
+    gap: 8px !important;
+    align-items: stretch !important;
+  }
+
+  .presentation-stage {
+    height: clamp(580px, calc(100vh - 252px), 690px) !important;
+    min-height: 580px !important;
+    aspect-ratio: auto !important;
+    border: 4px solid #79502b !important;
+    border-radius: 3px !important;
+    box-shadow: 0 4px 12px rgba(69, 39, 17, .3) !important;
+  }
+
+  .town-presentation .presentation-player {
+    left: 3% !important;
+    width: 39% !important;
+    height: 108% !important;
+    bottom: -12% !important;
+  }
+
+  .town-presentation .presentation-primary {
+    right: 8% !important;
+    width: 37% !important;
+    height: 106% !important;
+    bottom: -12% !important;
+  }
+
+  .presentation-hanging-note,
+  .presentation-noren,
+  .presentation-speech-bubble,
+  .controls-hint {
+    display: none !important;
+  }
+
+  .dialogue-overlay {
+    inset: auto 0 8px 0 !important;
+    padding: 0 12px !important;
+    align-items: end !important;
+  }
+
+  .dialogue-overlay .mock-dialog {
+    width: 100% !important;
+    min-height: 170px !important;
+    margin: 0 !important;
+    padding: 38px 42px 20px !important;
+    border: 4px solid #6f4427 !important;
+    border-radius: 4px !important;
+    background:
+      linear-gradient(90deg, rgba(116, 64, 32, .08) 1px, transparent 1px),
+      linear-gradient(180deg, #fffaf0, #f4dfbd) !important;
+    box-shadow: 0 5px 0 rgba(73, 40, 17, .32), inset 0 0 0 3px #e1b875 !important;
+  }
+
+  .dialogue-overlay .dialog-portrait,
+  .dialogue-overlay .dialog-cutin,
+  .dialogue-overlay .dialog-progress {
+    display: none !important;
+  }
+
+  .dialogue-overlay .mock-dialog .dialog-speaker {
+    position: absolute !important;
+    top: -35px !important;
+    left: 24px !important;
+    min-width: 260px !important;
+    padding: 9px 28px !important;
+    border: 3px solid #7a4a27 !important;
+    border-radius: 2px !important;
+    background: linear-gradient(180deg, #744a2d, #432719) !important;
+    color: #fff8e9 !important;
+    font-size: 20px !important;
+    text-align: center;
+  }
+
+  .dialogue-overlay .mock-dialog .dialog-text {
+    min-height: 72px !important;
+    margin: 0 !important;
+    color: #2e180d !important;
+    font-family: "Yu Mincho", "Hiragino Mincho ProN", serif !important;
+    font-size: 23px !important;
+    font-weight: 700 !important;
+    line-height: 1.65 !important;
+  }
+
+  .dialogue-overlay .dialog-next-cue {
+    color: #4b2512 !important;
+    font-size: 18px !important;
+    font-weight: 800 !important;
+  }
+
+  .town-side-panel {
+    height: clamp(580px, calc(100vh - 252px), 690px) !important;
+    max-height: 690px !important;
+    padding: 8px !important;
+    gap: 7px !important;
+    overflow: hidden !important;
+    border: 4px solid #79502b !important;
+    border-radius: 3px !important;
+    background: #f9ecd1 !important;
+  }
+
+  .town-side-panel > .side-card {
+    min-height: 0 !important;
+    padding: 7px 10px !important;
+    border: 2px solid #c99255 !important;
+    border-radius: 2px !important;
+    background: linear-gradient(180deg, #fffaf0, #f6e5c6) !important;
+  }
+
+  .town-side-panel > .side-card:first-child {
+    order: 1 !important;
+    min-height: 238px !important;
+  }
+
+  .town-side-panel > .yesterday-card { order: 2 !important; }
+  .town-side-panel > .town-flavor-card { order: 3 !important; }
+  .town-side-panel > .rumor-card { order: 4 !important; }
+  .town-side-panel > .town-mood-card { order: 5 !important; }
+
+  .town-side-panel > .side-card:first-child .nearby-person {
+    min-height: 64px !important;
+    grid-template-columns: 52px minmax(0, 1fr) 58px !important;
+    padding: 5px 7px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-person:nth-child(n+3) {
+    display: none !important;
+  }
+
+  .town-side-panel > .town-flavor-card,
+  .town-side-panel > .rumor-card,
+  .town-side-panel > .town-mood-card,
+  .town-side-panel > .yesterday-card {
+    display: block !important;
+    min-height: 82px !important;
+  }
+
+  .town-side-panel > .rumor-card .rumor-list li:nth-child(n+2) {
+    display: none !important;
+  }
+
+  .town-side-panel > .town-mood-card .mood-list {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 6px !important;
+  }
+
+  .town-side-panel > .town-mood-card .mood-row:nth-child(n+4) {
+    display: none !important;
+  }
+
+  .reference-action-dock,
+  .reference-action-dock.is-dialogue {
+    display: grid !important;
+    grid-template-columns: minmax(0, 3fr) minmax(330px, 1fr) !important;
+    gap: 8px !important;
+    margin-top: 6px !important;
+  }
+
+  .reference-area-nav,
+  .reference-area-nav:has(button:nth-child(4):not(:disabled)) {
+    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+    gap: 4px !important;
+  }
+
+  .reference-area-nav button,
+  .reference-area-nav:has(button:nth-child(4):not(:disabled)) button {
+    min-height: 104px !important;
+    padding: 8px 10px !important;
+    border: 3px solid #765033 !important;
+    border-radius: 3px !important;
+  }
+
+  .area-nav-icon,
+  .reference-area-nav:has(button:nth-child(4):not(:disabled)) .area-nav-icon {
+    width: 54px !important;
+    height: 48px !important;
+  }
+
+  .area-nav-copy strong {
+    font-size: 17px !important;
+  }
+
+  .reference-talk-cta,
+  .reference-action-dock.is-dialogue .reference-talk-cta {
+    display: grid !important;
+    min-height: 104px !important;
+    border: 4px solid #7f3d25 !important;
+    border-radius: 4px !important;
+    background: linear-gradient(180deg, #ee6a4e, #bd302b) !important;
+    color: #fff !important;
+  }
+
+  .reference-talk-cta strong {
+    font-size: 28px !important;
+  }
+
+  .logstrip,
+  .next-lead {
+    display: none !important;
+  }
+}
