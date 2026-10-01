@@ -4,24 +4,50 @@
   display: none;
 }
 
+.town-presentation.area-nagaya.is-dialogue
+  .presentation-character:has(.presentation-character-image-approved)
+  .presentation-character-image-default {
+  display: none;
+}
+
+.town-presentation.area-nagaya.is-dialogue .presentation-character-image-approved {
+  display: block;
+  inset: auto;
+  bottom: 0;
+  width: auto;
+  max-width: none;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+}
+
+.town-presentation.area-nagaya.is-dialogue .presentation-player {
+  left: -7% !important;
+  width: 58% !important;
+  height: 66% !important;
+  bottom: 28% !important;
+}
+
+.town-presentation.area-nagaya.is-dialogue
+  .presentation-player
+  .presentation-character-image-approved {
+  left: 0;
+}
+
+.town-presentation.area-nagaya.is-dialogue .presentation-primary.art-landlord {
+  right: -5% !important;
+  width: 52% !important;
+  height: 56% !important;
+  bottom: 30% !important;
+}
+
+.town-presentation.area-nagaya.is-dialogue
+  .presentation-primary.art-landlord
+  .presentation-character-image-approved {
+  right: 0;
+}
+
 @media (min-width: 1100px) and (min-height: 700px) {
-  .town-presentation.area-nagaya.is-dialogue
-    .presentation-character:has(.presentation-character-image-approved)
-    .presentation-character-image-default {
-    display: none;
-  }
-
-  .town-presentation.area-nagaya.is-dialogue .presentation-character-image-approved {
-    display: block;
-    inset: auto;
-    bottom: 0;
-    width: auto;
-    max-width: none;
-    height: 100%;
-    object-fit: contain;
-    object-position: bottom center;
-  }
-
   .town-presentation.area-nagaya.is-dialogue .presentation-player {
     left: -1% !important;
     width: 43% !important;
@@ -73,5 +99,21 @@
   .town-side-panel > .yesterday-card,
   .town-side-panel > .town-flavor-card {
     min-height: 110px !important;
+  }
+}
+
+@media (orientation: landscape) and (max-width: 1099px) {
+  .town-presentation.area-nagaya.is-dialogue .presentation-player {
+    left: 0 !important;
+    width: 42% !important;
+    height: 71% !important;
+    bottom: 24% !important;
+  }
+
+  .town-presentation.area-nagaya.is-dialogue .presentation-primary.art-landlord {
+    right: 3% !important;
+    width: 39% !important;
+    height: 60% !important;
+    bottom: 26% !important;
   }
 }
