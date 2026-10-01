@@ -1471,7 +1471,7 @@ function App() {
               {soundMuted ? "音 OFF" : "音 ON"}
             </button>
           )}
-          {state.screen === "town" && (
+          {(state.screen === "town" || state.screen === "dialog") && (
             <button className="ghost" onClick={openStatus}>☰ メニュー</button>
           )}
           {state.screen !== "title" && (

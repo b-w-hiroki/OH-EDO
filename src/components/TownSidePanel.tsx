@@ -192,7 +192,7 @@ export function TownSidePanel({
                 }}
                 aria-label={`${npcDisplayName(npcId)}と話す`}
               >
-                話す
+                {state.screen === "dialog" && selectedNpc === npcId ? "会話中" : "話す"}
               </button>
             </div>
           ))}
@@ -234,24 +234,22 @@ export function TownSidePanel({
         </section>
       )}
 
-      {(recentActionItems.length > 0 || yesterdaySummary) && (
-        <section className="side-card yesterday-card">
-          <div className="side-card-title"><span><SideIcon kind="change" /> 昨日の行動 → 今日の変化</span></div>
-          {recentActionItems.length > 0 ? (
-            <ul className="action-change-list">
-              {recentActionItems.map((item, index) => (
-                <li key={`${index}-${item.label}`}>
-                  <span>{item.label}</span>
-                  <b>→</b>
-                  <strong>{item.effect}</strong>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>{yesterdaySummary}</p>
-          )}
-        </section>
-      )}
+      <section className="side-card yesterday-card">
+        <div className="side-card-title"><span><SideIcon kind="change" /> 昨日の行動 → 今日の変化</span></div>
+        {recentActionItems.length > 0 ? (
+          <ul className="action-change-list">
+            {recentActionItems.map((item, index) => (
+              <li key={`${index}-${item.label}`}>
+                <span>{item.label}</span>
+                <b>→</b>
+                <strong>{item.effect}</strong>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>{yesterdaySummary ?? "町での暮らしが、ここから始まる。"}</p>
+        )}
+      </section>
 
       <section className="side-card town-flavor-card">
         <div className="side-card-title"><span><SideIcon kind="story" /> この場所の小話</span></div>
