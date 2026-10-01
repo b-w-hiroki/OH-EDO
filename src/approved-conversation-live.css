@@ -1,0 +1,77 @@
+/* Approved longhouse conversation character layers.
+   The normal state-driven art remains the default everywhere else. */
+.presentation-character-image-approved {
+  display: none;
+}
+
+@media (min-width: 1100px) and (min-height: 700px) {
+  .town-presentation.area-nagaya.is-dialogue
+    .presentation-character:has(.presentation-character-image-approved)
+    .presentation-character-image-default {
+    display: none;
+  }
+
+  .town-presentation.area-nagaya.is-dialogue .presentation-character-image-approved {
+    display: block;
+    inset: auto;
+    bottom: 0;
+    width: auto;
+    max-width: none;
+    height: 100%;
+    object-fit: contain;
+    object-position: bottom center;
+  }
+
+  .town-presentation.area-nagaya.is-dialogue .presentation-player {
+    left: -1% !important;
+    width: 43% !important;
+    height: 75% !important;
+    bottom: 25% !important;
+  }
+
+  .town-presentation.area-nagaya.is-dialogue
+    .presentation-player
+    .presentation-character-image-approved {
+    left: 0;
+  }
+
+  .town-presentation.area-nagaya.is-dialogue .presentation-primary.art-landlord {
+    right: 19% !important;
+    width: 34% !important;
+    height: 61% !important;
+    bottom: 29.5% !important;
+  }
+
+  .town-presentation.area-nagaya.is-dialogue
+    .presentation-primary.art-landlord
+    .presentation-character-image-approved {
+    right: 0;
+  }
+
+  .reference-logo-wrap {
+    align-items: flex-start !important;
+    padding-left: 28px;
+  }
+
+  .reference-logo-image {
+    width: 360px !important;
+    max-height: 98px !important;
+  }
+
+  .dialogue-overlay {
+    bottom: 16px !important;
+  }
+
+  .dialogue-overlay .mock-dialog {
+    min-height: 150px !important;
+  }
+
+  .town-side-panel > .town-mood-card {
+    flex: 1 1 auto;
+  }
+
+  .town-side-panel > .yesterday-card,
+  .town-side-panel > .town-flavor-card {
+    min-height: 110px !important;
+  }
+}

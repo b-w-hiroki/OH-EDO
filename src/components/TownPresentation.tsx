@@ -102,10 +102,36 @@ function displayName(npc: NPCId): string {
   }
 }
 
-function CharacterImage({ id, alt = "" }: { id: NPCId | "player"; alt?: string }) {
+function CharacterImage({
+  id,
+  alt = "",
+  approvedSrc,
+}: {
+  id: NPCId | "player";
+  alt?: string;
+  approvedSrc?: string;
+}) {
   const src = characterArtPath(id);
   if (!src) return null;
-  return <img className="presentation-character-image" src={src} alt={alt} draggable={false} />;
+  return (
+    <>
+      <img
+        className="presentation-character-image presentation-character-image-default"
+        src={src}
+        alt={alt}
+        draggable={false}
+      />
+      {approvedSrc && (
+        <img
+          className="presentation-character-image presentation-character-image-approved"
+          src={approvedSrc}
+          alt=""
+          aria-hidden="true"
+          draggable={false}
+        />
+      )}
+    </>
+  );
 }
 
 function characterClass(npc: NPCId): string {
@@ -175,6 +201,7 @@ export function TownPresentation({
   const secondaryNpc = !dialogOpen
     ? npcs.find((npc) => npc !== featuredNpc) ?? null
     : null;
+  const approvedNagayaDialogue = dialogOpen && area === "nagaya";
 
   return (
     <section
@@ -224,7 +251,10 @@ export function TownPresentation({
         aria-label="主人公"
         type="button"
       >
-        <CharacterImage id="player" />
+        <CharacterImage
+          id="player"
+          approvedSrc={approvedNagayaDialogue ? "/assets/edo/characters/approved-live/player-approved-live.png" : undefined}
+        />
       </button>
 
       {secondaryNpc && (
@@ -264,7 +294,14 @@ export function TownPresentation({
           }}
           type="button"
         >
-          <CharacterImage id={featuredNpc} />
+          <CharacterImage
+            id={featuredNpc}
+            approvedSrc={
+              approvedNagayaDialogue && featuredNpc === "landlord"
+                ? "/assets/edo/characters/approved-live/landlord-approved-live.png"
+                : undefined
+            }
+          />
           <span className="presentation-name">{displayName(featuredNpc)}</span>
         </button>
         </>
