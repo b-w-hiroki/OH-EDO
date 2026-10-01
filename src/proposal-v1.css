@@ -147,6 +147,8 @@
   .presentation-hanging-note,
   .presentation-noren,
   .presentation-speech-bubble,
+  .town-presentation .presentation-location-card,
+  .town-presentation .presentation-name,
   .controls-hint {
     display: none !important;
   }
@@ -182,12 +184,18 @@
     left: -18px !important;
     min-width: 260px !important;
     padding: 9px 28px !important;
-    border: 3px solid #7a4a27 !important;
+    border: 0 !important;
     border-radius: 2px !important;
-    background: linear-gradient(180deg, #744a2d, #432719) !important;
+    background:
+      url("/assets/edo/ui/approved-mock/speaker-label-frame.png") center / 100% 100% no-repeat,
+      linear-gradient(180deg, #744a2d, #432719) !important;
     color: #fff8e9 !important;
     font-size: 20px !important;
     text-align: center;
+    max-width: min(420px, calc(100% - 48px)) !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
   }
 
   .dialogue-overlay .mock-dialog .dialog-text {
@@ -212,9 +220,11 @@
     padding: 8px !important;
     gap: 7px !important;
     overflow: hidden !important;
-    border: 4px solid #79502b !important;
+    border: 0 !important;
     border-radius: 3px !important;
-    background: #f9ecd1 !important;
+    background:
+      url("/assets/edo/ui/approved-mock/right-rail-frame.png") center / 100% 100% no-repeat,
+      #f9ecd1 !important;
   }
 
   .town-side-panel > .side-card {
@@ -222,12 +232,17 @@
     padding: 7px 10px !important;
     border: 0 !important;
     border-radius: 2px !important;
-    background: url("/assets/edo/ui/generated/runtime/paper-panel-frame.svg") center / 100% 100% no-repeat !important;
+    background:
+      url("/assets/edo/ui/approved-mock/side-card-frame.png") center / 100% 100% no-repeat,
+      url("/assets/edo/ui/approved-mock/dialog-paper-texture.png") center / 128px 64px repeat !important;
   }
 
   .town-side-panel > .side-card:first-child {
     order: 1 !important;
     min-height: 238px !important;
+    background:
+      url("/assets/edo/ui/approved-mock/nearby-panel-frame.png") center / 100% 100% no-repeat,
+      url("/assets/edo/ui/approved-mock/dialog-paper-texture.png") center / 128px 64px repeat !important;
   }
 
   .town-side-panel > .yesterday-card { order: 2 !important; }
@@ -327,3 +342,21 @@
     display: none !important;
   }
 }
+
+/* Exact visible nav art from the approved sheet. Labels and hit areas stay live. */
+.approved-nav-icon {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.approved-nav-icon > svg {
+  visibility: hidden;
+}
+
+.nav-icon-nagaya { background-image: url("/assets/edo/ui/approved-mock/nav-icon-nagaya.png"); }
+.nav-icon-well { background-image: url("/assets/edo/ui/approved-mock/nav-icon-well.png"); }
+.nav-icon-market { background-image: url("/assets/edo/ui/approved-mock/nav-icon-market.png"); }
+.nav-icon-firehouse { background-image: url("/assets/edo/ui/approved-mock/nav-icon-firehouse.png"); }
+.nav-icon-room { background-image: url("/assets/edo/ui/approved-mock/nav-icon-room.png"); }
+.nav-icon-map { background-image: url("/assets/edo/ui/approved-mock/nav-icon-map.png"); }
