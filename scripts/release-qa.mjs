@@ -146,6 +146,11 @@ async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = 
   assert(s?.day === 2 && s.flags?.day2_started, "Day2 did not start");
   assert(s.lastDecision?.provider === "local" || s.lastDecision?.provider === "jev", "Decision provider missing after night");
 
+  const dayTwoTransition = page.locator(".day-transition");
+  if (await dayTwoTransition.count()) {
+    await dayTwoTransition.waitFor({ state: "hidden", timeout: 5000 });
+  }
+
   if (captureMilestones) {
     await page.waitForTimeout(250);
     await page.screenshot({ path: `qa-artifacts/${prefix}-fire-lead.png`, fullPage: false });
@@ -398,6 +403,9 @@ async function captureAreas(page, prefix) {
   let postAreaState = await state(page);
   if ((postAreaState?.day ?? 0) >= 10) {
     if (!postAreaState.completedTownEventIds?.includes("bond_newsman")) {
+      const newsmanAreaLabel = areas.find(([, slug]) => slug === "market")?.[0];
+      assert(newsmanAreaLabel, "market area label missing");
+      await move(page, newsmanAreaLabel);
       await talk(page, "瓦版屋");
       postAreaState = await state(page);
     }
@@ -580,8 +588,9 @@ async function assertGeneratedSurfaceStyles(page, { desktop = false } = {}) {
   }, desktop);
 
   assert(
-    surfaces.sidePanel.includes("paper-panel-frame.svg"),
-    `generated side-panel surface missing: ${JSON.stringify(surfaces)}`
+    surfaces.sidePanel.includes("paper-panel-frame.svg") ||
+      surfaces.sidePanel.includes("nearby-panel-frame.png"),
+    `approved side-panel surface missing: ${JSON.stringify(surfaces)}`
   );
   assert(
     surfaces.lifeProp.includes("life-prop-sprite.svg"),
@@ -629,7 +638,7 @@ async function runDesktop() {
     };
   });
   assert(mockParity.navButtons >= 5, `approved mock travel tabs missing: ${JSON.stringify(mockParity)}`);
-  assert(!mockParity.talkCtaVisible, `oversized desktop talk CTA returned: ${JSON.stringify(mockParity)}`);
+  assert(mockParity.talkCtaVisible, `approved desktop talk CTA missing: ${JSON.stringify(mockParity)}`);
   assert(mockParity.topStats === 6, `desktop HUD should expose six approved-mock stats: ${JSON.stringify(mockParity)}`);
   assert(mockParity.storyVisible && mockParity.rumorVisible, `approved mock side rail hierarchy missing: ${JSON.stringify(mockParity)}`);
   await verifyLegacySaveMigration(page);

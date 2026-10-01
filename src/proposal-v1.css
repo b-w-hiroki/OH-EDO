@@ -337,8 +337,7 @@
     font-size: 28px !important;
   }
 
-  .logstrip,
-  .next-lead {
+  .logstrip {
     display: none !important;
   }
 }
