@@ -20,9 +20,10 @@
     position: absolute;
     z-index: 40;
     inset: -3px;
-    border: 4px solid #74401f;
+    border: 0;
     border-radius: 5px;
-    box-shadow: inset 0 0 0 2px #d7a45d, 0 3px 0 rgba(74, 39, 19, .28);
+    background: url("/assets/edo/ui/approved-mock/header-wood-frame.png") center / 100% 100% no-repeat;
+    box-shadow: 0 3px 0 rgba(74, 39, 19, .28);
     pointer-events: none;
   }
 
@@ -163,7 +164,9 @@
     padding: 38px 42px 20px !important;
     border: 0 !important;
     border-radius: 4px !important;
-    background: url("/assets/edo/ui/generated/runtime/dialog-frame.svg") center / 100% 100% no-repeat !important;
+    background:
+      url("/assets/edo/ui/approved-mock/dialog-paper-frame.png") center / 100% 100% no-repeat,
+      url("/assets/edo/ui/approved-mock/dialog-paper-texture.png") center / 128px 64px repeat !important;
     box-shadow: 0 5px 0 rgba(73, 40, 17, .24) !important;
   }
 
@@ -307,9 +310,11 @@
   .reference-action-dock.is-dialogue .reference-talk-cta {
     display: grid !important;
     min-height: 104px !important;
-    border: 4px solid #7f3d25 !important;
+    border: 0 !important;
     border-radius: 4px !important;
-    background: linear-gradient(180deg, #ee6a4e, #bd302b) !important;
+    background:
+      url("/assets/edo/ui/approved-mock/talk-cta-frame.png") center / 100% 100% no-repeat,
+      linear-gradient(180deg, #ee6a4e, #bd302b) !important;
     color: #fff !important;
   }
 
