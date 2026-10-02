@@ -3,6 +3,7 @@ import { AREAS } from "../data";
 import { ChoiceImpact } from "./ChoiceImpact";
 import { readMetrics } from "../game/metrics";
 import { relationLabel, rumorLabel } from "../townLabels";
+import { publicAsset } from "../publicAsset";
 
 function festivalClosingLine(choiceId: NonNullable<GameState["lastFestivalResult"]>["choiceId"]): string {
   switch (choiceId) {
@@ -30,7 +31,7 @@ export function TitleView({
       <h1 className="title-main title-main-generated">
         <img
           className="title-logo-image"
-          src="/assets/edo/ui/generated/runtime/logo-oh-edo-approved.svg"
+          src={publicAsset("assets/edo/ui/generated/runtime/logo-oh-edo-approved.svg")}
           alt="OH！EDO！"
           draggable={false}
         />

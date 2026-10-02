@@ -70,6 +70,7 @@ import {
 import { clearGameState, loadGameState, saveGameState } from "./saveState";
 import { recordMetric } from "./game/metrics";
 import { nextTownEvent, townEventConsequence, TOWN_EVENTS } from "./events/townEvents";
+import { publicAsset } from "./publicAsset";
 import { actionTagLabel, npcDisplayName, relationLabel, rumorLabel } from "./townLabels";
 import {
   applyTownEventRelationDeltas,
@@ -1439,7 +1440,7 @@ function App() {
           <span className="reference-logo">
             <img
               className="reference-logo-image"
-              src="/assets/edo/ui/generated/runtime/logo-oh-edo-approved.svg"
+              src={publicAsset("assets/edo/ui/generated/runtime/logo-oh-edo-approved.svg")}
               alt="OH! EDO!"
               draggable={false}
             />
