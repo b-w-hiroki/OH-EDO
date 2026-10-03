@@ -419,7 +419,7 @@
   .town-event-overlay .panel-desc {
     margin: 3px 0 6px;
     padding-left: 8px;
-    font-size: 9px;
+    font-size: 11px;
     line-height: 1.35;
   }
 
@@ -441,13 +441,13 @@
   }
 
   .town-event-overlay .town-event-choice > strong {
-    font-size: 13px;
+    font-size: 15px;
     line-height: 1.2;
   }
 
   .town-event-overlay .town-event-choice > span:not(.town-event-choice-mark) {
-    font-size: 9px;
-    line-height: 1.35;
+    font-size: 11px;
+    line-height: 1.45;
   }
 
   .town-event-overlay .town-event-choice .choice-impact {
@@ -457,8 +457,22 @@
   .town-event-overlay .town-event-choice .choice-impact small {
     min-height: 18px;
     padding: 1px 5px;
-    font-size: 7px;
+    font-size: 10px;
   }
+}
+
+.choice-pending {
+  margin: 10px 0 0;
+  color: #6b4938;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.fire-choice:disabled {
+  cursor: wait;
+  opacity: .68;
+  transform: none !important;
 }
 
 

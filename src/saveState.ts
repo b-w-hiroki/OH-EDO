@@ -1,4 +1,4 @@
-import type { GameState, NPCId } from "./types";
+import type { GameState, NPCId, Screen } from "./types";
 import { INITIAL_STATE } from "./data";
 
 export const STORAGE_KEY = "oh-edo-mvp-save-v2";
@@ -8,6 +8,46 @@ interface SaveEnvelope {
   schemaVersion: number;
   savedAt: string;
   state: Partial<GameState>;
+}
+
+const RESTORABLE_SCREENS = new Set<Screen>([
+  "title",
+  "dialog",
+  "town",
+  "job",
+  "result",
+  "fire_choice",
+  "fire_result",
+  "patrol_choice",
+  "patrol_result",
+  "festival_choice",
+  "festival_result",
+  "town_event_choice",
+  "town_event_result",
+  "room",
+  "status",
+]);
+
+function restoreScreen(parsed: Partial<GameState>, merged: GameState): Screen {
+  if (!merged.flags.intro_done) {
+    return parsed.screen === "dialog" && merged.dialog ? "dialog" : "title";
+  }
+
+  const requested = parsed.screen;
+  if (!requested || !RESTORABLE_SCREENS.has(requested)) return "town";
+  if (requested === "title") return "town";
+  if (requested === "dialog") return merged.dialog ? "dialog" : "town";
+  if (requested === "result") return merged.lastJobResult ? requested : "town";
+  if (requested === "fire_result") return merged.fireAftermath ? requested : "town";
+  if (requested === "patrol_result") return merged.lastPatrolResult ? requested : "town";
+  if (requested === "festival_result") return merged.lastFestivalResult ? requested : "town";
+  if (requested === "town_event_choice") {
+    return merged.activeTownEventId ? requested : "town";
+  }
+  if (requested === "town_event_result") {
+    return merged.activeTownEventId && merged.lastTownEventResult ? requested : "town";
+  }
+  return requested;
 }
 
 function mergeState(parsed: Partial<GameState>): GameState {
@@ -34,7 +74,7 @@ function mergeState(parsed: Partial<GameState>): GameState {
     decisionLogs: parsed.decisionLogs ?? [],
     lastDecision: parsed.lastDecision ?? null,
     fireAftermath: parsed.fireAftermath ?? null,
-    dialog: null,
+    dialog: parsed.dialog ?? null,
     lastJobResult: parsed.lastJobResult ?? null,
     lastPatrolResult: parsed.lastPatrolResult ?? null,
     lastFestivalResult: parsed.lastFestivalResult ?? null,
@@ -44,8 +84,7 @@ function mergeState(parsed: Partial<GameState>): GameState {
       (parsed.flags?.day6_cleanup_done ? ["day6_festival_cleanup"] : []),
     lastTownEventResult: parsed.lastTownEventResult ?? null,
   };
-  const screen = merged.flags.intro_done ? "town" : "title";
-  return { ...merged, dialog: null, screen };
+  return { ...merged, screen: restoreScreen(parsed, merged) };
 }
 
 export function loadGameState(storage: Storage = localStorage): GameState {

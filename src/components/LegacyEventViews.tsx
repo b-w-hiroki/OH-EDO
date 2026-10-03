@@ -191,12 +191,14 @@ export function FireAftermathView({
 export function FireChoiceView({
   choices,
   onChoose,
+  pending = false,
 }: {
   choices: FireChoice[];
   onChoose: (choice: FireChoice) => void;
+  pending?: boolean;
 }) {
   return (
-    <section className="panel legacy-choice-panel">
+    <section className="panel legacy-choice-panel" aria-busy={pending}>
       <h2>小火騒ぎ</h2>
       <p className="panel-desc">
         火消し組が来るまでのわずかな間、どう動く？
@@ -207,6 +209,7 @@ export function FireChoiceView({
             className="fire-choice"
             key={choice.id}
             onClick={() => onChoose(choice)}
+            disabled={pending}
           >
             <strong>{choice.label}</strong>
             <span>{choice.description}</span>
@@ -214,6 +217,7 @@ export function FireChoiceView({
           </button>
         ))}
       </div>
+      {pending && <p className="choice-pending" role="status">町の反応を確かめています…</p>}
     </section>
   );
 }

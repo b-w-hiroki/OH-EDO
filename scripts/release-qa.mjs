@@ -28,6 +28,34 @@ async function advanceDialogs(page, max = 40) {
   for (let i = 0; i < max; i++) {
     const dialog = page.locator(".mock-dialog:visible").first();
     if (await dialog.count()) {
+      const readability = await dialog.locator(".dialog-text").evaluate((el) => ({
+        fontSize: Number.parseFloat(getComputedStyle(el).fontSize),
+        clipped: el.scrollHeight > el.clientHeight + 2,
+        overflowY: getComputedStyle(el).overflowY,
+        viewportWidth: window.innerWidth,
+        viewportHeight: window.innerHeight,
+      }));
+      assert(
+        !readability.clipped || ["auto", "scroll"].includes(readability.overflowY),
+        `dialog text is clipped without scrolling: ${JSON.stringify(readability)}`
+      );
+      const minimumFontSize =
+        readability.viewportHeight <= 500 || readability.viewportWidth <= 599 ? 16 : 18;
+      assert(
+        readability.fontSize >= minimumFontSize,
+        `dialog text is too small: ${JSON.stringify(readability)}`
+      );
+      const composition = await dialog.evaluate((el) => {
+        const stage = el.closest(".presentation-stage")?.getBoundingClientRect();
+        const rect = el.getBoundingClientRect();
+        return stage
+          ? { clearSceneRatio: (rect.top - stage.top) / stage.height, targetHeight: rect.height }
+          : null;
+      });
+      if (composition) {
+        assert(composition.clearSceneRatio >= .34, `dialog hides too much of the scene: ${JSON.stringify(composition)}`);
+        assert(composition.targetHeight >= 44, `dialog action target is too small: ${JSON.stringify(composition)}`);
+      }
       await dispatchClick(dialog);
       await page.waitForTimeout(70);
       continue;
@@ -129,12 +157,28 @@ async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = 
   await page.waitForSelector(".mock-dialog:visible", { timeout: 5000 });
   await advanceDialogs(page);
   await page.waitForSelector(".jobview", { timeout: 5000 });
+  if (prefix === "desktop-1600") {
+    await page.reload({ waitUntil: "networkidle" });
+    await page.waitForSelector(".jobview", { timeout: 5000 });
+    assert((await state(page))?.screen === "job", "reload lost the active Day1 choice");
+  }
   if (captureMilestones) {
     await page.waitForTimeout(280);
     await page.screenshot({ path: `qa-artifacts/${prefix}-day1-choice.png`, fullPage: false });
   }
   await page.getByRole("button", { name: "これで行く" }).first().click();
   await page.waitForSelector(".resultview", { timeout: 5000 });
+  if (prefix === "desktop-1600") {
+    const resultBeforeReload = await state(page);
+    await page.reload({ waitUntil: "networkidle" });
+    await page.waitForSelector(".resultview", { timeout: 5000 });
+    const resultAfterReload = await state(page);
+    assert(resultAfterReload?.screen === "result", "reload lost the Day1 reward screen");
+    assert(
+      resultAfterReload.playerActions.length === resultBeforeReload.playerActions.length,
+      "reload duplicated the Day1 reward"
+    );
+  }
   await settleResultCapture(page);
   if (captureMilestones) {
     await page.screenshot({ path: `qa-artifacts/${prefix}-day1-result.png`, fullPage: false });
@@ -169,7 +213,12 @@ async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = 
     const s = decoded?.state ?? decoded;
     return s.screen === "fire_choice";
   }, STORAGE_KEY);
-  await page.locator(".fire-choice").first().evaluate((el) => el.click());
+  const beforeFireChoice = await state(page);
+  await page.locator(".fire-choice").first().evaluate((el) => {
+    el.click();
+    el.click();
+    el.click();
+  });
   await page.waitForFunction((key) => {
     const raw = localStorage.getItem(key);
     if (!raw) return false;
@@ -178,6 +227,20 @@ async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = 
     return s.screen === "fire_result";
   }, STORAGE_KEY, { timeout: 30000 });
   await page.waitForSelector(".fire-aftermath", { timeout: 5000 });
+  const afterFireChoice = await state(page);
+  assert(
+    afterFireChoice.playerActions.length === beforeFireChoice.playerActions.length + 1,
+    "rapid fire-choice taps created duplicate actions"
+  );
+  assert(
+    afterFireChoice.decisionLogs.length === beforeFireChoice.decisionLogs.length + 1,
+    "rapid fire-choice taps created duplicate decisions"
+  );
+  if (prefix === "desktop-1600") {
+    await page.reload({ waitUntil: "networkidle" });
+    await page.waitForSelector(".fire-aftermath", { timeout: 5000 });
+    assert((await state(page))?.screen === "fire_result", "reload lost the fire reward screen");
+  }
   await settleResultCapture(page);
   if (captureMilestones) {
     await page.screenshot({ path: `qa-artifacts/${prefix}-fire-result.png`, fullPage: false });
@@ -654,19 +717,41 @@ async function runDesktop() {
 async function runMobileChromium() {
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({
-    viewport: { width: 430, height: 932 },
-    screen: { width: 430, height: 932 },
+    viewport: { width: 390, height: 844 },
+    screen: { width: 390, height: 844 },
     deviceScaleFactor: 1,
     isMobile: true,
     hasTouch: true,
   });
   const page = await context.newPage();
-  const finalState = await completeDay1ToDay10(page, "mobile-430");
+  const finalState = await completeDay1ToDay10(page, "mobile-390");
   const accessibility = await assertAccessibilityBasics(page);
   const layout = await assertMobileLayout(page);
   await assertGeneratedSurfaceStyles(page);
-  await captureAreas(page, "mobile-430");
-  await captureStatusBook(page, "mobile-430");
+  await captureAreas(page, "mobile-390");
+  await captureStatusBook(page, "mobile-390");
+  await browser.close();
+  return { day: finalState.day, provider: finalState.fireAftermath?.provider ?? finalState.lastDecision?.provider, layout, accessibility };
+}
+
+async function runCompactMobileChromium() {
+  const browser = await chromium.launch({ headless: true });
+  const context = await browser.newContext({
+    viewport: { width: 375, height: 667 },
+    screen: { width: 375, height: 667 },
+    deviceScaleFactor: 1,
+    isMobile: true,
+    hasTouch: true,
+  });
+  const page = await context.newPage();
+  const finalState = await completeDay1ToDay10(page, "mobile-375", { captureMilestones: false });
+  const accessibility = await assertAccessibilityBasics(page);
+  const layout = await assertMobileLayout(page);
+  const dayTransition = page.locator(".day-transition");
+  if (await dayTransition.count()) {
+    await dayTransition.waitFor({ state: "hidden", timeout: 5000 });
+  }
+  await page.screenshot({ path: "qa-artifacts/mobile-375-day10-world.png", fullPage: false });
   await browser.close();
   return { day: finalState.day, provider: finalState.fireAftermath?.provider ?? finalState.lastDecision?.provider, layout, accessibility };
 }
@@ -698,12 +783,29 @@ async function runIPhoneLandscapeWebKit() {
   assert(landscapeBounds.dockBottom <= landscapeBounds.viewportHeight + 2, `landscape action dock is clipped: ${JSON.stringify(landscapeBounds)}`);
   await page.screenshot({ path: "qa-artifacts/iphone-webkit-landscape-world.png", fullPage: false });
   const talk = page.locator(".reference-talk-cta:visible");
+  const railTalk = page.locator(".nearby-talk:visible").first();
   if (await talk.count()) {
     await talk.click();
-    await page.waitForSelector(".mock-dialog:visible", { timeout: 5000 });
-    await page.screenshot({ path: "qa-artifacts/iphone-webkit-landscape-dialog.png", fullPage: false });
-    await advanceDialogs(page);
+  } else {
+    assert((await railTalk.count()) > 0, "landscape WebKit has no visible talk affordance");
+    await railTalk.click();
   }
+  await page.waitForFunction((key) => {
+    const raw = localStorage.getItem(key);
+    if (!raw) return false;
+    const decoded = JSON.parse(raw);
+    return (decoded?.state ?? decoded).screen === "dialog";
+  }, STORAGE_KEY);
+  await page.waitForSelector(".mock-dialog:visible", { timeout: 5000 });
+  const dialogBounds = await page.locator(".mock-dialog:visible").evaluate((el) => {
+    const rect = el.getBoundingClientRect();
+    return { top: rect.top, bottom: rect.bottom, viewportHeight: window.innerHeight };
+  });
+  assert(dialogBounds.top >= 0, `landscape dialog is clipped above viewport: ${JSON.stringify(dialogBounds)}`);
+  assert(dialogBounds.bottom <= dialogBounds.viewportHeight + 2, `landscape dialog is clipped below viewport: ${JSON.stringify(dialogBounds)}`);
+  await page.waitForTimeout(200);
+  await page.screenshot({ path: "qa-artifacts/iphone-webkit-landscape-dialog.png", fullPage: false });
+  await advanceDialogs(page);
   assert((await state(page))?.screen === "town", "landscape WebKit conversation did not return to town");
   await browser.close();
   return { layout, accessibility };
@@ -749,4 +851,5 @@ const iphone = await runIPhoneWebKit();
 const iphoneLandscape = await runIPhoneLandscapeWebKit();
 const desktop = await runDesktop();
 const mobile = await runMobileChromium();
-console.log(JSON.stringify({ ok: true, desktop, mobile, iphone, iphoneLandscape }, null, 2));
+const compactMobile = await runCompactMobileChromium();
+console.log(JSON.stringify({ ok: true, desktop, mobile, compactMobile, iphone, iphoneLandscape }, null, 2));
