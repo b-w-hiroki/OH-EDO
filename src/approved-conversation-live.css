@@ -163,15 +163,25 @@
 
   .dialogue-overlay .mock-dialog .dialog-text,
   .solo-dialog .mock-dialog .dialog-text {
-    font-size: 14px !important;
+    max-height: 68px;
+    overflow-y: auto;
+    font-size: 16px !important;
     line-height: 1.5 !important;
+    scrollbar-width: thin;
   }
 }
 
 @media (max-width: 599px) and (orientation: portrait) {
+  .dialogue-overlay .mock-dialog {
+    max-height: min(34svh, 220px);
+  }
+
   .dialogue-overlay .mock-dialog .dialog-text,
   .solo-dialog .mock-dialog .dialog-text {
-    font-size: 15px !important;
-    line-height: 1.62 !important;
+    max-height: 116px;
+    overflow-y: auto;
+    font-size: 17px !important;
+    line-height: 1.58 !important;
+    scrollbar-width: thin;
   }
 }

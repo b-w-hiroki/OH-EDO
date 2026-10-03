@@ -31,20 +31,31 @@ async function advanceDialogs(page, max = 40) {
       const readability = await dialog.locator(".dialog-text").evaluate((el) => ({
         fontSize: Number.parseFloat(getComputedStyle(el).fontSize),
         clipped: el.scrollHeight > el.clientHeight + 2,
+        overflowY: getComputedStyle(el).overflowY,
         viewportWidth: window.innerWidth,
         viewportHeight: window.innerHeight,
       }));
-      assert(!readability.clipped, `dialog text is clipped: ${JSON.stringify(readability)}`);
+      assert(
+        !readability.clipped || ["auto", "scroll"].includes(readability.overflowY),
+        `dialog text is clipped without scrolling: ${JSON.stringify(readability)}`
+      );
       const minimumFontSize =
-        readability.viewportHeight <= 500
-          ? 14
-          : readability.viewportWidth <= 599
-            ? 15
-            : 18;
+        readability.viewportHeight <= 500 || readability.viewportWidth <= 599 ? 16 : 18;
       assert(
         readability.fontSize >= minimumFontSize,
         `dialog text is too small: ${JSON.stringify(readability)}`
       );
+      const composition = await dialog.evaluate((el) => {
+        const stage = el.closest(".presentation-stage")?.getBoundingClientRect();
+        const rect = el.getBoundingClientRect();
+        return stage
+          ? { clearSceneRatio: (rect.top - stage.top) / stage.height, targetHeight: rect.height }
+          : null;
+      });
+      if (composition) {
+        assert(composition.clearSceneRatio >= .34, `dialog hides too much of the scene: ${JSON.stringify(composition)}`);
+        assert(composition.targetHeight >= 44, `dialog action target is too small: ${JSON.stringify(composition)}`);
+      }
       await dispatchClick(dialog);
       await page.waitForTimeout(70);
       continue;
