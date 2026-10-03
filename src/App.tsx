@@ -795,7 +795,9 @@ function App() {
   const [toast, setToast] = useState<string | null>(null);
   const [dayTransition, setDayTransition] = useState<number | null>(null);
   const [rankTransition, setRankTransition] = useState<string | null>(null);
+  const [fireChoicePending, setFireChoicePending] = useState(false);
   const [selectedNpcId, setSelectedNpcId] = useState<NPCId | null>(() => getAreaNpcIds(loadInitial())[0] ?? null);
+  const fireChoicePendingRef = useRef(false);
   const dialogOpenRef = useRef(false);
   const previousDayRef = useRef(state.day);
   const previousRankRef = useRef(state.player.rank);
@@ -965,7 +967,9 @@ function App() {
   }, []);
 
   const chooseFireResponse = useCallback(async (choice: FireChoice) => {
-    if (state.screen !== "fire_choice") return;
+    if (state.screen !== "fire_choice" || fireChoicePendingRef.current) return;
+    fireChoicePendingRef.current = true;
+    setFireChoicePending(true);
     recordMetric("choice", state.day, choice.id);
     uiSound.select();
     const e = choice.effects;
@@ -1069,6 +1073,8 @@ function App() {
           : "小火の騒ぎは収まり、町は少し落ち着きを取り戻した。"
       ),
     }));
+    fireChoicePendingRef.current = false;
+    setFireChoicePending(false);
   }, [state]);
 
   const chooseFestival = useCallback((choice: FestivalChoice) => {
@@ -1573,7 +1579,11 @@ function App() {
 
             {state.screen === "fire_choice" && (
               <div className="overlay">
-                <FireChoiceView choices={FIRE_CHOICES} onChoose={chooseFireResponse} />
+                <FireChoiceView
+                  choices={FIRE_CHOICES}
+                  onChoose={chooseFireResponse}
+                  pending={fireChoicePending}
+                />
               </div>
             )}
 
