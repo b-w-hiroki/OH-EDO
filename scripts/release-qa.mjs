@@ -120,6 +120,9 @@ async function move(page, label) {
 async function talk(page, name) {
   const card = page.locator(".nearby-person").filter({ hasText: name }).first();
   await card.waitFor({ state: "visible", timeout: 5000 });
+  if (await page.locator(".nearby-avatar.avatar-newsman").count()) {
+    await assertNewsmanPortrait(page);
+  }
   await card.click();
   await page.waitForTimeout(80);
   const dockTalk = page.locator(".reference-talk-cta:visible");
@@ -132,6 +135,30 @@ async function talk(page, name) {
   }
   await page.waitForSelector(".mock-dialog:visible", { timeout: 5000 });
   await advanceDialogs(page);
+}
+
+async function assertNewsmanPortrait(page) {
+  const portrait = await page.locator(".nearby-avatar.avatar-newsman").evaluate((frame) => {
+    const image = frame.querySelector("img");
+    const frameRect = frame.getBoundingClientRect();
+    const imageRect = image?.getBoundingClientRect();
+    const style = image ? getComputedStyle(image) : null;
+    return {
+      loaded: Boolean(image && image.complete && image.naturalWidth > 0),
+      objectPosition: style?.objectPosition ?? "",
+      transformed: style?.transform !== "none",
+      clippedToFrame: getComputedStyle(frame).overflow === "hidden",
+      coversFrame: Boolean(
+        imageRect && imageRect.left <= frameRect.left + 1 && imageRect.right >= frameRect.right - 1 &&
+        imageRect.top <= frameRect.top + 1 && imageRect.bottom >= frameRect.bottom - 1
+      ),
+    };
+  });
+  assert(
+    portrait.loaded && portrait.objectPosition === "37% 18%" && portrait.transformed &&
+      portrait.clippedToFrame && portrait.coversFrame,
+    `newsman portrait crop is not production-ready: ${JSON.stringify(portrait)}`
+  );
 }
 
 async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = {}) {
@@ -581,6 +608,14 @@ async function assertMobileLayout(page) {
       .filter((el) => getComputedStyle(el).display !== "none")
       .map((el) => el.getBoundingClientRect());
     const navButtons = [...document.querySelectorAll(".reference-area-nav button:not(:disabled)")].map((el) => el.getBoundingClientRect());
+    const navIcons = [...document.querySelectorAll(".reference-area-nav .area-nav-icon")].map((el) => {
+      const rect = el.getBoundingClientRect();
+      return {
+        width: rect.width,
+        height: rect.height,
+        backgroundImage: getComputedStyle(el).backgroundImage,
+      };
+    });
     const people = document.querySelector(".town-side-panel > .side-card:first-child")?.getBoundingClientRect();
     const dock = document.querySelector(".reference-action-dock")?.getBoundingClientRect();
     const rumor = document.querySelector(".town-side-panel > .rumor-card")?.getBoundingClientRect();
@@ -595,6 +630,7 @@ async function assertMobileLayout(page) {
       nearbyCardMinHeight: nearbyCards.length ? Math.min(...nearbyCards.map((r) => r.height)) : 0,
       navMinHeight: navButtons.length ? Math.min(...navButtons.map((r) => r.height)) : 0,
       navOverflow: navButtons.some((r) => r.left < -1 || r.right > window.innerWidth + 1),
+      navIcons,
       peopleBottom: people ? people.bottom + scrollY : null,
       dockTop: dock ? dock.top + scrollY : null,
       dockBottom: dock ? dock.bottom + scrollY : null,
@@ -610,6 +646,15 @@ async function assertMobileLayout(page) {
   assert(result.navMinHeight >= 44, `nav touch targets too small: ${JSON.stringify(result)}`);
   assert(!result.navOverflow, `nav overflows viewport: ${JSON.stringify(result)}`);
   if (result.viewportWidth <= 599) {
+    if (result.viewportWidth < (result.stageHeight ?? 0) * 2) {
+      assert(
+        result.navIcons.length === 6 && result.navIcons.every((icon) =>
+          icon.backgroundImage.includes("nav-icon-sprite.webp") &&
+          icon.width >= 30 && icon.height >= 26 && icon.width / icon.height > 1 && icon.width / icon.height < 1.25
+        ),
+        `portrait navigation art is missing or distorted: ${JSON.stringify(result.navIcons)}`
+      );
+    }
     assert(
       result.peopleBottom !== null && result.dockTop !== null && result.dockTop >= result.peopleBottom - 2,
       `mobile travel controls should follow the people rail: ${JSON.stringify(result)}`
