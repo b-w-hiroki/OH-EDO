@@ -603,6 +603,7 @@
 
   .jobview.legacy-choice-panel .choice-effects {
     display: -webkit-box;
+    min-height: 2.6em;
     margin: 0;
     overflow: hidden;
     white-space: normal;
@@ -682,12 +683,12 @@
 
   .resultview .result-change-list {
     display: grid !important;
-    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
     gap: 4px;
   }
 
   .resultview .result-change-list li {
-    min-height: 44px;
+    min-height: 30px;
     padding: 4px 6px;
     font-size: 12px;
   }
@@ -697,7 +698,11 @@
   }
 
   .resultview .result-change-list small {
-    font-size: 12px;
+    display: none;
+  }
+
+  .resultview .result-rumor-card {
+    display: none;
   }
 
   .resultview .status-actions {

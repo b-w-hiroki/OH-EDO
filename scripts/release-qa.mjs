@@ -904,41 +904,114 @@ async function runLandscapeChromiumChoiceResult() {
   await advanceDialogs(page);
   await page.waitForSelector(".jobview", { timeout: 5000 });
   const choice = await page.locator(".jobview").evaluate((panel) => {
-    const action = panel.querySelector(".primary")?.getBoundingClientRect();
-    const effects = panel.querySelector(".choice-effects")?.getBoundingClientRect();
-    const card = panel.querySelector(".legacy-choice-card")?.getBoundingClientRect();
     const rect = panel.getBoundingClientRect();
+    const cards = [...panel.querySelectorAll(".legacy-choice-card")].map((card) => {
+      const cardRect = card.getBoundingClientRect();
+      const title = card.querySelector("h3")?.getBoundingClientRect();
+      const effectsElement = card.querySelector(".choice-effects");
+      const effects = effectsElement?.getBoundingClientRect();
+      const action = card.querySelector(".primary")?.getBoundingClientRect();
+      return {
+        title: card.querySelector("h3")?.textContent?.trim() ?? "",
+        effectCount: effectsElement?.children.length ?? 0,
+        effectsClipped: Boolean(effectsElement && effectsElement.scrollHeight > effectsElement.clientHeight + 1),
+        contentContained: Boolean(
+          title && effects &&
+          title.top >= cardRect.top - 1 && title.bottom <= cardRect.bottom + 1 &&
+          effects.top >= cardRect.top - 1 && effects.bottom <= cardRect.bottom + 1
+        ),
+        actionCoversCard: Boolean(
+          action && action.height >= cardRect.height - 2 && action.width >= cardRect.width - 2
+        ),
+      };
+    });
     return {
       horizontalOverflow: panel.scrollWidth > panel.clientWidth + 2,
-      actionVisible: Boolean(action && action.top >= rect.top && action.bottom <= rect.bottom + 1),
-      actionCoversCard: Boolean(action && card && action.height >= card.height - 2 && action.width >= card.width - 2),
-      effectsVisible: Boolean(effects && card && effects.top >= card.top && effects.bottom <= card.bottom + 1),
+      verticalOverflow: panel.scrollHeight > panel.clientHeight + 2,
+      panelContained: rect.top >= -1 && rect.bottom <= innerHeight + 1,
+      cards,
     };
   });
   await page.screenshot({ path: "qa-artifacts/chromium-landscape-choice.png", fullPage: false });
   assert(!choice.horizontalOverflow, `landscape choice overflows horizontally: ${JSON.stringify(choice)}`);
   assert(
-    choice.actionVisible && choice.actionCoversCard && choice.effectsVisible,
+    !choice.verticalOverflow && choice.panelContained &&
+      choice.cards.every((card) => card.contentContained && card.actionCoversCard && !card.effectsClipped),
     `landscape choice hierarchy starts clipped: ${JSON.stringify(choice)}`
   );
-  await page.locator(".jobview .primary").first().click();
+  const effectCounts = await page.locator(".jobview .choice-effects").evaluateAll((elements) =>
+    elements.map((element) => element.children.length)
+  );
+  const maxEffectIndex = effectCounts.indexOf(Math.max(...effectCounts));
+  await page.locator(".jobview .primary").nth(maxEffectIndex).click();
   await page.waitForSelector(".resultview", { timeout: 5000 });
   await settleResultCapture(page);
   const result = await page.locator(".resultview").evaluate((panel) => {
     const action = panel.querySelector(".status-actions .primary")?.getBoundingClientRect();
-    const changes = panel.querySelector(".result-change-list")?.getBoundingClientRect();
+    const changesElement = panel.querySelector(".result-change-list");
+    const changes = changesElement?.getBoundingClientRect();
+    const items = [...panel.querySelectorAll(".result-change-list li")].map((item) => item.getBoundingClientRect());
     const rect = panel.getBoundingClientRect();
+    const semanticChildren = [...panel.querySelectorAll(":scope > .area-card, :scope > .card")]
+      .filter((element) => getComputedStyle(element).display !== "none")
+      .map((element) => element.getBoundingClientRect());
+    const summary = panel.querySelector(".area-desc");
+    const overlaps = items.some((item, index) => items.slice(index + 1).some((other) =>
+      item.left < other.right - 1 && item.right > other.left + 1 &&
+      item.top < other.bottom - 1 && item.bottom > other.top + 1
+    ));
     return {
       horizontalOverflow: panel.scrollWidth > panel.clientWidth + 2,
+      verticalOverflow: panel.scrollHeight > panel.clientHeight + 2,
+      overflowPixels: panel.scrollHeight - panel.clientHeight,
       actionVisible: Boolean(action && action.top >= rect.top && action.bottom <= rect.bottom + 1),
-      changesVisible: Boolean(changes && changes.top >= rect.top && changes.bottom <= rect.bottom + 1),
+      changesVisible: Boolean(
+        changes && changesElement && changes.top >= rect.top && changes.bottom <= rect.bottom + 1 &&
+        changesElement.scrollHeight <= changesElement.clientHeight + 1
+      ),
+      itemCount: items.length,
+      itemsContained: Boolean(changes && items.every((item) =>
+        item.left >= changes.left - 1 && item.right <= changes.right + 1 &&
+        item.top >= changes.top - 1 && item.bottom <= changes.bottom + 1
+      )),
+      itemsOverlap: overlaps,
+      semanticContentContained: semanticChildren.every((child) =>
+        child.left >= rect.left - 1 && child.right <= rect.right + 1 &&
+        child.top >= rect.top - 1 && child.bottom <= rect.bottom + 1
+      ),
+      summaryClipped: Boolean(summary && summary.scrollHeight > summary.clientHeight + 1),
     };
   });
   await page.screenshot({ path: "qa-artifacts/chromium-landscape-result.png", fullPage: false });
   assert(!result.horizontalOverflow, `landscape result overflows horizontally: ${JSON.stringify(result)}`);
-  assert(result.actionVisible && result.changesVisible, `landscape result hierarchy starts clipped: ${JSON.stringify(result)}`);
+  assert(
+    result.actionVisible && result.changesVisible && result.semanticContentContained && !result.summaryClipped &&
+      result.itemCount === Math.max(...effectCounts) && result.itemsContained && !result.itemsOverlap,
+    `landscape result hierarchy starts clipped: ${JSON.stringify(result)}`
+  );
+  const beforeReload = await state(page);
+  await page.reload({ waitUntil: "networkidle" });
+  await page.waitForSelector(".resultview", { timeout: 5000 });
+  const afterReload = await state(page);
+  assert(afterReload?.screen === "result", "landscape reload lost the reward screen");
+  assert(
+    afterReload.playerActions.length === beforeReload.playerActions.length,
+    "landscape reload duplicated the reward"
+  );
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.waitForTimeout(180);
+  const portraitResult = await page.locator(".resultview").evaluate((panel) => ({
+    horizontalOverflow: panel.scrollWidth > panel.clientWidth + 2,
+    viewportOverflow: panel.getBoundingClientRect().right > innerWidth + 1,
+    itemCount: panel.querySelectorAll(".result-change-list li").length,
+  }));
+  assert(
+    !portraitResult.horizontalOverflow && !portraitResult.viewportOverflow &&
+      portraitResult.itemCount === Math.max(...effectCounts),
+    `rotated reward layout is clipped: ${JSON.stringify(portraitResult)}`
+  );
   await browser.close();
-  return { choice, result };
+  return { choice, result, portraitResult };
 }
 
 async function runIPhoneWebKit() {
