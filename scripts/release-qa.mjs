@@ -877,60 +877,68 @@ async function runIPhoneLandscapeWebKit() {
   await advanceDialogs(page);
   assert((await state(page))?.screen === "town", "landscape WebKit conversation did not return to town");
 
+  await browser.close();
+  return { layout, accessibility };
+}
+
+async function runLandscapeChromiumChoiceResult() {
+  const browser = await chromium.launch({ headless: true });
+  const context = await browser.newContext({
+    viewport: { width: 844, height: 390 },
+    screen: { width: 844, height: 390 },
+    deviceScaleFactor: 1,
+    isMobile: true,
+    hasTouch: true,
+    serviceWorkers: "block",
+  });
+  const page = await context.newPage();
+  await freshStart(page);
+  const initial = await state(page);
+  if (!initial?.flags?.met_landlord) {
+    await talk(page, "おかみさん");
+  }
   await move(page, "商店通り");
   await talk(page, "熊さん");
   await move(page, "長屋前");
   await page.waitForSelector(".mock-dialog:visible", { timeout: 5000 });
   await advanceDialogs(page);
   await page.waitForSelector(".jobview", { timeout: 5000 });
-  const landscapeChoice = await page.locator(".jobview").evaluate((panel) => {
+  const choice = await page.locator(".jobview").evaluate((panel) => {
     const action = panel.querySelector(".primary")?.getBoundingClientRect();
     const effects = panel.querySelector(".choice-effects")?.getBoundingClientRect();
     const card = panel.querySelector(".legacy-choice-card")?.getBoundingClientRect();
     const rect = panel.getBoundingClientRect();
     return {
       horizontalOverflow: panel.scrollWidth > panel.clientWidth + 2,
-      panelTop: rect.top,
-      panelBottom: rect.bottom,
-      viewportHeight: innerHeight,
-      card: card ? { top: card.top, bottom: card.bottom, left: card.left, right: card.right } : null,
-      action: action ? { top: action.top, bottom: action.bottom, left: action.left, right: action.right } : null,
       actionVisible: Boolean(action && action.top >= rect.top && action.bottom <= rect.bottom + 1),
       actionCoversCard: Boolean(action && card && action.height >= card.height - 2 && action.width >= card.width - 2),
       effectsVisible: Boolean(effects && card && effects.top >= card.top && effects.bottom <= card.bottom + 1),
     };
   });
-  await page.screenshot({ path: "qa-artifacts/iphone-webkit-landscape-choice.png", fullPage: false });
-  assert(!landscapeChoice.horizontalOverflow, `landscape choice overflows horizontally: ${JSON.stringify(landscapeChoice)}`);
+  await page.screenshot({ path: "qa-artifacts/chromium-landscape-choice.png", fullPage: false });
+  assert(!choice.horizontalOverflow, `landscape choice overflows horizontally: ${JSON.stringify(choice)}`);
   assert(
-    landscapeChoice.actionVisible && landscapeChoice.actionCoversCard && landscapeChoice.effectsVisible,
-    `landscape choice hierarchy starts clipped: ${JSON.stringify(landscapeChoice)}`
+    choice.actionVisible && choice.actionCoversCard && choice.effectsVisible,
+    `landscape choice hierarchy starts clipped: ${JSON.stringify(choice)}`
   );
   await page.locator(".jobview .primary").first().click();
   await page.waitForSelector(".resultview", { timeout: 5000 });
   await settleResultCapture(page);
-  const landscapeResult = await page.locator(".resultview").evaluate((panel) => {
+  const result = await page.locator(".resultview").evaluate((panel) => {
     const action = panel.querySelector(".status-actions .primary")?.getBoundingClientRect();
     const changes = panel.querySelector(".result-change-list")?.getBoundingClientRect();
     const rect = panel.getBoundingClientRect();
     return {
       horizontalOverflow: panel.scrollWidth > panel.clientWidth + 2,
-      panelTop: rect.top,
-      panelBottom: rect.bottom,
-      viewportHeight: innerHeight,
-      actionTop: action?.top ?? null,
-      actionBottom: action?.bottom ?? null,
-      changesTop: changes?.top ?? null,
-      changesBottom: changes?.bottom ?? null,
       actionVisible: Boolean(action && action.top >= rect.top && action.bottom <= rect.bottom + 1),
       changesVisible: Boolean(changes && changes.top >= rect.top && changes.bottom <= rect.bottom + 1),
     };
   });
-  await page.screenshot({ path: "qa-artifacts/iphone-webkit-landscape-result.png", fullPage: false });
-  assert(!landscapeResult.horizontalOverflow, `landscape result overflows horizontally: ${JSON.stringify(landscapeResult)}`);
-  assert(landscapeResult.actionVisible && landscapeResult.changesVisible, `landscape result hierarchy starts clipped: ${JSON.stringify(landscapeResult)}`);
+  await page.screenshot({ path: "qa-artifacts/chromium-landscape-result.png", fullPage: false });
+  assert(!result.horizontalOverflow, `landscape result overflows horizontally: ${JSON.stringify(result)}`);
+  assert(result.actionVisible && result.changesVisible, `landscape result hierarchy starts clipped: ${JSON.stringify(result)}`);
   await browser.close();
-  return { layout, accessibility };
+  return { choice, result };
 }
 
 async function runIPhoneWebKit() {
@@ -971,7 +979,8 @@ async function runIPhoneWebKit() {
 // leave enough transient memory pressure to destabilize WebKit on CI.
 const iphone = await runIPhoneWebKit();
 const iphoneLandscape = await runIPhoneLandscapeWebKit();
+const landscapeChoiceResult = await runLandscapeChromiumChoiceResult();
 const desktop = await runDesktop();
 const mobile = await runMobileChromium();
 const compactMobile = await runCompactMobileChromium();
-console.log(JSON.stringify({ ok: true, desktop, mobile, compactMobile, iphone, iphoneLandscape }, null, 2));
+console.log(JSON.stringify({ ok: true, desktop, mobile, compactMobile, iphone, iphoneLandscape, landscapeChoiceResult }, null, 2));
