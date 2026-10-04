@@ -1,0 +1,437 @@
+/* Final hierarchy pass for the core town -> dialogue -> choice -> result loop. */
+
+.legacy-choice-panel,
+.legacy-result-panel,
+.dialogue-overlay .mock-dialog {
+  text-rendering: optimizeLegibility;
+}
+
+.legacy-choice-panel .panel-desc,
+.legacy-choice-panel .area-desc,
+.legacy-choice-panel .fire-choice > span,
+.legacy-choice-panel .legacy-choice-card > p,
+.resultview .area-desc,
+.legacy-result-panel > p:not(.muted) {
+  overflow-wrap: anywhere;
+  line-break: strict;
+}
+
+.legacy-choice-panel .panel-desc,
+.legacy-choice-panel .area-desc {
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.legacy-choice-panel .fire-choice > strong,
+.legacy-choice-panel .legacy-choice-card h3 {
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.legacy-choice-panel .fire-choice > span,
+.legacy-choice-panel .legacy-choice-card > p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.legacy-choice-panel .choice-impact,
+.legacy-choice-panel .choice-effects,
+.legacy-choice-panel .favored-reputation {
+  font-size: 12px;
+  line-height: 1.45;
+  font-variant-numeric: tabular-nums;
+}
+
+.legacy-choice-panel .primary,
+.legacy-result-panel .primary {
+  min-height: 48px;
+  padding-inline: 18px;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.resultview .area-desc,
+.legacy-result-panel > p:not(.muted),
+.festival-result > p:first-of-type {
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.resultview .card h3,
+.legacy-result-panel .aftermath-card strong {
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.resultview .card ul {
+  padding-left: 0;
+  list-style: none;
+}
+
+.resultview .card li,
+.fire-aftermath .aftermath-card p {
+  min-height: 22px;
+  font-size: 13px;
+  line-height: 1.55;
+  font-variant-numeric: tabular-nums;
+}
+
+.resultview .rumor-tags,
+.legacy-result-panel .muted {
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.dialogue-overlay .mock-dialog .dialog-speaker {
+  line-height: 1.35;
+}
+
+.dialogue-overlay .mock-dialog .dialog-text {
+  overflow-wrap: anywhere;
+  line-break: strict;
+}
+
+.dialogue-overlay .dialog-foot {
+  min-height: 32px;
+  gap: 12px;
+}
+
+.dialogue-overlay .dialog-progress,
+.dialogue-overlay .dialog-next-cue {
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+@media (max-width: 599px) {
+  .reference-day-primary {
+    gap: 5px;
+    font-size: 11px;
+    line-height: 1.3;
+  }
+
+  .reference-day-card .reference-location {
+    font-size: 10px;
+    line-height: 1.3;
+  }
+
+  .mobile-player-name {
+    font-size: 13px !important;
+    line-height: 1.25;
+  }
+
+  .mobile-profile-row,
+  .mobile-money,
+  .mobile-money strong {
+    font-size: 10px !important;
+    line-height: 1.3;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .mobile-skill-card small,
+  .mobile-skill-card strong {
+    font-size: 10px !important;
+    line-height: 1.25;
+  }
+
+  .objective-strip {
+    min-height: 28px !important;
+    padding: 4px 8px !important;
+    font-size: 11px !important;
+    line-height: 1.35;
+  }
+
+  .town-side-panel > .side-card:first-child .side-card-title {
+    min-height: 24px !important;
+    font-size: 11px !important;
+    line-height: 1.3;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-person {
+    min-height: 72px !important;
+    padding: 6px 5px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-avatar {
+    width: 44px !important;
+    height: 44px !important;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-copy strong {
+    font-size: 12px !important;
+    line-height: 1.3;
+  }
+
+  .town-side-panel > .side-card:first-child .npc-subtitle,
+  .town-side-panel > .side-card:first-child .npc-memory-line,
+  .town-side-panel > .side-card:first-child .relation-pill {
+    font-size: 9px !important;
+    line-height: 1.3;
+  }
+
+  .town-side-panel > .side-card:first-child .nearby-talk {
+    min-width: 52px !important;
+    min-height: 44px !important;
+    padding-inline: 8px !important;
+    font-size: 12px !important;
+  }
+
+  .rumor-list li {
+    min-height: 28px !important;
+    font-size: 11px !important;
+    line-height: 1.4;
+  }
+
+  .reference-area-nav button,
+  .reference-area-nav:has(button:nth-child(4):not(:disabled)) button {
+    min-height: 52px !important;
+    padding: 4px 5px !important;
+  }
+
+  .area-nav-copy strong,
+  .reference-area-nav:has(button:nth-child(4):not(:disabled)) .area-nav-copy strong {
+    font-size: 11px !important;
+    line-height: 1.25;
+    letter-spacing: 0;
+  }
+
+  .legacy-choice-panel,
+  .legacy-result-panel {
+    width: calc(100% - 14px);
+    padding: 14px;
+    gap: 10px;
+  }
+
+  .legacy-choice-panel > h2,
+  .legacy-choice-panel .area-name,
+  .legacy-result-panel > h2,
+  .legacy-result-panel .area-name {
+    font-size: 22px;
+    line-height: 1.35;
+  }
+
+  .legacy-choice-panel {
+    padding: 10px;
+  }
+
+  .legacy-choice-panel > h2,
+  .legacy-choice-panel .area-name {
+    font-size: 20px;
+  }
+
+  .legacy-choice-panel .panel-desc,
+  .legacy-choice-panel .area-desc {
+    margin-bottom: 8px;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .legacy-choice-panel .fire-choice-list,
+  .jobview.legacy-choice-panel .choice-list {
+    gap: 10px;
+  }
+
+  .legacy-choice-panel .fire-choice,
+  .legacy-choice-panel .legacy-choice-card {
+    padding: 10px;
+  }
+
+  .legacy-choice-panel .fire-choice > strong,
+  .legacy-choice-panel .legacy-choice-card h3 {
+    margin-bottom: 5px;
+    font-size: 17px;
+  }
+
+  .legacy-choice-panel .fire-choice > span,
+  .legacy-choice-panel .legacy-choice-card > p {
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .legacy-choice-panel .legacy-choice-card > .choice-effects {
+    margin-top: 6px;
+    padding: 5px 7px;
+    font-size: 11px;
+  }
+
+  .jobview.legacy-choice-panel .legacy-choice-card .primary {
+    grid-column: 2;
+    grid-row: 1 / 4;
+    align-self: stretch;
+    width: 84px;
+    min-width: 84px;
+    max-width: 84px;
+    min-height: 48px;
+    padding-inline: 7px;
+    margin: 0 0 0 8px;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  .jobview.legacy-choice-panel .legacy-choice-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto auto auto;
+    align-items: stretch;
+  }
+
+  .jobview.legacy-choice-panel .legacy-choice-card > h3,
+  .jobview.legacy-choice-panel .legacy-choice-card > p {
+    grid-column: 1;
+  }
+
+  .resultview {
+    padding-bottom: 14px;
+  }
+
+  .resultview .area-name {
+    padding-right: 128px;
+  }
+
+  .resultview .status-actions {
+    position: absolute;
+    z-index: 4;
+    right: 14px;
+    top: 14px;
+    bottom: auto;
+    margin: 0;
+  }
+
+  .resultview .status-actions .primary {
+    min-width: 118px;
+    min-height: 44px;
+    padding-inline: 12px;
+    font-size: 15px;
+    box-shadow: 0 4px 0 #a74336, 0 7px 14px rgba(84, 43, 32, .18);
+  }
+
+  .resultview .area-desc,
+  .legacy-result-panel > p:not(.muted),
+  .festival-result > p:first-of-type {
+    padding: 9px 10px;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .resultview .card-row {
+    gap: 8px;
+  }
+
+  .resultview .card,
+  .legacy-result-panel .aftermath-card {
+    padding: 9px 10px;
+  }
+
+  .resultview .card h3,
+  .legacy-result-panel .aftermath-card strong {
+    font-size: 14px;
+  }
+
+  .resultview .card li,
+  .fire-aftermath .aftermath-card p {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .dialogue-overlay .mock-dialog .dialog-speaker {
+    font-size: 14px !important;
+  }
+}
+
+@media (max-width: 390px) and (max-height: 700px) {
+  .legacy-choice-panel {
+    padding: 8px;
+    gap: 6px;
+  }
+
+  .legacy-choice-panel > h2,
+  .legacy-choice-panel .area-name {
+    margin-bottom: 4px;
+    padding-bottom: 5px;
+    font-size: 19px;
+  }
+
+  .legacy-choice-panel .panel-desc,
+  .legacy-choice-panel .area-desc {
+    margin-bottom: 5px;
+    line-height: 1.35;
+  }
+
+  .legacy-choice-panel .fire-choice-list,
+  .jobview.legacy-choice-panel .choice-list {
+    gap: 6px;
+  }
+
+  .legacy-choice-panel .fire-choice,
+  .legacy-choice-panel .legacy-choice-card {
+    padding: 8px;
+  }
+
+  .legacy-choice-panel .fire-choice > strong,
+  .legacy-choice-panel .legacy-choice-card h3 {
+    margin-bottom: 3px;
+    font-size: 16px;
+  }
+
+  .legacy-choice-panel .fire-choice > span,
+  .legacy-choice-panel .legacy-choice-card > p:not(.choice-effects) {
+    line-height: 1.4;
+  }
+
+  .legacy-choice-panel .legacy-choice-card > .choice-effects {
+    margin-top: 4px;
+    padding-block: 4px;
+    line-height: 1.3;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .legacy-choice-panel,
+  .legacy-result-panel {
+    max-height: calc(100% - 12px);
+    padding: 12px 14px;
+    gap: 8px;
+  }
+
+  .legacy-choice-panel > h2,
+  .legacy-choice-panel .area-name,
+  .legacy-result-panel > h2,
+  .legacy-result-panel .area-name {
+    margin-bottom: 6px;
+    font-size: 20px;
+    line-height: 1.3;
+  }
+
+  .legacy-choice-panel .panel-desc,
+  .legacy-choice-panel .area-desc,
+  .resultview .area-desc,
+  .legacy-result-panel > p:not(.muted) {
+    margin-bottom: 6px;
+    padding-block: 6px;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .legacy-choice-panel .fire-choice,
+  .legacy-choice-panel .legacy-choice-card {
+    min-height: 132px;
+    padding: 10px 11px;
+  }
+
+  .legacy-choice-panel .fire-choice > strong,
+  .legacy-choice-panel .legacy-choice-card h3 {
+    font-size: 16px;
+  }
+
+  .legacy-choice-panel .fire-choice > span,
+  .legacy-choice-panel .legacy-choice-card > p,
+  .resultview .card li {
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .legacy-choice-panel .primary,
+  .legacy-result-panel .primary {
+    min-height: 44px;
+    font-size: 15px;
+  }
+}
