@@ -28,6 +28,27 @@ async function advanceDialogs(page, max = 40) {
   for (let i = 0; i < max; i++) {
     const dialog = page.locator(".mock-dialog:visible").first();
     if (await dialog.count()) {
+      const portrait = dialog.locator(".dialog-portrait:visible:has(img)").first();
+      if (await portrait.count()) {
+        const portraitState = await portrait.evaluate((frame) => {
+          const image = frame.querySelector("img");
+          const frameRect = frame.getBoundingClientRect();
+          const imageRect = image?.getBoundingClientRect();
+          return {
+            loaded: Boolean(image && image.complete && image.naturalWidth > 0),
+            frameWidth: frameRect.width,
+            frameHeight: frameRect.height,
+            coversFrame: Boolean(
+              imageRect &&
+              imageRect.width >= frameRect.width - 1 &&
+              imageRect.height >= frameRect.height - 1
+            ),
+          };
+        });
+        assert(portraitState.loaded, `dialog portrait failed to load: ${JSON.stringify(portraitState)}`);
+        assert(portraitState.frameWidth >= 44 && portraitState.frameHeight >= 44, `dialog portrait is too small: ${JSON.stringify(portraitState)}`);
+        assert(portraitState.coversFrame, `dialog portrait does not cover its frame: ${JSON.stringify(portraitState)}`);
+      }
       const readability = await dialog.locator(".dialog-text").evaluate((el) => ({
         fontSize: Number.parseFloat(getComputedStyle(el).fontSize),
         clipped: el.scrollHeight > el.clientHeight + 2,
@@ -120,6 +141,9 @@ async function move(page, label) {
 async function talk(page, name) {
   const card = page.locator(".nearby-person").filter({ hasText: name }).first();
   await card.waitFor({ state: "visible", timeout: 5000 });
+  if (await page.locator(".nearby-avatar.avatar-newsman").count()) {
+    await assertNewsmanPortrait(page);
+  }
   await card.click();
   await page.waitForTimeout(80);
   const dockTalk = page.locator(".reference-talk-cta:visible");
@@ -132,6 +156,30 @@ async function talk(page, name) {
   }
   await page.waitForSelector(".mock-dialog:visible", { timeout: 5000 });
   await advanceDialogs(page);
+}
+
+async function assertNewsmanPortrait(page) {
+  const portrait = await page.locator(".nearby-avatar.avatar-newsman").evaluate((frame) => {
+    const image = frame.querySelector("img");
+    const frameRect = frame.getBoundingClientRect();
+    const imageRect = image?.getBoundingClientRect();
+    const style = image ? getComputedStyle(image) : null;
+    return {
+      loaded: Boolean(image && image.complete && image.naturalWidth > 0),
+      objectPosition: style?.objectPosition ?? "",
+      transformed: style?.transform !== "none",
+      clippedToFrame: getComputedStyle(frame).overflow === "hidden",
+      coversFrame: Boolean(
+        imageRect && imageRect.left <= frameRect.left + 1 && imageRect.right >= frameRect.right - 1 &&
+        imageRect.top <= frameRect.top + 1 && imageRect.bottom >= frameRect.bottom - 1
+      ),
+    };
+  });
+  assert(
+    portrait.loaded && portrait.objectPosition === "37% 18%" && portrait.transformed &&
+      portrait.clippedToFrame && portrait.coversFrame,
+    `newsman portrait crop is not production-ready: ${JSON.stringify(portrait)}`
+  );
 }
 
 async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = {}) {
@@ -505,6 +553,23 @@ async function captureAreas(page, prefix) {
     await move(page, label);
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.waitForTimeout(80);
+    if (slug === "market") {
+      const fishmonger = await page.locator(".presentation-primary.art-fishmonger").evaluate((actor) => {
+        const image = actor.querySelector(".presentation-character-image-default");
+        const actorRect = actor.getBoundingClientRect();
+        const imageRect = image?.getBoundingClientRect();
+        const style = image ? getComputedStyle(image) : null;
+        return {
+          loaded: Boolean(image && image.complete && image.naturalWidth > 0),
+          actor: { x: actorRect.x, y: actorRect.y, width: actorRect.width, height: actorRect.height },
+          image: imageRect ? { x: imageRect.x, y: imageRect.y, width: imageRect.width, height: imageRect.height } : null,
+          maskImage: style?.maskImage || style?.webkitMaskImage || "",
+        };
+      });
+      assert(fishmonger.loaded, `fishmonger stage art failed to load: ${JSON.stringify(fishmonger)}`);
+      assert(fishmonger.actor.width >= 110 && fishmonger.actor.height >= 180, `fishmonger stage art is too small: ${JSON.stringify(fishmonger)}`);
+      assert(fishmonger.maskImage.includes("linear-gradient"), `fishmonger source cleanup is missing: ${JSON.stringify(fishmonger)}`);
+    }
     await page.screenshot({ path: `qa-artifacts/${prefix}-${slug}-world.png`, fullPage: false });
     const talkButton = page.locator(".nearby-talk:visible").first();
     if (await talkButton.count()) {
@@ -581,6 +646,14 @@ async function assertMobileLayout(page) {
       .filter((el) => getComputedStyle(el).display !== "none")
       .map((el) => el.getBoundingClientRect());
     const navButtons = [...document.querySelectorAll(".reference-area-nav button:not(:disabled)")].map((el) => el.getBoundingClientRect());
+    const navIcons = [...document.querySelectorAll(".reference-area-nav .area-nav-icon")].map((el) => {
+      const rect = el.getBoundingClientRect();
+      return {
+        width: rect.width,
+        height: rect.height,
+        backgroundImage: getComputedStyle(el).backgroundImage,
+      };
+    });
     const people = document.querySelector(".town-side-panel > .side-card:first-child")?.getBoundingClientRect();
     const dock = document.querySelector(".reference-action-dock")?.getBoundingClientRect();
     const rumor = document.querySelector(".town-side-panel > .rumor-card")?.getBoundingClientRect();
@@ -595,6 +668,7 @@ async function assertMobileLayout(page) {
       nearbyCardMinHeight: nearbyCards.length ? Math.min(...nearbyCards.map((r) => r.height)) : 0,
       navMinHeight: navButtons.length ? Math.min(...navButtons.map((r) => r.height)) : 0,
       navOverflow: navButtons.some((r) => r.left < -1 || r.right > window.innerWidth + 1),
+      navIcons,
       peopleBottom: people ? people.bottom + scrollY : null,
       dockTop: dock ? dock.top + scrollY : null,
       dockBottom: dock ? dock.bottom + scrollY : null,
@@ -610,6 +684,15 @@ async function assertMobileLayout(page) {
   assert(result.navMinHeight >= 44, `nav touch targets too small: ${JSON.stringify(result)}`);
   assert(!result.navOverflow, `nav overflows viewport: ${JSON.stringify(result)}`);
   if (result.viewportWidth <= 599) {
+    if (result.viewportWidth < (result.stageHeight ?? 0) * 2) {
+      assert(
+        result.navIcons.length === 6 && result.navIcons.every((icon) =>
+          icon.backgroundImage.includes("nav-icon-sprite.webp") &&
+          icon.width >= 30 && icon.height >= 26 && icon.width / icon.height > 1 && icon.width / icon.height < 1.25
+        ),
+        `portrait navigation art is missing or distorted: ${JSON.stringify(result.navIcons)}`
+      );
+    }
     assert(
       result.peopleBottom !== null && result.dockTop !== null && result.dockTop >= result.peopleBottom - 2,
       `mobile travel controls should follow the people rail: ${JSON.stringify(result)}`
@@ -877,60 +960,141 @@ async function runIPhoneLandscapeWebKit() {
   await advanceDialogs(page);
   assert((await state(page))?.screen === "town", "landscape WebKit conversation did not return to town");
 
+  await browser.close();
+  return { layout, accessibility };
+}
+
+async function runLandscapeChromiumChoiceResult() {
+  const browser = await chromium.launch({ headless: true });
+  const context = await browser.newContext({
+    viewport: { width: 844, height: 390 },
+    screen: { width: 844, height: 390 },
+    deviceScaleFactor: 1,
+    isMobile: true,
+    hasTouch: true,
+    serviceWorkers: "block",
+  });
+  const page = await context.newPage();
+  await freshStart(page);
+  const initial = await state(page);
+  if (!initial?.flags?.met_landlord) {
+    await talk(page, "おかみさん");
+  }
   await move(page, "商店通り");
   await talk(page, "熊さん");
   await move(page, "長屋前");
   await page.waitForSelector(".mock-dialog:visible", { timeout: 5000 });
   await advanceDialogs(page);
   await page.waitForSelector(".jobview", { timeout: 5000 });
-  const landscapeChoice = await page.locator(".jobview").evaluate((panel) => {
-    const action = panel.querySelector(".primary")?.getBoundingClientRect();
-    const effects = panel.querySelector(".choice-effects")?.getBoundingClientRect();
-    const card = panel.querySelector(".legacy-choice-card")?.getBoundingClientRect();
+  const choice = await page.locator(".jobview").evaluate((panel) => {
     const rect = panel.getBoundingClientRect();
+    const cards = [...panel.querySelectorAll(".legacy-choice-card")].map((card) => {
+      const cardRect = card.getBoundingClientRect();
+      const title = card.querySelector("h3")?.getBoundingClientRect();
+      const effectsElement = card.querySelector(".choice-effects");
+      const effects = effectsElement?.getBoundingClientRect();
+      const action = card.querySelector(".primary")?.getBoundingClientRect();
+      return {
+        title: card.querySelector("h3")?.textContent?.trim() ?? "",
+        effectCount: effectsElement?.children.length ?? 0,
+        effectsClipped: Boolean(effectsElement && effectsElement.scrollHeight > effectsElement.clientHeight + 1),
+        contentContained: Boolean(
+          title && effects &&
+          title.top >= cardRect.top - 1 && title.bottom <= cardRect.bottom + 1 &&
+          effects.top >= cardRect.top - 1 && effects.bottom <= cardRect.bottom + 1
+        ),
+        actionCoversCard: Boolean(
+          action && action.height >= cardRect.height - 2 && action.width >= cardRect.width - 2
+        ),
+      };
+    });
     return {
       horizontalOverflow: panel.scrollWidth > panel.clientWidth + 2,
-      panelTop: rect.top,
-      panelBottom: rect.bottom,
-      viewportHeight: innerHeight,
-      card: card ? { top: card.top, bottom: card.bottom, left: card.left, right: card.right } : null,
-      action: action ? { top: action.top, bottom: action.bottom, left: action.left, right: action.right } : null,
-      actionVisible: Boolean(action && action.top >= rect.top && action.bottom <= rect.bottom + 1),
-      actionCoversCard: Boolean(action && card && action.height >= card.height - 2 && action.width >= card.width - 2),
-      effectsVisible: Boolean(effects && card && effects.top >= card.top && effects.bottom <= card.bottom + 1),
+      verticalOverflow: panel.scrollHeight > panel.clientHeight + 2,
+      panelContained: rect.top >= -1 && rect.bottom <= innerHeight + 1,
+      cards,
     };
   });
-  await page.screenshot({ path: "qa-artifacts/iphone-webkit-landscape-choice.png", fullPage: false });
-  assert(!landscapeChoice.horizontalOverflow, `landscape choice overflows horizontally: ${JSON.stringify(landscapeChoice)}`);
+  await page.screenshot({ path: "qa-artifacts/chromium-landscape-choice.png", fullPage: false });
+  assert(!choice.horizontalOverflow, `landscape choice overflows horizontally: ${JSON.stringify(choice)}`);
   assert(
-    landscapeChoice.actionVisible && landscapeChoice.actionCoversCard && landscapeChoice.effectsVisible,
-    `landscape choice hierarchy starts clipped: ${JSON.stringify(landscapeChoice)}`
+    !choice.verticalOverflow && choice.panelContained &&
+      choice.cards.every((card) => card.contentContained && card.actionCoversCard && !card.effectsClipped),
+    `landscape choice hierarchy starts clipped: ${JSON.stringify(choice)}`
   );
-  await page.locator(".jobview .primary").first().click();
+  const effectCounts = await page.locator(".jobview .choice-effects").evaluateAll((elements) =>
+    elements.map((element) => element.children.length)
+  );
+  const maxEffectIndex = effectCounts.indexOf(Math.max(...effectCounts));
+  await page.locator(".jobview .primary").nth(maxEffectIndex).click();
   await page.waitForSelector(".resultview", { timeout: 5000 });
   await settleResultCapture(page);
-  const landscapeResult = await page.locator(".resultview").evaluate((panel) => {
+  const result = await page.locator(".resultview").evaluate((panel) => {
     const action = panel.querySelector(".status-actions .primary")?.getBoundingClientRect();
-    const changes = panel.querySelector(".result-change-list")?.getBoundingClientRect();
+    const changesElement = panel.querySelector(".result-change-list");
+    const changes = changesElement?.getBoundingClientRect();
+    const items = [...panel.querySelectorAll(".result-change-list li")].map((item) => item.getBoundingClientRect());
     const rect = panel.getBoundingClientRect();
+    const semanticChildren = [...panel.querySelectorAll(":scope > .area-card, :scope > .card")]
+      .filter((element) => getComputedStyle(element).display !== "none")
+      .map((element) => element.getBoundingClientRect());
+    const summary = panel.querySelector(".area-desc");
+    const overlaps = items.some((item, index) => items.slice(index + 1).some((other) =>
+      item.left < other.right - 1 && item.right > other.left + 1 &&
+      item.top < other.bottom - 1 && item.bottom > other.top + 1
+    ));
     return {
       horizontalOverflow: panel.scrollWidth > panel.clientWidth + 2,
-      panelTop: rect.top,
-      panelBottom: rect.bottom,
-      viewportHeight: innerHeight,
-      actionTop: action?.top ?? null,
-      actionBottom: action?.bottom ?? null,
-      changesTop: changes?.top ?? null,
-      changesBottom: changes?.bottom ?? null,
+      verticalOverflow: panel.scrollHeight > panel.clientHeight + 2,
+      overflowPixels: panel.scrollHeight - panel.clientHeight,
       actionVisible: Boolean(action && action.top >= rect.top && action.bottom <= rect.bottom + 1),
-      changesVisible: Boolean(changes && changes.top >= rect.top && changes.bottom <= rect.bottom + 1),
+      changesVisible: Boolean(
+        changes && changesElement && changes.top >= rect.top && changes.bottom <= rect.bottom + 1 &&
+        changesElement.scrollHeight <= changesElement.clientHeight + 1
+      ),
+      itemCount: items.length,
+      itemsContained: Boolean(changes && items.every((item) =>
+        item.left >= changes.left - 1 && item.right <= changes.right + 1 &&
+        item.top >= changes.top - 1 && item.bottom <= changes.bottom + 1
+      )),
+      itemsOverlap: overlaps,
+      semanticContentContained: semanticChildren.every((child) =>
+        child.left >= rect.left - 1 && child.right <= rect.right + 1 &&
+        child.top >= rect.top - 1 && child.bottom <= rect.bottom + 1
+      ),
+      summaryClipped: Boolean(summary && summary.scrollHeight > summary.clientHeight + 1),
     };
   });
-  await page.screenshot({ path: "qa-artifacts/iphone-webkit-landscape-result.png", fullPage: false });
-  assert(!landscapeResult.horizontalOverflow, `landscape result overflows horizontally: ${JSON.stringify(landscapeResult)}`);
-  assert(landscapeResult.actionVisible && landscapeResult.changesVisible, `landscape result hierarchy starts clipped: ${JSON.stringify(landscapeResult)}`);
+  await page.screenshot({ path: "qa-artifacts/chromium-landscape-result.png", fullPage: false });
+  assert(!result.horizontalOverflow, `landscape result overflows horizontally: ${JSON.stringify(result)}`);
+  assert(
+    result.actionVisible && result.changesVisible && result.semanticContentContained && !result.summaryClipped &&
+      result.itemCount === Math.max(...effectCounts) && result.itemsContained && !result.itemsOverlap,
+    `landscape result hierarchy starts clipped: ${JSON.stringify(result)}`
+  );
+  const beforeReload = await state(page);
+  await page.reload({ waitUntil: "networkidle" });
+  await page.waitForSelector(".resultview", { timeout: 5000 });
+  const afterReload = await state(page);
+  assert(afterReload?.screen === "result", "landscape reload lost the reward screen");
+  assert(
+    afterReload.playerActions.length === beforeReload.playerActions.length,
+    "landscape reload duplicated the reward"
+  );
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.waitForTimeout(180);
+  const portraitResult = await page.locator(".resultview").evaluate((panel) => ({
+    horizontalOverflow: panel.scrollWidth > panel.clientWidth + 2,
+    viewportOverflow: panel.getBoundingClientRect().right > innerWidth + 1,
+    itemCount: panel.querySelectorAll(".result-change-list li").length,
+  }));
+  assert(
+    !portraitResult.horizontalOverflow && !portraitResult.viewportOverflow &&
+      portraitResult.itemCount === Math.max(...effectCounts),
+    `rotated reward layout is clipped: ${JSON.stringify(portraitResult)}`
+  );
   await browser.close();
-  return { layout, accessibility };
+  return { choice, result, portraitResult };
 }
 
 async function runIPhoneWebKit() {
@@ -971,7 +1135,8 @@ async function runIPhoneWebKit() {
 // leave enough transient memory pressure to destabilize WebKit on CI.
 const iphone = await runIPhoneWebKit();
 const iphoneLandscape = await runIPhoneLandscapeWebKit();
+const landscapeChoiceResult = await runLandscapeChromiumChoiceResult();
 const desktop = await runDesktop();
 const mobile = await runMobileChromium();
 const compactMobile = await runCompactMobileChromium();
-console.log(JSON.stringify({ ok: true, desktop, mobile, compactMobile, iphone, iphoneLandscape }, null, 2));
+console.log(JSON.stringify({ ok: true, desktop, mobile, compactMobile, iphone, iphoneLandscape, landscapeChoiceResult }, null, 2));
