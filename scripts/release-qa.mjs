@@ -556,19 +556,25 @@ async function captureAreas(page, prefix) {
     if (slug === "market") {
       const fishmonger = await page.locator(".presentation-primary.art-fishmonger").evaluate((actor) => {
         const image = actor.querySelector(".presentation-character-image-default");
+        const stageRect = actor.closest(".presentation-stage")?.getBoundingClientRect();
         const actorRect = actor.getBoundingClientRect();
         const imageRect = image?.getBoundingClientRect();
-        const style = image ? getComputedStyle(image) : null;
         return {
           loaded: Boolean(image && image.complete && image.naturalWidth > 0),
+          source: image?.currentSrc ?? "",
           actor: { x: actorRect.x, y: actorRect.y, width: actorRect.width, height: actorRect.height },
           image: imageRect ? { x: imageRect.x, y: imageRect.y, width: imageRect.width, height: imageRect.height } : null,
-          maskImage: style?.maskImage || style?.webkitMaskImage || "",
+          containedInStage: Boolean(
+            stageRect &&
+            actorRect.top >= stageRect.top - 1 &&
+            actorRect.bottom <= stageRect.bottom + 1
+          ),
         };
       });
       assert(fishmonger.loaded, `fishmonger stage art failed to load: ${JSON.stringify(fishmonger)}`);
       assert(fishmonger.actor.width >= 110 && fishmonger.actor.height >= 180, `fishmonger stage art is too small: ${JSON.stringify(fishmonger)}`);
-      assert(fishmonger.maskImage.includes("linear-gradient"), `fishmonger source cleanup is missing: ${JSON.stringify(fishmonger)}`);
+      assert(fishmonger.source.includes("fishmonger-clean.png"), `clean fishmonger source is missing: ${JSON.stringify(fishmonger)}`);
+      assert(fishmonger.containedInStage, `fishmonger is clipped by the stage: ${JSON.stringify(fishmonger)}`);
     }
     await page.screenshot({ path: `qa-artifacts/${prefix}-${slug}-world.png`, fullPage: false });
     const talkButton = page.locator(".nearby-talk:visible").first();
@@ -904,6 +910,23 @@ async function runCompactMobileChromium() {
     await dayTransition.waitFor({ state: "hidden", timeout: 5000 });
   }
   await page.screenshot({ path: "qa-artifacts/mobile-375-day10-world.png", fullPage: false });
+  await move(page, "商店通り");
+  const compactFishmonger = await page.locator(".presentation-primary.art-fishmonger").evaluate((actor) => {
+    const image = actor.querySelector(".presentation-character-image-default");
+    const stageRect = actor.closest(".presentation-stage")?.getBoundingClientRect();
+    const actorRect = actor.getBoundingClientRect();
+    return {
+      source: image?.currentSrc ?? "",
+      containedInStage: Boolean(
+        stageRect &&
+        actorRect.top >= stageRect.top - 1 &&
+        actorRect.bottom <= stageRect.bottom + 1
+      ),
+    };
+  });
+  assert(compactFishmonger.source.includes("fishmonger-clean.png"), `compact clean fishmonger source is missing: ${JSON.stringify(compactFishmonger)}`);
+  assert(compactFishmonger.containedInStage, `compact fishmonger is clipped: ${JSON.stringify(compactFishmonger)}`);
+  await page.screenshot({ path: "qa-artifacts/mobile-375-market-world.png", fullPage: false });
   await browser.close();
   return { day: finalState.day, provider: finalState.fireAftermath?.provider ?? finalState.lastDecision?.provider, layout, accessibility };
 }
@@ -959,6 +982,26 @@ async function runIPhoneLandscapeWebKit() {
   await page.screenshot({ path: "qa-artifacts/iphone-webkit-landscape-dialog.png", fullPage: false });
   await advanceDialogs(page);
   assert((await state(page))?.screen === "town", "landscape WebKit conversation did not return to town");
+  await move(page, "商店通り");
+  const landscapeFishmonger = await page.locator(".presentation-primary.art-fishmonger").evaluate((actor) => {
+    const image = actor.querySelector(".presentation-character-image-default");
+    const stageRect = actor.closest(".presentation-stage")?.getBoundingClientRect();
+    const actorRect = actor.getBoundingClientRect();
+    return {
+      loaded: Boolean(image && image.complete && image.naturalWidth > 0),
+      source: image?.currentSrc ?? "",
+      containedInStage: Boolean(
+        stageRect &&
+        actorRect.top >= stageRect.top - 1 &&
+        actorRect.bottom <= stageRect.bottom + 1
+      ),
+    };
+  });
+  assert(landscapeFishmonger.loaded, `landscape fishmonger failed to load: ${JSON.stringify(landscapeFishmonger)}`);
+  assert(landscapeFishmonger.source.includes("fishmonger-clean.png"), `landscape clean fishmonger source is missing: ${JSON.stringify(landscapeFishmonger)}`);
+  assert(landscapeFishmonger.containedInStage, `landscape fishmonger is clipped: ${JSON.stringify(landscapeFishmonger)}`);
+  await page.waitForTimeout(260);
+  await page.screenshot({ path: "qa-artifacts/iphone-webkit-landscape-market-world.png", fullPage: false });
 
   await browser.close();
   return { layout, accessibility };

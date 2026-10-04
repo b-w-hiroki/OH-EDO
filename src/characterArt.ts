@@ -4,7 +4,7 @@ import { publicAsset } from "./publicAsset";
 export const CHARACTER_ART: Record<"player" | Exclude<NPCId, "kumitori_master">, string> = {
   player: publicAsset("assets/edo/characters/full/player.webp"),
   landlord: publicAsset("assets/edo/characters/full/landlord.webp"),
-  fishmonger: publicAsset("assets/edo/characters/full/fishmonger.webp"),
+  fishmonger: publicAsset("assets/edo/characters/full/fishmonger-clean.png"),
   child: publicAsset("assets/edo/characters/full/child.webp"),
   newsman: publicAsset("assets/edo/characters/full/newsman.webp"),
   firechief: publicAsset("assets/edo/characters/full/firechief.webp"),
