@@ -28,6 +28,27 @@ async function advanceDialogs(page, max = 40) {
   for (let i = 0; i < max; i++) {
     const dialog = page.locator(".mock-dialog:visible").first();
     if (await dialog.count()) {
+      const portrait = dialog.locator(".dialog-portrait:visible:has(img)").first();
+      if (await portrait.count()) {
+        const portraitState = await portrait.evaluate((frame) => {
+          const image = frame.querySelector("img");
+          const frameRect = frame.getBoundingClientRect();
+          const imageRect = image?.getBoundingClientRect();
+          return {
+            loaded: Boolean(image && image.complete && image.naturalWidth > 0),
+            frameWidth: frameRect.width,
+            frameHeight: frameRect.height,
+            coversFrame: Boolean(
+              imageRect &&
+              imageRect.width >= frameRect.width - 1 &&
+              imageRect.height >= frameRect.height - 1
+            ),
+          };
+        });
+        assert(portraitState.loaded, `dialog portrait failed to load: ${JSON.stringify(portraitState)}`);
+        assert(portraitState.frameWidth >= 44 && portraitState.frameHeight >= 44, `dialog portrait is too small: ${JSON.stringify(portraitState)}`);
+        assert(portraitState.coversFrame, `dialog portrait does not cover its frame: ${JSON.stringify(portraitState)}`);
+      }
       const readability = await dialog.locator(".dialog-text").evaluate((el) => ({
         fontSize: Number.parseFloat(getComputedStyle(el).fontSize),
         clipped: el.scrollHeight > el.clientHeight + 2,
@@ -532,6 +553,23 @@ async function captureAreas(page, prefix) {
     await move(page, label);
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.waitForTimeout(80);
+    if (slug === "market") {
+      const fishmonger = await page.locator(".presentation-primary.art-fishmonger").evaluate((actor) => {
+        const image = actor.querySelector(".presentation-character-image-default");
+        const actorRect = actor.getBoundingClientRect();
+        const imageRect = image?.getBoundingClientRect();
+        const style = image ? getComputedStyle(image) : null;
+        return {
+          loaded: Boolean(image && image.complete && image.naturalWidth > 0),
+          actor: { x: actorRect.x, y: actorRect.y, width: actorRect.width, height: actorRect.height },
+          image: imageRect ? { x: imageRect.x, y: imageRect.y, width: imageRect.width, height: imageRect.height } : null,
+          maskImage: style?.maskImage || style?.webkitMaskImage || "",
+        };
+      });
+      assert(fishmonger.loaded, `fishmonger stage art failed to load: ${JSON.stringify(fishmonger)}`);
+      assert(fishmonger.actor.width >= 110 && fishmonger.actor.height >= 180, `fishmonger stage art is too small: ${JSON.stringify(fishmonger)}`);
+      assert(fishmonger.maskImage.includes("linear-gradient"), `fishmonger source cleanup is missing: ${JSON.stringify(fishmonger)}`);
+    }
     await page.screenshot({ path: `qa-artifacts/${prefix}-${slug}-world.png`, fullPage: false });
     const talkButton = page.locator(".nearby-talk:visible").first();
     if (await talkButton.count()) {
