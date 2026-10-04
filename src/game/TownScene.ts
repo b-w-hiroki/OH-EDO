@@ -17,6 +17,7 @@ import {
   type WorldNPC,
 } from "./worldConfig";
 import { CHAR_SCALE, CHAR_TEX_H, buildCharacterTextures } from "./characters";
+import { publicAsset } from "../publicAsset";
 
 const PLAYER_SPEED = 196;
 const INTERACT_RANGE = 84;
@@ -72,10 +73,10 @@ export class TownScene extends Phaser.Scene {
   }
 
   preload(): void {
-    this.load.image("bg-market-art", "/assets/edo/backgrounds/market.webp");
-    this.load.image("bg-nagaya-art", "/assets/edo/backgrounds/nagaya.webp");
-    this.load.image("bg-well-art", "/assets/edo/backgrounds/well.webp");
-    this.load.image("bg-firehouse-art", "/assets/edo/backgrounds/firehouse.webp");
+    this.load.image("bg-market-art", publicAsset("assets/edo/backgrounds/market.webp"));
+    this.load.image("bg-nagaya-art", publicAsset("assets/edo/backgrounds/nagaya.webp"));
+    this.load.image("bg-well-art", publicAsset("assets/edo/backgrounds/well.webp"));
+    this.load.image("bg-firehouse-art", publicAsset("assets/edo/backgrounds/firehouse.webp"));
   }
 
   create(): void {

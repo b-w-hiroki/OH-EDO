@@ -157,6 +157,31 @@ async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = 
   await page.waitForSelector(".mock-dialog:visible", { timeout: 5000 });
   await advanceDialogs(page);
   await page.waitForSelector(".jobview", { timeout: 5000 });
+  const choiceReadability = await page.locator(".jobview").evaluate((panel) => {
+    const description = panel.querySelector(".area-desc");
+    const cardBody = panel.querySelector(".legacy-choice-card > p:not(.choice-effects)");
+    const effects = panel.querySelector(".choice-effects");
+    const action = panel.querySelector(".primary");
+    const panelRect = panel.getBoundingClientRect();
+    const actionRect = action?.getBoundingClientRect();
+    const effectsRect = effects?.getBoundingClientRect();
+    return {
+      width: innerWidth,
+      descriptionFont: description ? Number.parseFloat(getComputedStyle(description).fontSize) : 0,
+      bodyFont: cardBody ? Number.parseFloat(getComputedStyle(cardBody).fontSize) : 0,
+      effectsFont: effects ? Number.parseFloat(getComputedStyle(effects).fontSize) : 0,
+      actionHeight: actionRect?.height ?? 0,
+      actionVisible: Boolean(actionRect && actionRect.top >= panelRect.top && actionRect.bottom <= panelRect.bottom + 1),
+      effectsVisible: Boolean(effectsRect && effectsRect.top >= panelRect.top && effectsRect.bottom <= panelRect.bottom + 1),
+    };
+  });
+  if (choiceReadability.width <= 599) {
+    assert(choiceReadability.descriptionFont >= 13, `choice context is too small: ${JSON.stringify(choiceReadability)}`);
+    assert(choiceReadability.bodyFont >= 14, `choice description is too small: ${JSON.stringify(choiceReadability)}`);
+    assert(choiceReadability.effectsFont >= 11, `choice effects are too small: ${JSON.stringify(choiceReadability)}`);
+  }
+  assert(choiceReadability.actionHeight >= 44, `choice action target is too small: ${JSON.stringify(choiceReadability)}`);
+  assert(choiceReadability.actionVisible && choiceReadability.effectsVisible, `choice hierarchy starts clipped: ${JSON.stringify(choiceReadability)}`);
   if (prefix === "desktop-1600") {
     await page.reload({ waitUntil: "networkidle" });
     await page.waitForSelector(".jobview", { timeout: 5000 });
@@ -168,6 +193,26 @@ async function completeDay1ToDay10(page, prefix, { captureMilestones = true } = 
   }
   await page.getByRole("button", { name: "これで行く" }).first().click();
   await page.waitForSelector(".resultview", { timeout: 5000 });
+  const resultReadability = await page.locator(".resultview").evaluate((panel) => {
+    const summary = panel.querySelector(".area-desc");
+    const metric = panel.querySelector(".card li");
+    const action = panel.querySelector(".status-actions .primary");
+    const panelRect = panel.getBoundingClientRect();
+    const actionRect = action?.getBoundingClientRect();
+    return {
+      width: innerWidth,
+      summaryFont: summary ? Number.parseFloat(getComputedStyle(summary).fontSize) : 0,
+      metricFont: metric ? Number.parseFloat(getComputedStyle(metric).fontSize) : 0,
+      actionHeight: actionRect?.height ?? 0,
+      actionVisible: Boolean(actionRect && actionRect.top >= panelRect.top && actionRect.bottom <= panelRect.bottom + 1),
+    };
+  });
+  if (resultReadability.width <= 599) {
+    assert(resultReadability.summaryFont >= 14, `result summary is too small: ${JSON.stringify(resultReadability)}`);
+    assert(resultReadability.metricFont >= 12, `result metrics are too small: ${JSON.stringify(resultReadability)}`);
+  }
+  assert(resultReadability.actionHeight >= 44, `result action target is too small: ${JSON.stringify(resultReadability)}`);
+  assert(resultReadability.actionVisible, `result action starts clipped: ${JSON.stringify(resultReadability)}`);
   if (prefix === "desktop-1600") {
     const resultBeforeReload = await state(page);
     await page.reload({ waitUntil: "networkidle" });
