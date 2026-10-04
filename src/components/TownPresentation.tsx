@@ -1,6 +1,7 @@
 import type { AreaId, GameState, NPCId } from "../types";
 import { AREAS, NPCS } from "../data";
 import { characterArtPath } from "../characterArt";
+import { publicAsset } from "../publicAsset";
 
 interface Props {
   state: GameState;
@@ -11,10 +12,10 @@ interface Props {
 }
 
 const AREA_BACKGROUND: Record<Exclude<AreaId, "room">, string> = {
-  nagaya: "/assets/edo/backgrounds/nagaya.webp",
-  well: "/assets/edo/backgrounds/well.webp",
-  market: "/assets/edo/backgrounds/market.webp",
-  firehouse: "/assets/edo/backgrounds/firehouse.webp",
+  nagaya: publicAsset("assets/edo/backgrounds/nagaya.webp"),
+  well: publicAsset("assets/edo/backgrounds/well.webp"),
+  market: publicAsset("assets/edo/backgrounds/market.webp"),
+  firehouse: publicAsset("assets/edo/backgrounds/firehouse.webp"),
 };
 
 const AREA_BANNER: Record<Exclude<AreaId, "room">, string> = {
@@ -253,7 +254,7 @@ export function TownPresentation({
       >
         <CharacterImage
           id="player"
-          approvedSrc={approvedNagayaDialogue ? "/assets/edo/characters/approved-live/player-approved-live.png" : undefined}
+          approvedSrc={approvedNagayaDialogue ? publicAsset("assets/edo/characters/approved-live/player-approved-live.png") : undefined}
         />
       </button>
 
@@ -298,7 +299,7 @@ export function TownPresentation({
             id={featuredNpc}
             approvedSrc={
               approvedNagayaDialogue && featuredNpc === "landlord"
-                ? "/assets/edo/characters/approved-live/landlord-approved-live.png"
+                ? publicAsset("assets/edo/characters/approved-live/landlord-approved-live.png")
                 : undefined
             }
           />
