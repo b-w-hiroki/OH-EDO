@@ -49,11 +49,19 @@ async function advanceDialogs(page, max = 40) {
         const stage = el.closest(".presentation-stage")?.getBoundingClientRect();
         const rect = el.getBoundingClientRect();
         return stage
-          ? { clearSceneRatio: (rect.top - stage.top) / stage.height, targetHeight: rect.height }
+          ? {
+              clearSceneRatio: (rect.top - stage.top) / stage.height,
+              targetHeight: rect.height,
+              viewportWidth: innerWidth,
+              viewportHeight: innerHeight,
+            }
           : null;
       });
       if (composition) {
-        assert(composition.clearSceneRatio >= .34, `dialog hides too much of the scene: ${JSON.stringify(composition)}`);
+        const minimumClearScene = composition.viewportWidth <= 599 && composition.viewportHeight > composition.viewportWidth
+          ? .41
+          : .34;
+        assert(composition.clearSceneRatio >= minimumClearScene, `dialog hides too much of the scene: ${JSON.stringify(composition)}`);
         assert(composition.targetHeight >= 44, `dialog action target is too small: ${JSON.stringify(composition)}`);
       }
       await dispatchClick(dialog);
@@ -573,6 +581,9 @@ async function assertMobileLayout(page) {
       .filter((el) => getComputedStyle(el).display !== "none")
       .map((el) => el.getBoundingClientRect());
     const navButtons = [...document.querySelectorAll(".reference-area-nav button:not(:disabled)")].map((el) => el.getBoundingClientRect());
+    const people = document.querySelector(".town-side-panel > .side-card:first-child")?.getBoundingClientRect();
+    const dock = document.querySelector(".reference-action-dock")?.getBoundingClientRect();
+    const rumor = document.querySelector(".town-side-panel > .rumor-card")?.getBoundingClientRect();
     return {
       viewportWidth: window.innerWidth,
       scrollWidth: doc.scrollWidth,
@@ -584,6 +595,10 @@ async function assertMobileLayout(page) {
       nearbyCardMinHeight: nearbyCards.length ? Math.min(...nearbyCards.map((r) => r.height)) : 0,
       navMinHeight: navButtons.length ? Math.min(...navButtons.map((r) => r.height)) : 0,
       navOverflow: navButtons.some((r) => r.left < -1 || r.right > window.innerWidth + 1),
+      peopleBottom: people ? people.bottom + scrollY : null,
+      dockTop: dock ? dock.top + scrollY : null,
+      dockBottom: dock ? dock.bottom + scrollY : null,
+      rumorTop: rumor ? rumor.top + scrollY : null,
     };
   });
 
@@ -594,6 +609,15 @@ async function assertMobileLayout(page) {
   assert(hasLargeDockTalk || hasPeopleTalk, `no mobile talk affordance with a 44px touch region: ${JSON.stringify(result)}`);
   assert(result.navMinHeight >= 44, `nav touch targets too small: ${JSON.stringify(result)}`);
   assert(!result.navOverflow, `nav overflows viewport: ${JSON.stringify(result)}`);
+  if (result.viewportWidth <= 599) {
+    assert(
+      result.peopleBottom !== null && result.dockTop !== null && result.dockTop >= result.peopleBottom - 2,
+      `mobile travel controls should follow the people rail: ${JSON.stringify(result)}`
+    );
+    if (result.rumorTop !== null && result.dockBottom !== null) {
+      assert(result.dockBottom <= result.rumorTop + 2, `secondary rumor content should follow travel controls: ${JSON.stringify(result)}`);
+    }
+  }
   return result;
 }
 

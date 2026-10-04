@@ -103,6 +103,52 @@
 }
 
 @media (max-width: 599px) {
+  .approved-conversation-host {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .approved-conversation-host > .world-layout,
+  .approved-conversation-host .town-side-panel {
+    display: contents !important;
+  }
+
+  .approved-conversation-host > .world-layout.has-overlay {
+    display: grid !important;
+  }
+
+  .approved-conversation-host > .world-layout.has-overlay .town-side-panel {
+    display: flex !important;
+    flex-direction: column;
+  }
+
+  .approved-conversation-host > .world-layout.has-overlay .presentation-stage,
+  .approved-conversation-host > .world-layout.has-overlay .town-side-panel > .side-card {
+    order: 0;
+  }
+
+  .approved-conversation-host .presentation-stage {
+    order: 1;
+  }
+
+  .approved-conversation-host .town-side-panel > .side-card:first-child {
+    order: 2;
+  }
+
+  .approved-conversation-host .reference-action-dock {
+    order: 3;
+    margin: 6px 0 !important;
+  }
+
+  .approved-conversation-host .town-side-panel > .side-card:not(:first-child) {
+    order: 4;
+  }
+
+  .presentation-stage.is-dialogue {
+    min-height: clamp(330px, 86vw, 346px) !important;
+    aspect-ratio: auto !important;
+  }
+
   .reference-day-primary {
     gap: 5px;
     font-size: 11px;

@@ -1524,8 +1524,8 @@ function App() {
 
         {inWorld && (
           <ApprovedConversationFrame>
-          <div className="world-layout">
-            <div className="stage presentation-stage">
+          <div className={`world-layout${state.screen === "town" ? "" : " has-overlay"}`}>
+            <div className={`stage presentation-stage${state.screen === "dialog" ? " is-dialogue" : ""}`}>
               <TownPresentation
                 key={state.currentArea}
                 state={state}
