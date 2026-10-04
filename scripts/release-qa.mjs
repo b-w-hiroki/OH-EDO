@@ -851,10 +851,10 @@ async function runIPhoneLandscapeWebKit() {
   assert(landscapeBounds.dockTop < landscapeBounds.viewportHeight, `landscape action dock is below fold: ${JSON.stringify(landscapeBounds)}`);
   assert(landscapeBounds.dockBottom <= landscapeBounds.viewportHeight + 2, `landscape action dock is clipped: ${JSON.stringify(landscapeBounds)}`);
   await page.screenshot({ path: "qa-artifacts/iphone-webkit-landscape-world.png", fullPage: false });
-  const talk = page.locator(".reference-talk-cta:visible");
+  const landscapeTalk = page.locator(".reference-talk-cta:visible");
   const railTalk = page.locator(".nearby-talk:visible").first();
-  if (await talk.count()) {
-    await talk.click();
+  if (await landscapeTalk.count()) {
+    await landscapeTalk.click();
   } else {
     assert((await railTalk.count()) > 0, "landscape WebKit has no visible talk affordance");
     await railTalk.click();
@@ -876,6 +876,59 @@ async function runIPhoneLandscapeWebKit() {
   await page.screenshot({ path: "qa-artifacts/iphone-webkit-landscape-dialog.png", fullPage: false });
   await advanceDialogs(page);
   assert((await state(page))?.screen === "town", "landscape WebKit conversation did not return to town");
+
+  await move(page, "商店通り");
+  await talk(page, "熊さん");
+  await move(page, "長屋前");
+  await page.waitForSelector(".mock-dialog:visible", { timeout: 5000 });
+  await advanceDialogs(page);
+  await page.waitForSelector(".jobview", { timeout: 5000 });
+  const landscapeChoice = await page.locator(".jobview").evaluate((panel) => {
+    const action = panel.querySelector(".primary")?.getBoundingClientRect();
+    const effects = panel.querySelector(".choice-effects")?.getBoundingClientRect();
+    const card = panel.querySelector(".legacy-choice-card")?.getBoundingClientRect();
+    const rect = panel.getBoundingClientRect();
+    return {
+      horizontalOverflow: panel.scrollWidth > panel.clientWidth + 2,
+      panelTop: rect.top,
+      panelBottom: rect.bottom,
+      viewportHeight: innerHeight,
+      card: card ? { top: card.top, bottom: card.bottom, left: card.left, right: card.right } : null,
+      action: action ? { top: action.top, bottom: action.bottom, left: action.left, right: action.right } : null,
+      actionVisible: Boolean(action && action.top >= rect.top && action.bottom <= rect.bottom + 1),
+      actionCoversCard: Boolean(action && card && action.height >= card.height - 2 && action.width >= card.width - 2),
+      effectsVisible: Boolean(effects && card && effects.top >= card.top && effects.bottom <= card.bottom + 1),
+    };
+  });
+  await page.screenshot({ path: "qa-artifacts/iphone-webkit-landscape-choice.png", fullPage: false });
+  assert(!landscapeChoice.horizontalOverflow, `landscape choice overflows horizontally: ${JSON.stringify(landscapeChoice)}`);
+  assert(
+    landscapeChoice.actionVisible && landscapeChoice.actionCoversCard && landscapeChoice.effectsVisible,
+    `landscape choice hierarchy starts clipped: ${JSON.stringify(landscapeChoice)}`
+  );
+  await page.locator(".jobview .primary").first().click();
+  await page.waitForSelector(".resultview", { timeout: 5000 });
+  await settleResultCapture(page);
+  const landscapeResult = await page.locator(".resultview").evaluate((panel) => {
+    const action = panel.querySelector(".status-actions .primary")?.getBoundingClientRect();
+    const changes = panel.querySelector(".result-change-list")?.getBoundingClientRect();
+    const rect = panel.getBoundingClientRect();
+    return {
+      horizontalOverflow: panel.scrollWidth > panel.clientWidth + 2,
+      panelTop: rect.top,
+      panelBottom: rect.bottom,
+      viewportHeight: innerHeight,
+      actionTop: action?.top ?? null,
+      actionBottom: action?.bottom ?? null,
+      changesTop: changes?.top ?? null,
+      changesBottom: changes?.bottom ?? null,
+      actionVisible: Boolean(action && action.top >= rect.top && action.bottom <= rect.bottom + 1),
+      changesVisible: Boolean(changes && changes.top >= rect.top && changes.bottom <= rect.bottom + 1),
+    };
+  });
+  await page.screenshot({ path: "qa-artifacts/iphone-webkit-landscape-result.png", fullPage: false });
+  assert(!landscapeResult.horizontalOverflow, `landscape result overflows horizontally: ${JSON.stringify(landscapeResult)}`);
+  assert(landscapeResult.actionVisible && landscapeResult.changesVisible, `landscape result hierarchy starts clipped: ${JSON.stringify(landscapeResult)}`);
   await browser.close();
   return { layout, accessibility };
 }

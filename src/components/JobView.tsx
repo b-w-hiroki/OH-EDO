@@ -5,7 +5,7 @@ interface Props {
   onChoose: (choice: JobChoice) => void;
 }
 
-function effectsLabel(e: JobChoice["effects"]): string {
+function effectLabels(e: JobChoice["effects"]): string[] {
   const parts: string[] = [];
   if (e.money) parts.push(`銭 ${signed(e.money)}`);
   if (e.trust) parts.push(`信用 ${signed(e.trust)}`);
@@ -13,7 +13,7 @@ function effectsLabel(e: JobChoice["effects"]): string {
   if (e.network) parts.push(`人脈 ${signed(e.network)}`);
   if (e.skill) parts.push(`腕前 ${signed(e.skill)}`);
   if (e.hygiene) parts.push(`衛生 ${signed(e.hygiene)}`);
-  return parts.join(" / ");
+  return parts;
 }
 
 function signed(n: number): string {
@@ -32,16 +32,21 @@ export function JobView({ choices, onChoose }: Props) {
       </div>
 
       <ul className="choice-list">
-        {choices.map((c) => (
-          <li key={c.id} className="choice-card legacy-choice-card">
-            <h3>{c.label}</h3>
-            <p>{c.description}</p>
-            <p className="choice-effects">{effectsLabel(c.effects)}</p>
-            <button className="primary" onClick={() => onChoose(c)}>
-              これで行く
-            </button>
-          </li>
-        ))}
+        {choices.map((choice) => {
+          const effects = effectLabels(choice.effects);
+          return (
+            <li key={choice.id} className="choice-card legacy-choice-card">
+              <h3>{choice.label}</h3>
+              <p>{choice.description}</p>
+              <p className="choice-effects" aria-label={`変化：${effects.join("、")}`}>
+                {effects.map((effect) => <span key={effect}>{effect}</span>)}
+              </p>
+              <button className="primary" onClick={() => onChoose(choice)}>
+                これで行く
+              </button>
+            </li>
+          );
+        })}
       </ul>
     </section>
   );

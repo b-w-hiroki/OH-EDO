@@ -13,6 +13,21 @@ function signed(n: number): string {
   return n > 0 ? `+${n}` : `${n}`;
 }
 
+type ResultMetricKey = keyof JobResult["delta"];
+
+const RESULT_METRICS: Array<{
+  key: ResultMetricKey;
+  label: string;
+  current: (player: Player, town: Town) => number;
+}> = [
+  { key: "money", label: "銭", current: (player) => player.money },
+  { key: "trust", label: "信用", current: (player) => player.trust },
+  { key: "iki", label: "粋", current: (player) => player.iki },
+  { key: "network", label: "人脈", current: (player) => player.network },
+  { key: "skill", label: "腕前", current: (player) => player.skill },
+  { key: "hygiene", label: "町の衛生", current: (_player, town) => town.hygiene },
+];
+
 export function ResultView({
   result,
   player,
@@ -20,7 +35,8 @@ export function ResultView({
   activeRumors,
   onNext,
 }: Props) {
-  const d = result.delta;
+  const changes = RESULT_METRICS.filter(({ key }) => result.delta[key] !== 0);
+
   return (
     <section className="resultview legacy-result-panel">
       <div className="area-card">
@@ -28,42 +44,27 @@ export function ResultView({
         <p className="area-desc">{result.resultText}</p>
       </div>
 
-      <div className="card-row">
-        <div className="card">
-          <h3>差し引き</h3>
-          <ul>
-            <li>銭：{signed(d.money)}</li>
-            <li>信用：{signed(d.trust)}</li>
-            <li>粋：{signed(d.iki)}</li>
-            <li>人脈：{signed(d.network)}</li>
-            <li>腕前：{signed(d.skill)}</li>
-            <li>町の衛生：{signed(d.hygiene)}</li>
-          </ul>
-        </div>
-
-        <div className="card">
-          <h3>今のあんた</h3>
-          <ul>
-            <li>銭：{player.money}</li>
-            <li>信用：{player.trust}</li>
-            <li>粋：{player.iki}</li>
-            <li>人脈：{player.network}</li>
-            <li>腕前：{player.skill}</li>
-            <li>町の衛生：{town.hygiene}</li>
-          </ul>
-        </div>
+      <div className="card result-change-card">
+        <h3>今回の変化</h3>
+        <ul className="result-change-list">
+          {changes.map(({ key, label, current }) => (
+            <li key={key}>
+              <span>{label}</span>
+              <strong>{signed(result.delta[key])}</strong>
+              <small>いま {current(player, town)}</small>
+            </li>
+          ))}
+        </ul>
       </div>
 
-      <div className="card">
-        <h3>町についた噂</h3>
-        {activeRumors.length === 0 ? (
-          <p className="muted">特に何も言われていない。</p>
-        ) : (
+      {activeRumors.length > 0 && (
+        <div className="card result-rumor-card">
+          <h3>町についた噂</h3>
           <p className="rumor-tags">
-            {activeRumors.map((r) => `#${r}`).join("  ")}
+            {activeRumors.map((rumor) => `#${rumor}`).join("  ")}
           </p>
-        )}
-      </div>
+        </div>
+      )}
 
       <div className="status-actions">
         <button className="primary" onClick={onNext}>
