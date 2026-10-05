@@ -109,6 +109,7 @@ async function validateSeparation(page) {
       const halo = blur * 3;
       return {
         filter: style.filter, singleAlphaShadow: Boolean(match), x, y, blur,
+        shadowOpacity: Number(match?.[1].match(/rgba\([^,]+,[^,]+,[^,]+,\s*([\d.]+)\)/)?.[1]),
         opacity: style.opacity, actorOpacity: getComputedStyle(actor).opacity,
         actorFilter: getComputedStyle(actor).filter,
         aboveBackground: Number(getComputedStyle(actor).zIndex) > Number(getComputedStyle(background).zIndex),
@@ -127,9 +128,10 @@ async function validateSeparation(page) {
     };
   });
   if (!separation.backgroundOnly || !Number.isFinite(separation.dimmerAlpha) ||
-      separation.dimmerAlpha < .12 || separation.dimmerAlpha > .2 ||
+      separation.dimmerAlpha < .2 || separation.dimmerAlpha > .26 ||
       !separation.cast.every((actor) => actor.singleAlphaShadow && actor.shadowContained && actor.aboveBackground &&
-        actor.x >= 2 && actor.x <= 4 && actor.y >= 2 && actor.y <= 4 && actor.blur <= 1.25 &&
+        actor.x >= 2 && actor.x <= 4 && actor.y >= 2 && actor.y <= 4 && actor.blur <= .5 &&
+        Number.isFinite(actor.shadowOpacity) && actor.shadowOpacity >= .8 && actor.shadowOpacity <= .9 &&
         actor.opacity === "1" && actor.actorOpacity === "1" && actor.actorFilter === "none")) {
     throw new Error(`foreground separation failed: ${JSON.stringify(separation)}`);
   }

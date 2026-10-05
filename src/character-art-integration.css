@@ -2,12 +2,12 @@
 .town-art-stage {
   /* Warm ink separation: tune without changing the art or its placement. */
   --character-shadow-rgb: 42 30 28;
-  --character-shadow-opacity: .64;
+  --character-shadow-opacity: .86;
   --character-shadow-x: clamp(2px, 1cqh, 4px);
   --character-shadow-y: clamp(2px, 1cqh, 4px);
-  --character-shadow-blur: .75px;
+  --character-shadow-blur: .35px;
   --background-dim-rgb: 25 23 28;
-  --background-dim-opacity: .16;
+  --background-dim-opacity: .23;
   position: absolute;
   inset: 0;
   overflow: hidden;
