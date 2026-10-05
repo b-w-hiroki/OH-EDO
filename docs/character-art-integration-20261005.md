@@ -55,3 +55,9 @@ All following confirmed entries are version 0, with paths `/<filename>`; filenam
 The final evidence archive also includes all selected-character fixtures and the H.264 recording; its confirmed Library receipt is attached to PR #168 after save completion.
 
 The regression assertions now accept a deliberately contained portrait and a physically separate art region rather than requiring a cropped portrait or bottom-overlay composition. Asset-path assertions target the new fishmonger WebP. Gameplay assertions remain intact.
+
+## Follow-up: fair character distance and common ground
+
+The user confirmed that unexplained near/far differences should be removed. Placement now measures the existing illustration's human head-to-foot anchors rather than its canvas/prop bounds. The player and all adults share a body height of 70% of the scene and a ground line at 94%. The child's body height is 72% of that adult reference, with the original proportions and pose preserved. Raised paper, staff, fish, hands and transparent padding no longer determine apparent human stature. No image is regenerated, stretched non-uniformly or replaced.
+
+`src/characterPlacement.ts` records the reviewed pixel anchors. The existing scene container provides responsive dimensions. Both town and dialogue QA assert equal adult height, natural child height, matching ground, full art containment and no art/dialogue intersection. `scripts/capture-fair-placement-comparison.mjs` captures same-condition five-person before/after comparisons at 375×667, 390×844 and 844×390. Library receipts and final exact-head CI are recorded in PR #168.

@@ -3,6 +3,7 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
+  container-type: size;
 }
 
 #root .town-art-stage .town-presentation .presentation-character-image-default {
@@ -19,31 +20,25 @@
   mask-image: none;
 }
 
-#root .town-art-stage .town-presentation .presentation-primary {
-  top: 3% !important;
-  right: 6% !important;
-  left: auto !important;
-  bottom: 5% !important;
-  width: 64% !important;
-  height: 92% !important;
+#root .town-art-stage .town-presentation .presentation-primary,
+#root .town-art-stage .town-presentation .presentation-player {
+  top: auto !important;
+  right: auto !important;
+  left: calc(var(--art-column) * 100cqw - var(--art-anchor) * 100cqh) !important;
+  bottom: calc(6cqh - var(--art-padding-bottom) * 100cqh) !important;
+  width: calc(var(--art-width) * 100cqh) !important;
+  height: calc(var(--art-height) * 100cqh) !important;
   transform: none !important;
   filter: none !important;
   padding: 0 !important;
 }
 
-#root .town-art-stage .town-presentation .presentation-primary.art-child {
-  top: 17% !important;
-  height: 78% !important;
+#root .town-art-stage .town-presentation .presentation-primary {
+  --art-column: .7;
 }
 
 #root .town-art-stage .town-presentation .presentation-player {
-  top: auto !important;
-  left: 2% !important;
-  right: auto !important;
-  bottom: 5% !important;
-  width: 30% !important;
-  height: 72% !important;
-  transform: none !important;
+  --art-column: .26;
   pointer-events: none;
 }
 
