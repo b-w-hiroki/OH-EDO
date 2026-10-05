@@ -102,6 +102,8 @@ async function validateCase(page, viewportLabel, area, selected) {
     const image = character?.querySelector(".presentation-character-image-default");
     const talk = document.querySelector(".person-focus-talk");
     const picker = document.querySelector(".person-picker-toggle");
+    const portraitFrame = document.querySelector(".person-focus-portrait")?.getBoundingClientRect();
+    const portraitImage = document.querySelector(".person-focus-portrait img")?.getBoundingClientRect();
     const stageRect = stage?.getBoundingClientRect();
     const charRect = character?.getBoundingClientRect();
     const talkStyle = talk ? getComputedStyle(talk) : null;
@@ -126,10 +128,14 @@ async function validateCase(page, viewportLabel, area, selected) {
       pickerHeight: picker?.getBoundingClientRect().height ?? 0,
       pickerFont: Number.parseFloat(pickerStyle?.fontSize ?? "0"),
       matchesExpected: (image?.getAttribute("src") ?? "").includes(expected[selected]),
+      portraitContained: Boolean(portraitFrame && portraitImage &&
+        portraitImage.left >= portraitFrame.left - 1 && portraitImage.right <= portraitFrame.right + 1 &&
+        portraitImage.top >= portraitFrame.top - 1 && portraitImage.bottom <= portraitFrame.bottom + 1),
     };
   }, { selected, expected: expectedAsset });
 
   if (!town.imageComplete || !town.matchesExpected) throw new Error(`asset failed: ${viewportLabel} ${area} ${selected}`);
+  if (!town.portraitContained) throw new Error(`town portrait escapes its frame: ${viewportLabel} ${area} ${selected}`);
   if (town.horizontalOverflow > 1) throw new Error(`horizontal overflow: ${JSON.stringify(town)}`);
   if (town.talkHeight < 44 || town.pickerHeight < 44 || town.talkFont < 16 || town.pickerFont < 14) {
     throw new Error(`control sizing failed: ${JSON.stringify(town)}`);

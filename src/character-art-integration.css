@@ -77,7 +77,6 @@
 
 #root .person-focus-portrait.has-dedicated-portrait img,
 #root .dialog-portrait img {
-  position: absolute;
   inset: 0 !important;
   width: 100% !important;
   height: 100% !important;
@@ -85,6 +84,10 @@
   object-fit: contain !important;
   object-position: center !important;
   transform: none !important;
+}
+
+#root .dialog-portrait img {
+  position: absolute;
 }
 
 #root .solo-dialog .dialog-text {
