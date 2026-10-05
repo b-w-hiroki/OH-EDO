@@ -1,6 +1,7 @@
 import type { AreaId, GameState, NPCId } from "../types";
 import { AREAS, NPCS } from "../data";
 import { characterArtPath } from "../characterArt";
+import { CHARACTER_PLACEMENT, characterPlacementStyle } from "../characterPlacement";
 import { publicAsset } from "../publicAsset";
 
 interface Props {
@@ -113,11 +114,15 @@ function CharacterImage({
 }) {
   const src = characterArtPath(id);
   if (!src) return null;
+  const placement = id === "kumitori_master" ? null : CHARACTER_PLACEMENT[id];
   return (
     <>
       <img
         className="presentation-character-image presentation-character-image-default"
         src={src}
+        data-art-head={placement?.head}
+        data-art-foot={placement?.foot}
+        data-art-anchor={placement?.anchor}
         alt={alt}
         draggable={false}
       />
@@ -192,9 +197,9 @@ export function TownPresentation({
   const playerSpeaking = Boolean(activeSpeaker?.includes("主人公"));
   const dialogOpen = state.screen === "dialog";
   const featuredNpc =
-    dialogOpen && activeNpc && npcs.includes(activeNpc)
+    dialogOpen && activeNpc
       ? activeNpc
-      : selectedNpc && npcs.includes(selectedNpc)
+      : selectedNpc
         ? selectedNpc
         : npcs[0];
   const secondaryNpc = !dialogOpen
@@ -247,6 +252,7 @@ export function TownPresentation({
 
       <button
         className={`presentation-character presentation-player ${playerSpeaking ? "is-speaking" : ""}`}
+        style={characterPlacementStyle("player")}
         aria-label="主人公"
         type="button"
       >
@@ -277,6 +283,7 @@ export function TownPresentation({
         </div>
         <button
           key={featuredNpc}
+          style={characterPlacementStyle(featuredNpc)}
           className={`presentation-character presentation-npc presentation-primary presentation-featured ${characterClass(featuredNpc)} ${state.npcRelations[featuredNpc]?.familiarity >= 3 ? "is-familiar" : ""} ${activeNpc === featuredNpc ? "is-speaking" : ""} ${selectedNpc === featuredNpc ? "is-selected" : ""}`}
           aria-label={`${displayName(featuredNpc)}を選ぶ`}
           aria-pressed={selectedNpc === featuredNpc}
@@ -285,11 +292,6 @@ export function TownPresentation({
         >
           <CharacterImage
             id={featuredNpc}
-            approvedSrc={
-              approvedNagayaDialogue && featuredNpc === "landlord"
-                ? publicAsset("assets/edo/characters/approved-live/landlord-approved-live.png")
-                : undefined
-            }
           />
           <span className="presentation-name">{displayName(featuredNpc)}</span>
         </button>
