@@ -34,6 +34,24 @@ All masters remain in Library at version 0. Runtime files remove only fully tran
 - `scripts/full-character-art-qa.mjs`: 24 selected-person/area cases passed at 375×667, 390×844, 844×390 and 1600×900. Covers full-body/portrait loading, horizontal overflow, control size, picker End/Escape focus, conversation completion, selected-person persistence, rotation, long-text scrolling and single Enter advancement.
 - `scripts/capture-character-art-qa.mjs`: same fresh Day1 state and viewport for baseline main and changed build; images are captured after entrance animation settles.
 - `scripts/record-character-art-operation.mjs`: real 390×844 browser recording of title → town → market conversation → Day1 quest choice → reward → Day2 town, including choice/reward reloads. H.264/yuv420p MP4 produced.
-- Full Day1–10 production regression and exact-head CI are still in progress at the initial draft checkpoint. Their final results will be attached to the draft PR; do not infer approval to merge or deploy.
+- Full Day1–10 production regression passed on Chromium desktop/390px/375px and WebKit portrait; WebKit landscape conversation/navigation and Chromium landscape choice/result/rotation passed. Save migration, choice/reward reloads, rapid fire-choice taps, audio preference and offline Day10 restoration passed. No reproduced progression bug required a gameplay change.
+- Initial-head verify CI passed; screenshot CI stopped when Linux WebKit closed unexpectedly, not at a game/assertion failure. Final-head CI remains a separate completion check in the draft PR. Do not infer approval to merge or deploy.
+
+## Library evidence checkpoint
+
+All following confirmed entries are version 0, with paths `/<filename>`; filenames use `oh-edo-before-main-4814a9f-` or `oh-edo-after-942bcc1-` followed by the viewport/view suffix below. They are paired fresh Day1 screenshots, not the Day6 selection fixtures.
+
+| Suffix | Before Library ID | After Library ID |
+| --- | --- | --- |
+| mobile-375x667-town.png | `libfile_148190bb60d08191b38c18b00bab7abc` | `libfile_8d1a7e6fcd4881918519639531466c35` |
+| mobile-375x667-dialog.png | `libfile_b152dc305c888191974a9d4c19b1698b` | `libfile_c73539f29d988191b36fbb7abccd1649` |
+| mobile-390x844-town.png | `libfile_51ea90a4f6c08191baae0c294e3b56d3` | `libfile_29d47ef7aa54819197b919a1177e1cdf` |
+| mobile-390x844-dialog.png | `libfile_aaf9af44d3508191888a34a802ffba28` | `libfile_4c28d67d6cb0819194752c001132370e` |
+| landscape-844x390-town.png | `libfile_e86078a1a0ec8191bd0ccb9dc1bca5b5` | `libfile_69aebc871f2081918ec76217eea7e8ea` |
+| landscape-844x390-dialog.png | `libfile_f6fac7d3ac908191b349ca1c4f2c2a4d` | `libfile_b1631539710c81919fd62bd2e2d48e73` |
+| desktop-1600x900-town.png | `libfile_b393e91b53608191b579535d5686b889` | `libfile_06cf8617747881919eac9b274aaf379c` |
+| desktop-1600x900-dialog.png | `libfile_f19583bae8448191b9bf0c672d0230c8` | `libfile_02d2b4e509408191a89f7a6940ed1b48` |
+
+The final evidence archive also includes all selected-character fixtures and the H.264 recording; its confirmed Library receipt is attached to PR #168 after save completion.
 
 The regression assertions now accept a deliberately contained portrait and a physically separate art region rather than requiring a cropped portrait or bottom-overlay composition. Asset-path assertions target the new fishmonger WebP. Gameplay assertions remain intact.
