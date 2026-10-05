@@ -1,4 +1,5 @@
-import type { DialogLine } from "../types";
+import type { DialogLine, NPCId } from "../types";
+import { characterArtPath, characterPortraitPath } from "../characterArt";
 
 interface Props {
   line: DialogLine;
@@ -34,26 +35,45 @@ function speakerGlyph(speaker: string): string {
   return speaker.slice(0, 1);
 }
 
+function speakerArt(speakerType: string): string | null {
+  const npcBySpeaker: Partial<Record<string, NPCId>> = {
+    "speaker-fishmonger": "fishmonger",
+    "speaker-landlord": "landlord",
+    "speaker-child": "child",
+    "speaker-newsman": "newsman",
+    "speaker-firechief": "firechief",
+  };
+  const npc = npcBySpeaker[speakerType];
+  if (npc) return characterPortraitPath(npc);
+  if (speakerType === "speaker-player") return characterArtPath("player");
+  return null;
+}
+
 export function DialogBox({ line, index, total, onNext }: Props) {
   const isLast = index === total - 1;
   const speaker = speakerClass(line.speaker);
+  const portrait = speakerArt(speaker);
   return (
     <section className={`dialog mock-dialog ${speaker}`} onClick={onNext}>
       <div className={`dialog-cutin ${speaker}`} aria-hidden="true" />
       <div className={`dialog-portrait ${speaker}`} aria-hidden="true">
-        <span>{speakerGlyph(line.speaker)}</span>
+        {portrait ? (
+          <img src={portrait} alt="" draggable={false} />
+        ) : (
+          <span>{speakerGlyph(line.speaker)}</span>
+        )}
       </div>
       <div className="dialog-body">
         <div className="dialog-speaker">{displaySpeaker(line.speaker)}</div>
-        <p className="dialog-text">{line.text}</p>
+        <p className="dialog-text" data-dialog-scroll tabIndex={0} aria-label="会話本文" onClick={(event) => event.stopPropagation()}>{line.text}</p>
         <div className="dialog-foot">
           <span className="dialog-progress">
             {index + 1} / {total}
           </span>
-          <span className="dialog-next-cue">
+          <button className="dialog-next-cue" type="button" onClick={(event) => { event.stopPropagation(); onNext(); }}>
             {isLast ? "とじる" : "次へ"}
             <span aria-hidden="true">›</span>
-          </span>
+          </button>
         </div>
       </div>
     </section>

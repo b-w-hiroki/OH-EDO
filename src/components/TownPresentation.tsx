@@ -192,9 +192,9 @@ export function TownPresentation({
   const playerSpeaking = Boolean(activeSpeaker?.includes("主人公"));
   const dialogOpen = state.screen === "dialog";
   const featuredNpc =
-    dialogOpen && activeNpc && npcs.includes(activeNpc)
+    dialogOpen && activeNpc
       ? activeNpc
-      : selectedNpc && npcs.includes(selectedNpc)
+      : selectedNpc
         ? selectedNpc
         : npcs[0];
   const secondaryNpc = !dialogOpen
@@ -285,11 +285,6 @@ export function TownPresentation({
         >
           <CharacterImage
             id={featuredNpc}
-            approvedSrc={
-              approvedNagayaDialogue && featuredNpc === "landlord"
-                ? publicAsset("assets/edo/characters/approved-live/landlord-approved-live.png")
-                : undefined
-            }
           />
           <span className="presentation-name">{displayName(featuredNpc)}</span>
         </button>

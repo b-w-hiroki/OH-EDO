@@ -1432,6 +1432,7 @@ function App() {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== " " && e.key !== "Enter") return;
       if (e.repeat || !dialogOpenRef.current) return;
+      if (e.target instanceof Element && e.target.closest("button, input, select, textarea, a, [contenteditable='true'], [data-dialog-scroll]")) return;
       e.preventDefault();
       advanceDialog();
     };
@@ -1546,6 +1547,7 @@ function App() {
           <ApprovedConversationFrame>
           <div className={`world-layout${state.screen === "town" ? "" : " has-overlay"}`}>
             <div className={`stage presentation-stage screen-${state.screen}${state.screen === "dialog" ? " is-dialogue" : ""}`}>
+              <div className="town-art-stage">
               <TownPresentation
                 key={state.currentArea}
                 state={state}
@@ -1557,6 +1559,7 @@ function App() {
                 }
                 onSelect={selectNpc}
               />
+              </div>
 
             {state.screen === "town" && (
               <p className="controls-hint">

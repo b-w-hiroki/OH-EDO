@@ -1,0 +1,331 @@
+/* One safe art region per scene. Dialogue lives outside the silhouette region. */
+.town-art-stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+#root .town-art-stage .town-presentation .presentation-character-image-default {
+  display: block !important;
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  object-position: 50% 100% !important;
+  transform: none !important;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+#root .town-art-stage .town-presentation .presentation-primary {
+  top: 3% !important;
+  right: 6% !important;
+  left: auto !important;
+  bottom: 5% !important;
+  width: 64% !important;
+  height: 92% !important;
+  transform: none !important;
+  filter: none !important;
+  padding: 0 !important;
+}
+
+#root .town-art-stage .town-presentation .presentation-primary.art-child {
+  top: 17% !important;
+  height: 78% !important;
+}
+
+#root .town-art-stage .town-presentation .presentation-player {
+  top: auto !important;
+  left: 2% !important;
+  right: auto !important;
+  bottom: 5% !important;
+  width: 30% !important;
+  height: 72% !important;
+  transform: none !important;
+  pointer-events: none;
+}
+
+.town-art-stage .presentation-character-image-approved,
+.town-art-stage .presentation-secondary,
+.town-art-stage .presentation-name,
+.town-art-stage .presentation-noren,
+.town-art-stage .presentation-hanging-note,
+.town-art-stage .presentation-speech-bubble,
+.town-art-stage .scene-props {
+  display: none !important;
+}
+
+.town-art-stage .presentation-character:focus-visible {
+  outline: 3px solid #b95037;
+  outline-offset: -3px;
+  border-radius: 16px;
+}
+
+#root .dialog-portrait {
+  position: relative !important;
+  width: 60px !important;
+  height: 60px !important;
+  min-width: 60px;
+  min-height: 60px;
+  overflow: hidden;
+}
+
+#root .person-focus-portrait.has-dedicated-portrait img,
+#root .dialog-portrait img {
+  position: absolute;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  padding: 3px;
+  object-fit: contain !important;
+  object-position: center !important;
+  transform: none !important;
+}
+
+#root .solo-dialog .dialog-text {
+  font-size: 18px;
+  line-height: 1.65;
+  max-height: 50svh;
+  overflow-y: auto;
+}
+
+.presentation-stage.is-dialogue {
+  display: grid !important;
+  grid-template-rows: minmax(0, 1fr) auto;
+  height: auto !important;
+  min-height: 0 !important;
+  aspect-ratio: auto !important;
+  overflow: visible !important;
+}
+
+.presentation-stage.is-dialogue .town-art-stage {
+  position: relative;
+  inset: auto;
+  height: clamp(280px, 31vw, 460px);
+  border-radius: 10px 10px 0 0;
+}
+
+.presentation-stage.is-dialogue .dialogue-overlay {
+  position: relative !important;
+  inset: auto !important;
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 14px 10px 10px !important;
+  overflow: visible !important;
+  background: #f5ead3 !important;
+}
+
+#root .presentation-stage.is-dialogue .dialogue-overlay .mock-dialog {
+  width: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  min-height: 140px !important;
+  margin: 0 !important;
+  padding: 14px 14px 12px !important;
+  grid-template-columns: 60px minmax(0, 1fr) !important;
+  gap: 12px !important;
+  background-image: none !important;
+  background-color: #fbf5e7 !important;
+  border: 2px solid #ad8661;
+  border-radius: 10px;
+}
+
+.presentation-stage.is-dialogue .dialogue-overlay .dialog-portrait {
+  position: static !important;
+  display: grid !important;
+  width: 60px !important;
+  height: 60px !important;
+  align-self: start;
+  background-image: none !important;
+  background-color: #e9f0eb !important;
+}
+
+#root .presentation-stage.is-dialogue .dialogue-overlay .dialog-speaker {
+  position: static !important;
+  margin: 0 0 8px !important;
+  padding: 3px 10px !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  font-size: 16px !important;
+  line-height: 1.5 !important;
+  background-image: none !important;
+  background-color: #486575 !important;
+}
+
+.dialogue-overlay .dialog-body {
+  min-width: 0;
+}
+
+.presentation-stage.is-dialogue .dialogue-overlay .dialog-text {
+  margin: 0 !important;
+  max-height: 154px !important;
+  overflow-y: auto !important;
+  font-size: 17px !important;
+  line-height: 1.65 !important;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+.dialogue-overlay .dialog-foot {
+  margin-top: 8px !important;
+  min-height: 44px;
+}
+
+.dialogue-overlay .dialog-progress {
+  display: block !important;
+  position: static !important;
+  font-size: 14px !important;
+}
+
+.mock-dialog button.dialog-next-cue {
+  min-height: 44px;
+  min-width: 90px;
+  padding: 6px 12px;
+  border: 1px solid #a64432;
+  border-radius: 10px;
+  background: #b54432;
+  color: #fff9ed !important;
+  font-size: 16px !important;
+  line-height: 1.4;
+}
+
+.dialog-text:focus-visible,
+.dialog-next-cue:focus-visible,
+.person-picker-toggle:focus-visible,
+.person-picker button:focus-visible {
+  outline: 3px solid #b95037;
+  outline-offset: 2px;
+}
+
+#root:has(.screen-dialog) .reference-hud-row,
+#root:has(.screen-dialog) .town-side-panel,
+#root .reference-action-dock.is-dialogue {
+  display: none !important;
+}
+
+#root:has(.screen-dialog) .world-layout {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+.area-nav-copy strong {
+  font-size: 14px !important;
+}
+
+@media (min-width: 1100px) and (min-height: 700px) {
+  #root .reference-header {
+    display: grid !important;
+    grid-template-columns: 180px minmax(0, 1fr) auto !important;
+    grid-template-rows: auto auto !important;
+    gap: 8px 16px;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 12px 16px !important;
+    background-image: none !important;
+    background-color: #f7ecd5 !important;
+    border: 1px solid #c9a77b;
+    border-radius: 12px;
+  }
+
+  #root .reference-logo-wrap,
+  #root .reference-day-card,
+  #root .reference-header-actions,
+  #root .desktop-header-status {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    transform: none !important;
+  }
+
+  #root .reference-logo-wrap {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    padding: 0;
+    align-self: center;
+  }
+
+  #root .reference-logo-wrap > small {
+    display: none;
+  }
+
+  #root .reference-day-card {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+  }
+
+  #root .reference-header-actions {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    align-self: center;
+  }
+
+  #root .reference-logo-image {
+    width: 160px !important;
+    max-height: 60px !important;
+  }
+
+  #root .desktop-header-status {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  #root:has(.screen-dialog) .desktop-header-status,
+  #root:has(.screen-dialog) .desktop-objective-strip {
+    display: none !important;
+  }
+
+  #root .desktop-objective-strip {
+    position: static !important;
+    width: auto !important;
+    max-width: none !important;
+    margin: 8px 12px !important;
+    transform: none !important;
+    font-size: 14px !important;
+  }
+
+  .presentation-stage.is-dialogue .dialogue-overlay .dialog-text {
+    font-size: 18px !important;
+  }
+}
+
+@media (max-width: 599px) and (orientation: portrait) {
+  .presentation-stage.is-dialogue .town-art-stage {
+    height: clamp(260px, 77vw, 320px);
+  }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .presentation-stage.is-dialogue {
+    grid-template-columns: 44% minmax(0, 1fr);
+    grid-template-rows: auto;
+  }
+
+  .presentation-stage.is-dialogue .town-art-stage {
+    height: clamp(245px, 70svh, 300px);
+  }
+
+  .presentation-stage.is-dialogue .dialogue-overlay {
+    display: flex !important;
+    align-items: center;
+    padding: 10px !important;
+  }
+
+  #root .presentation-stage.is-dialogue .dialogue-overlay .mock-dialog {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 0 !important;
+  }
+
+  .presentation-stage.is-dialogue .dialogue-overlay .dialog-portrait {
+    display: none !important;
+  }
+
+  .presentation-stage.is-dialogue .dialogue-overlay .dialog-text {
+    max-height: 116px !important;
+    font-size: 16px !important;
+  }
+}

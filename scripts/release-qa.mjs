@@ -30,6 +30,7 @@ async function advanceDialogs(page, max = 40) {
     if (await dialog.count()) {
       const portrait = dialog.locator(".dialog-portrait:visible:has(img)").first();
       if (await portrait.count()) {
+        await portrait.locator("img").evaluate((image) => image.decode());
         const portraitState = await portrait.evaluate((frame) => {
           const image = frame.querySelector("img");
           const frameRect = frame.getBoundingClientRect();
@@ -38,16 +39,26 @@ async function advanceDialogs(page, max = 40) {
             loaded: Boolean(image && image.complete && image.naturalWidth > 0),
             frameWidth: frameRect.width,
             frameHeight: frameRect.height,
+            imageWidth: imageRect?.width,
+            imageHeight: imageRect?.height,
+            objectFit: image && getComputedStyle(image).objectFit,
             coversFrame: Boolean(
               imageRect &&
               imageRect.width >= frameRect.width - 1 &&
               imageRect.height >= frameRect.height - 1
             ),
+            containedPortrait: Boolean(
+              imageRect && getComputedStyle(image).objectFit === "contain" &&
+              imageRect.width >= frameRect.width * .8 &&
+              imageRect.height >= frameRect.height * .8 &&
+              imageRect.width <= frameRect.width + 1 &&
+              imageRect.height <= frameRect.height + 1
+            ),
           };
         });
         assert(portraitState.loaded, `dialog portrait failed to load: ${JSON.stringify(portraitState)}`);
         assert(portraitState.frameWidth >= 44 && portraitState.frameHeight >= 44, `dialog portrait is too small: ${JSON.stringify(portraitState)}`);
-        assert(portraitState.coversFrame, `dialog portrait does not cover its frame: ${JSON.stringify(portraitState)}`);
+        assert(portraitState.coversFrame || portraitState.containedPortrait, `dialog portrait does not fit its frame: ${JSON.stringify(portraitState)}`);
       }
       const readability = await dialog.locator(".dialog-text").evaluate((el) => ({
         fontSize: Number.parseFloat(getComputedStyle(el).fontSize),
@@ -68,10 +79,12 @@ async function advanceDialogs(page, max = 40) {
       );
       const composition = await dialog.evaluate((el) => {
         const stage = el.closest(".presentation-stage")?.getBoundingClientRect();
+        const art = el.closest(".presentation-stage")?.querySelector(".town-art-stage")?.getBoundingClientRect();
         const rect = el.getBoundingClientRect();
         return stage
           ? {
               clearSceneRatio: (rect.top - stage.top) / stage.height,
+              separateArt: Boolean(art && (rect.top >= art.bottom - 1 || rect.left >= art.right - 1)),
               targetHeight: rect.height,
               viewportWidth: innerWidth,
               viewportHeight: innerHeight,
@@ -82,7 +95,7 @@ async function advanceDialogs(page, max = 40) {
         const minimumClearScene = composition.viewportWidth <= 599 && composition.viewportHeight > composition.viewportWidth
           ? .41
           : .34;
-        assert(composition.clearSceneRatio >= minimumClearScene, `dialog hides too much of the scene: ${JSON.stringify(composition)}`);
+        assert(composition.separateArt || composition.clearSceneRatio >= minimumClearScene, `dialog hides too much of the scene: ${JSON.stringify(composition)}`);
         assert(composition.targetHeight >= 44, `dialog action target is too small: ${JSON.stringify(composition)}`);
       }
       await dispatchClick(dialog);
@@ -589,7 +602,7 @@ async function captureAreas(page, prefix) {
       });
       assert(fishmonger.loaded, `fishmonger stage art failed to load: ${JSON.stringify(fishmonger)}`);
       assert(fishmonger.actor.width >= 110 && fishmonger.actor.height >= 180, `fishmonger stage art is too small: ${JSON.stringify(fishmonger)}`);
-      assert(fishmonger.source.includes("fishmonger-clean.png"), `clean fishmonger source is missing: ${JSON.stringify(fishmonger)}`);
+      assert(fishmonger.source.includes("renewed/fishmonger.webp"), `renewed fishmonger source is missing: ${JSON.stringify(fishmonger)}`);
       assert(fishmonger.containedInStage, `fishmonger is clipped by the stage: ${JSON.stringify(fishmonger)}`);
     }
     await page.screenshot({ path: `qa-artifacts/${prefix}-${slug}-world.png`, fullPage: false });
@@ -951,7 +964,7 @@ async function runCompactMobileChromium() {
       ),
     };
   });
-  assert(compactFishmonger.source.includes("fishmonger-clean.png"), `compact clean fishmonger source is missing: ${JSON.stringify(compactFishmonger)}`);
+  assert(compactFishmonger.source.includes("renewed/fishmonger.webp"), `compact renewed fishmonger source is missing: ${JSON.stringify(compactFishmonger)}`);
   assert(compactFishmonger.containedInStage, `compact fishmonger is clipped: ${JSON.stringify(compactFishmonger)}`);
   await page.screenshot({ path: "qa-artifacts/mobile-375-market-world.png", fullPage: false });
   await browser.close();
@@ -1025,7 +1038,7 @@ async function runIPhoneLandscapeWebKit() {
     };
   });
   assert(landscapeFishmonger.loaded, `landscape fishmonger failed to load: ${JSON.stringify(landscapeFishmonger)}`);
-  assert(landscapeFishmonger.source.includes("fishmonger-clean.png"), `landscape clean fishmonger source is missing: ${JSON.stringify(landscapeFishmonger)}`);
+  assert(landscapeFishmonger.source.includes("renewed/fishmonger.webp"), `landscape renewed fishmonger source is missing: ${JSON.stringify(landscapeFishmonger)}`);
   assert(landscapeFishmonger.containedInStage, `landscape fishmonger is clipped: ${JSON.stringify(landscapeFishmonger)}`);
   await page.waitForTimeout(260);
   await page.screenshot({ path: "qa-artifacts/iphone-webkit-landscape-market-world.png", fullPage: false });
