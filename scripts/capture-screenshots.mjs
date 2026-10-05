@@ -55,6 +55,12 @@ async function capture(name, viewport, mobile = false) {
   if (viewport.width <= 599 && titleBounds.height < titleBounds.viewportHeight * 0.82) {
     throw new Error(`mobile title under-fills viewport: ${JSON.stringify(titleBounds)}`);
   }
+  const titleControlsVisible = await page.evaluate(() => {
+    const hero = document.querySelector(".title-hero")?.getBoundingClientRect();
+    const start = document.querySelector(".title-start")?.getBoundingClientRect();
+    return Boolean(hero && hero.height > 100 && start && start.top >= 0 && start.bottom <= innerHeight + 1);
+  });
+  if (!titleControlsVisible) throw new Error(`title image or start action is outside the first screen: ${name}`);
   await page.screenshot({ path: `screenshots/${name}-title.png`, fullPage: false });
 
   await startToTown(page);
@@ -81,5 +87,8 @@ async function capture(name, viewport, mobile = false) {
 
 await capture("desktop-1600", { width: 1600, height: 900 });
 await capture("mobile-430", { width: 430, height: 932 }, true);
+await capture("mobile-375", { width: 375, height: 667 }, true);
+await capture("mobile-390", { width: 390, height: 844 }, true);
+await capture("landscape-844", { width: 844, height: 390 }, true);
 
 console.log("Captured actual OH!EDO! browser screenshots.");
