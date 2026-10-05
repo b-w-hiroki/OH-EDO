@@ -8,7 +8,9 @@
   overflow: visible !important;
   border: 1px solid rgba(105, 92, 72, .2) !important;
   border-radius: 18px !important;
-  background: rgba(255, 253, 248, .98) !important;
+  background:
+    linear-gradient(rgba(255, 253, 248, .94), rgba(255, 253, 248, .94)),
+    url("/assets/edo/ui/generated/runtime/paper-panel-frame.svg") center / 100% 100% no-repeat !important;
   box-shadow: 0 10px 26px rgba(48, 39, 28, .16) !important;
 }
 
