@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { AreaId, GameState, NPCId, RumorTag } from "../types";
 import { AREAS, NPCS } from "../data";
 import { nextTownEvent, townEventConsequence } from "../events/townEvents";
@@ -132,13 +132,44 @@ export function TownSidePanel({
     setPickerOpen(false);
   }, [state.currentArea, state.screen]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!pickerOpen) return;
+    const picker = pickerRef.current;
+    const toggle = pickerToggleRef.current;
+    if (!picker || !toggle) return;
+    const placePicker = () => {
+      const parent = picker.offsetParent as HTMLElement | null;
+      if (!parent) return;
+      const viewport = window.visualViewport;
+      const viewportTop = viewport?.offsetTop ?? 0;
+      const viewportHeight = viewport?.height ?? window.innerHeight;
+      const anchor = toggle.getBoundingClientRect();
+      const below = Math.max(0, viewportTop + viewportHeight - 12 - anchor.bottom - 8);
+      const above = Math.max(0, anchor.top - 8 - viewportTop - 12);
+      const naturalHeight = picker.scrollHeight + picker.offsetHeight - picker.clientHeight;
+      const openAbove = below < naturalHeight && above > below;
+      const height = Math.min(naturalHeight, openAbove ? above : below, viewportHeight - 24);
+      const preferredTop = openAbove ? anchor.top - 8 - height : anchor.bottom + 8;
+      const top = Math.max(viewportTop + 12, Math.min(preferredTop, viewportTop + viewportHeight - 12 - height));
+      picker.style.top = `${top - parent.getBoundingClientRect().top - parent.clientTop}px`;
+      picker.style.maxHeight = `${height}px`;
+    };
+    placePicker();
     const selectedOption = pickerRef.current?.querySelector<HTMLButtonElement>(
       '[data-selected="true"]'
     );
     const firstOption = pickerRef.current?.querySelector<HTMLButtonElement>("button");
-    (selectedOption ?? firstOption)?.focus();
+    (selectedOption ?? firstOption)?.focus({ preventScroll: true });
+    window.addEventListener("resize", placePicker);
+    window.addEventListener("scroll", placePicker, true);
+    window.visualViewport?.addEventListener("resize", placePicker);
+    window.visualViewport?.addEventListener("scroll", placePicker);
+    return () => {
+      window.removeEventListener("resize", placePicker);
+      window.removeEventListener("scroll", placePicker, true);
+      window.visualViewport?.removeEventListener("resize", placePicker);
+      window.visualViewport?.removeEventListener("scroll", placePicker);
+    };
   }, [pickerOpen]);
 
   const closePicker = (restoreFocus = true) => {

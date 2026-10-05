@@ -75,6 +75,10 @@
   right: 12px;
   left: 12px;
   display: grid;
+  grid-auto-rows: max-content;
+  max-height: calc(100svh - 24px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   gap: 6px;
   padding: 8px;
   border: 1px solid #cbd5d1;
