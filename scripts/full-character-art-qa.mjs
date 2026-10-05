@@ -93,6 +93,49 @@ async function loadFixture(page, area, selected) {
   await page.waitForSelector(".presentation-primary .presentation-character-image-default");
 }
 
+async function validateSeparation(page) {
+  const separation = await page.evaluate(() => {
+    const stage = document.querySelector(".town-art-stage");
+    const frame = stage.getBoundingClientRect();
+    const scene = stage.querySelector(".town-presentation");
+    const background = scene.querySelector(".town-background");
+    const dimmer = getComputedStyle(background, "::after");
+    const cast = [...scene.querySelectorAll(".presentation-player, .presentation-primary")].map((actor) => {
+      const image = actor.querySelector(".presentation-character-image-default");
+      const style = getComputedStyle(image);
+      const rect = image.getBoundingClientRect();
+      const match = style.filter.match(/^drop-shadow\((rgba?\([^)]*\))\s+([\d.-]+)px\s+([\d.-]+)px\s+([\d.-]+)px\)$/);
+      const [x, y, blur] = match ? match.slice(2).map(Number) : [Infinity, Infinity, Infinity];
+      const halo = blur * 3;
+      return {
+        filter: style.filter, singleAlphaShadow: Boolean(match), x, y, blur,
+        opacity: style.opacity, actorOpacity: getComputedStyle(actor).opacity,
+        actorFilter: getComputedStyle(actor).filter,
+        aboveBackground: Number(getComputedStyle(actor).zIndex) > Number(getComputedStyle(background).zIndex),
+        shadowContained: rect.left + Math.min(0, x) - halo >= frame.left - 1 &&
+          rect.right + Math.max(0, x) + halo <= frame.right + 1 &&
+          rect.top + Math.min(0, y) - halo >= frame.top - 1 &&
+          rect.bottom + Math.max(0, y) + halo <= frame.bottom + 1,
+      };
+    });
+    const alpha = Number(dimmer.backgroundColor.match(/rgba\([^,]+,[^,]+,[^,]+,\s*([\d.]+)\)/)?.[1]);
+    return {
+      dimmerColor: dimmer.backgroundColor, dimmerAlpha: alpha,
+      backgroundOnly: dimmer.content === '\"\"' && dimmer.pointerEvents === "none" &&
+        getComputedStyle(stage).filter === "none" && getComputedStyle(scene).filter === "none",
+      cast,
+    };
+  });
+  if (!separation.backgroundOnly || !Number.isFinite(separation.dimmerAlpha) ||
+      separation.dimmerAlpha < .12 || separation.dimmerAlpha > .2 ||
+      !separation.cast.every((actor) => actor.singleAlphaShadow && actor.shadowContained && actor.aboveBackground &&
+        actor.x >= 2 && actor.x <= 4 && actor.y >= 2 && actor.y <= 4 && actor.blur <= 1.25 &&
+        actor.opacity === "1" && actor.actorOpacity === "1" && actor.actorFilter === "none")) {
+    throw new Error(`foreground separation failed: ${JSON.stringify(separation)}`);
+  }
+  return separation;
+}
+
 async function validateCase(page, viewportLabel, area, selected) {
   await loadFixture(page, area, selected);
   await page.waitForTimeout(280);
@@ -163,6 +206,7 @@ async function validateCase(page, viewportLabel, area, selected) {
     throw new Error(`control sizing failed: ${JSON.stringify(town)}`);
   }
 
+  town.separation = await validateSeparation(page);
   await page.screenshot({ path: `${output}/${viewportLabel}-${area}-${selected}-town.png` });
 
   const toggle = page.locator(".person-picker-toggle:visible").first();
@@ -219,6 +263,7 @@ async function validateCase(page, viewportLabel, area, selected) {
       Math.abs(dialog.artBodyRatio - expectedStature) > .015) {
     throw new Error(`dialog placement failed: ${JSON.stringify(dialog)}`);
   }
+  dialog.separation = await validateSeparation(page);
   await page.screenshot({ path: `${output}/${viewportLabel}-${area}-${selected}-dialog.png` });
 
   if (viewportLabel === "390x844" && area === "nagaya" && selected === "landlord") {

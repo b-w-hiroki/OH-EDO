@@ -1,9 +1,26 @@
 /* One safe art region per scene. Dialogue lives outside the silhouette region. */
 .town-art-stage {
+  /* Warm ink separation: tune without changing the art or its placement. */
+  --character-shadow-rgb: 42 30 28;
+  --character-shadow-opacity: .64;
+  --character-shadow-x: clamp(2px, 1cqh, 4px);
+  --character-shadow-y: clamp(2px, 1cqh, 4px);
+  --character-shadow-blur: .75px;
+  --background-dim-rgb: 25 23 28;
+  --background-dim-opacity: .16;
   position: absolute;
   inset: 0;
   overflow: hidden;
   container-type: size;
+}
+
+/* The dimmer belongs to the background, never to the cast or dialogue. */
+.town-art-stage .town-background::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgb(var(--background-dim-rgb) / var(--background-dim-opacity));
+  pointer-events: none;
 }
 
 #root .town-art-stage .town-presentation .presentation-character-image-default {
@@ -16,6 +33,9 @@
   object-fit: contain !important;
   object-position: 50% 100% !important;
   transform: none !important;
+  /* A single compact alpha shadow cannot form a detached second silhouette. */
+  filter: drop-shadow(var(--character-shadow-x) var(--character-shadow-y)
+    var(--character-shadow-blur) rgb(var(--character-shadow-rgb) / var(--character-shadow-opacity))) !important;
   -webkit-mask-image: none;
   mask-image: none;
 }

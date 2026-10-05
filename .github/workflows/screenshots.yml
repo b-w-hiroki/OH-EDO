@@ -47,6 +47,11 @@ jobs:
           cat /tmp/oh-edo-preview.log
           exit 1
       - run: node scripts/capture-screenshots.mjs
+      - name: Verify fair cast placement and foreground separation
+        run: node scripts/full-character-art-qa.mjs
+        env:
+          OH_EDO_URL: http://127.0.0.1:4173
+          OH_EDO_ART_QA_OUTPUT: qa-artifacts/foreground-separation
       - run: node scripts/release-qa.mjs
       - run: node scripts/local-perf-report.mjs
       - uses: actions/upload-artifact@v4
