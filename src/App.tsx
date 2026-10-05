@@ -44,7 +44,7 @@ import { MobilePlayerSummary } from "./components/MobilePlayerSummary";
 import { JobView } from "./components/JobView";
 import { ResultView } from "./components/ResultView";
 import { TownPresentation } from "./components/TownPresentation";
-import { TownSidePanel } from "./components/TownSidePanel";
+import { getTownPanelNpcIds, TownSidePanel } from "./components/TownSidePanel";
 import { AreaNav } from "./components/AreaNav";
 import { ApprovedConversationFrame } from "./components/ApprovedConversationFrame";
 import { TownEventChoiceView, TownEventResultView } from "./components/TownEventViews";
@@ -704,12 +704,25 @@ function applyJobChoice(s: GameState, choice: JobChoice): GameState {
   });
 }
 
-function getAreaNpcIds(state: GameState): NPCId[] {
-  if (state.currentArea === "market") return ["fishmonger", "newsman"];
-  if (state.currentArea === "well") return ["child"];
-  if (state.currentArea === "firehouse") return ["firechief"];
-  if (state.currentArea === "room") return ["landlord"];
-  return ["landlord", "child"];
+const NPC_SELECTION_STORAGE_KEY = "oh-edo:npc-selection";
+
+function loadNpcSelection(area: AreaId, available: NPCId[]): NPCId | null {
+  try {
+    const stored = JSON.parse(localStorage.getItem(NPC_SELECTION_STORAGE_KEY) ?? "{}") as Partial<Record<AreaId, NPCId>>;
+    const selected = stored[area];
+    return selected && available.includes(selected) ? selected : null;
+  } catch {
+    return null;
+  }
+}
+
+function saveNpcSelection(area: AreaId, npc: NPCId): void {
+  try {
+    const stored = JSON.parse(localStorage.getItem(NPC_SELECTION_STORAGE_KEY) ?? "{}") as Partial<Record<AreaId, NPCId>>;
+    localStorage.setItem(NPC_SELECTION_STORAGE_KEY, JSON.stringify({ ...stored, [area]: npc }));
+  } catch {
+    // UI preference persistence never blocks play.
+  }
 }
 
 function getCurrentObjective(state: GameState): string {
@@ -796,17 +809,23 @@ function App() {
   const [dayTransition, setDayTransition] = useState<number | null>(null);
   const [rankTransition, setRankTransition] = useState<string | null>(null);
   const [fireChoicePending, setFireChoicePending] = useState(false);
-  const [selectedNpcId, setSelectedNpcId] = useState<NPCId | null>(() => getAreaNpcIds(loadInitial())[0] ?? null);
+  const [selectedNpcId, setSelectedNpcId] = useState<NPCId | null>(() => {
+    const available = getTownPanelNpcIds(state);
+    return loadNpcSelection(state.currentArea, available) ?? available[0] ?? null;
+  });
   const fireChoicePendingRef = useRef(false);
   const dialogOpenRef = useRef(false);
   const previousDayRef = useRef(state.day);
   const previousRankRef = useRef(state.player.rank);
 
   useEffect(() => {
-    const local = getAreaNpcIds(state);
-    setSelectedNpcId((current) =>
-      current && local.includes(current) ? current : (local[0] ?? null)
-    );
+    const available = getTownPanelNpcIds(state);
+    setSelectedNpcId(loadNpcSelection(state.currentArea, available) ?? available[0] ?? null);
+  }, [state.currentArea]);
+
+  const selectNpc = useCallback((npc: NPCId) => {
+    setSelectedNpcId(npc);
+    saveNpcSelection(state.currentArea, npc);
   }, [state.currentArea]);
 
   // Persist.
@@ -1400,6 +1419,7 @@ function App() {
   const resetGame = useCallback(() => {
     if (!window.confirm("旅をやり直しますか？セーブも消えるよ。")) return;
     clearGameState();
+    localStorage.removeItem(NPC_SELECTION_STORAGE_KEY);
     window.location.reload();
   }, []);
 
@@ -1433,7 +1453,7 @@ function App() {
   const nextLead = getNextLead(state);
   const currentObjective = getCurrentObjective(state);
   const yesterdaySummary = getYesterdaySummary(state);
-  const localNpcIds = getAreaNpcIds(state);
+  const localNpcIds = getTownPanelNpcIds(state);
   const activeTalkNpc =
     selectedNpcId && localNpcIds.includes(selectedNpcId)
       ? selectedNpcId
@@ -1535,11 +1555,7 @@ function App() {
                     ? state.dialog.lines[state.dialog.index]?.speaker
                     : null
                 }
-                onSelect={setSelectedNpcId}
-                onTalk={(npc) => {
-                  setSelectedNpcId(npc);
-                  EventBus.emit("npc-interact", npc);
-                }}
+                onSelect={selectNpc}
               />
 
             {state.screen === "town" && (
@@ -1712,9 +1728,9 @@ function App() {
               areaEcho={areaEcho}
               yesterdaySummary={yesterdaySummary}
               selectedNpc={activeTalkNpc}
-              onSelect={setSelectedNpcId}
+              onSelect={selectNpc}
               onTalk={(npc) => {
-                setSelectedNpcId(npc);
+                selectNpc(npc);
                 EventBus.emit("npc-interact", npc);
               }}
               onStartNextDay={startNextTownEvent}

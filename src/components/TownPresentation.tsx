@@ -5,7 +5,6 @@ import { publicAsset } from "../publicAsset";
 
 interface Props {
   state: GameState;
-  onTalk: (npc: NPCId) => void;
   onSelect: (npc: NPCId) => void;
   selectedNpc: NPCId | null;
   activeSpeaker?: string | null;
@@ -183,7 +182,6 @@ function speakerToNpc(speaker?: string | null): NPCId | null {
 
 export function TownPresentation({
   state,
-  onTalk,
   onSelect,
   selectedNpc,
   activeSpeaker,
@@ -264,10 +262,7 @@ export function TownPresentation({
           className={`presentation-character presentation-npc presentation-secondary ${characterClass(secondaryNpc)} ${state.npcRelations[secondaryNpc]?.familiarity >= 3 ? "is-familiar" : ""} ${selectedNpc === secondaryNpc ? "is-selected" : ""}`}
           aria-label={`${displayName(secondaryNpc)}を選ぶ`}
           aria-pressed={selectedNpc === secondaryNpc}
-          onClick={() => {
-            if (selectedNpc === secondaryNpc) onTalk(secondaryNpc);
-            else onSelect(secondaryNpc);
-          }}
+          onClick={() => onSelect(secondaryNpc)}
           type="button"
         >
           <CharacterImage id={secondaryNpc} />
@@ -283,16 +278,9 @@ export function TownPresentation({
         <button
           key={featuredNpc}
           className={`presentation-character presentation-npc presentation-primary presentation-featured ${characterClass(featuredNpc)} ${state.npcRelations[featuredNpc]?.familiarity >= 3 ? "is-familiar" : ""} ${activeNpc === featuredNpc ? "is-speaking" : ""} ${selectedNpc === featuredNpc ? "is-selected" : ""}`}
-          aria-label={
-            selectedNpc === featuredNpc
-              ? `${displayName(featuredNpc)}と話す`
-              : `${displayName(featuredNpc)}を選ぶ`
-          }
+          aria-label={`${displayName(featuredNpc)}を選ぶ`}
           aria-pressed={selectedNpc === featuredNpc}
-          onClick={() => {
-            if (selectedNpc === featuredNpc) onTalk(featuredNpc);
-            else onSelect(featuredNpc);
-          }}
+          onClick={() => onSelect(featuredNpc)}
           type="button"
         >
           <CharacterImage

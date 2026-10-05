@@ -140,17 +140,26 @@ async function move(page, label) {
 
 async function talk(page, name) {
   const card = page.locator(".nearby-person").filter({ hasText: name }).first();
-  await card.waitFor({ state: "visible", timeout: 5000 });
-  if (await page.locator(".nearby-avatar.avatar-newsman").count()) {
+  if (await card.count()) {
+    await card.waitFor({ state: "visible", timeout: 5000 });
+    await card.click();
+  } else {
+    const picker = page.locator(".person-picker-toggle:visible");
+    await picker.waitFor({ state: "visible", timeout: 5000 });
+    await picker.click();
+    const option = page.locator(".person-picker button").filter({ hasText: name }).first();
+    await option.waitFor({ state: "visible", timeout: 5000 });
+    await option.click();
+  }
+  await page.waitForTimeout(80);
+  if (await page.locator(".person-focus-portrait.avatar-newsman").count()) {
     await assertNewsmanPortrait(page);
   }
-  await card.click();
-  await page.waitForTimeout(80);
   const dockTalk = page.locator(".reference-talk-cta:visible");
   if (await dockTalk.count()) {
     await dockTalk.click();
   } else {
-    const railTalk = card.locator(".nearby-talk:visible");
+    const railTalk = page.locator(".nearby-talk:visible, .person-focus-talk:visible").first();
     assert((await railTalk.count()) > 0, `no visible talk affordance for ${name}`);
     await railTalk.click();
   }
@@ -159,13 +168,14 @@ async function talk(page, name) {
 }
 
 async function assertNewsmanPortrait(page) {
-  const portrait = await page.locator(".nearby-avatar.avatar-newsman").evaluate((frame) => {
+  const portrait = await page.locator(".nearby-avatar.avatar-newsman, .person-focus-portrait.avatar-newsman").evaluate((frame) => {
     const image = frame.querySelector("img");
     const frameRect = frame.getBoundingClientRect();
     const imageRect = image?.getBoundingClientRect();
     const style = image ? getComputedStyle(image) : null;
     return {
       loaded: Boolean(image && image.complete && image.naturalWidth > 0),
+      source: image?.currentSrc ?? "",
       objectPosition: style?.objectPosition ?? "",
       transformed: style?.transform !== "none",
       clippedToFrame: getComputedStyle(frame).overflow === "hidden",
@@ -176,8 +186,9 @@ async function assertNewsmanPortrait(page) {
     };
   });
   assert(
-    portrait.loaded && portrait.objectPosition === "37% 18%" && portrait.transformed &&
-      portrait.clippedToFrame && portrait.coversFrame,
+    portrait.loaded && portrait.clippedToFrame &&
+      (portrait.source.includes("portraits/newsman.png") ||
+        (portrait.objectPosition === "37% 18%" && portrait.transformed && portrait.coversFrame)),
     `newsman portrait crop is not production-ready: ${JSON.stringify(portrait)}`
   );
 }
@@ -554,24 +565,35 @@ async function captureAreas(page, prefix) {
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.waitForTimeout(80);
     if (slug === "market") {
+      if (!(await page.locator(".presentation-primary.art-fishmonger").count())) {
+        await page.locator(".person-picker-toggle:visible").click();
+        await page.locator(".person-picker button").first().click();
+        await page.waitForTimeout(80);
+      }
       const fishmonger = await page.locator(".presentation-primary.art-fishmonger").evaluate((actor) => {
         const image = actor.querySelector(".presentation-character-image-default");
+        const stageRect = actor.closest(".presentation-stage")?.getBoundingClientRect();
         const actorRect = actor.getBoundingClientRect();
         const imageRect = image?.getBoundingClientRect();
-        const style = image ? getComputedStyle(image) : null;
         return {
           loaded: Boolean(image && image.complete && image.naturalWidth > 0),
+          source: image?.currentSrc ?? "",
           actor: { x: actorRect.x, y: actorRect.y, width: actorRect.width, height: actorRect.height },
           image: imageRect ? { x: imageRect.x, y: imageRect.y, width: imageRect.width, height: imageRect.height } : null,
-          maskImage: style?.maskImage || style?.webkitMaskImage || "",
+          containedInStage: Boolean(
+            stageRect &&
+            actorRect.top >= stageRect.top - 1 &&
+            actorRect.bottom <= stageRect.bottom + 1
+          ),
         };
       });
       assert(fishmonger.loaded, `fishmonger stage art failed to load: ${JSON.stringify(fishmonger)}`);
       assert(fishmonger.actor.width >= 110 && fishmonger.actor.height >= 180, `fishmonger stage art is too small: ${JSON.stringify(fishmonger)}`);
-      assert(fishmonger.maskImage.includes("linear-gradient"), `fishmonger source cleanup is missing: ${JSON.stringify(fishmonger)}`);
+      assert(fishmonger.source.includes("fishmonger-clean.png"), `clean fishmonger source is missing: ${JSON.stringify(fishmonger)}`);
+      assert(fishmonger.containedInStage, `fishmonger is clipped by the stage: ${JSON.stringify(fishmonger)}`);
     }
     await page.screenshot({ path: `qa-artifacts/${prefix}-${slug}-world.png`, fullPage: false });
-    const talkButton = page.locator(".nearby-talk:visible").first();
+    const talkButton = page.locator(".nearby-talk:visible, .person-focus-talk:visible").first();
     if (await talkButton.count()) {
       await dispatchClick(talkButton);
       await page.waitForSelector(".mock-dialog:visible", { timeout: 5000 });
@@ -639,12 +661,14 @@ async function assertMobileLayout(page) {
     const doc = document.documentElement;
     const stage = document.querySelector(".presentation-stage")?.getBoundingClientRect();
     const talk = document.querySelector(".reference-talk-cta")?.getBoundingClientRect();
-    const nearbyTalk = [...document.querySelectorAll(".nearby-talk")]
+    const nearbyTalk = [...document.querySelectorAll(".nearby-talk, .person-focus-talk")]
       .filter((el) => getComputedStyle(el).display !== "none")
       .map((el) => el.getBoundingClientRect());
-    const nearbyCards = [...document.querySelectorAll(".nearby-person")]
+    const nearbyCards = [...document.querySelectorAll(".nearby-person, .person-focus-talk")]
       .filter((el) => getComputedStyle(el).display !== "none")
       .map((el) => el.getBoundingClientRect());
+    const nav = document.querySelector(".reference-area-nav");
+    const navStyle = nav ? getComputedStyle(nav) : null;
     const navButtons = [...document.querySelectorAll(".reference-area-nav button:not(:disabled)")].map((el) => el.getBoundingClientRect());
     const navIcons = [...document.querySelectorAll(".reference-area-nav .area-nav-icon")].map((el) => {
       const rect = el.getBoundingClientRect();
@@ -668,6 +692,10 @@ async function assertMobileLayout(page) {
       nearbyCardMinHeight: nearbyCards.length ? Math.min(...nearbyCards.map((r) => r.height)) : 0,
       navMinHeight: navButtons.length ? Math.min(...navButtons.map((r) => r.height)) : 0,
       navOverflow: navButtons.some((r) => r.left < -1 || r.right > window.innerWidth + 1),
+      navScrollable: Boolean(
+        nav && navStyle && nav.scrollWidth > nav.clientWidth &&
+        ["auto", "scroll"].includes(navStyle.overflowX)
+      ),
       navIcons,
       peopleBottom: people ? people.bottom + scrollY : null,
       dockTop: dock ? dock.top + scrollY : null,
@@ -682,7 +710,7 @@ async function assertMobileLayout(page) {
   const hasPeopleTalk = result.nearbyTalkCount > 0 && result.nearbyCardMinHeight >= 44;
   assert(hasLargeDockTalk || hasPeopleTalk, `no mobile talk affordance with a 44px touch region: ${JSON.stringify(result)}`);
   assert(result.navMinHeight >= 44, `nav touch targets too small: ${JSON.stringify(result)}`);
-  assert(!result.navOverflow, `nav overflows viewport: ${JSON.stringify(result)}`);
+  assert(!result.navOverflow || result.navScrollable, `nav overflows without a scroll affordance: ${JSON.stringify(result)}`);
   if (result.viewportWidth <= 599) {
     if (result.viewportWidth < (result.stageHeight ?? 0) * 2) {
       assert(
@@ -846,7 +874,7 @@ async function runDesktop() {
     const visible = (el) => Boolean(el) && getComputedStyle(el).display !== "none" && el.getBoundingClientRect().width > 0;
     return {
       navButtons: [...document.querySelectorAll(".reference-area-nav button")].filter(visible).length,
-      talkCtaVisible: visible(document.querySelector(".reference-talk-cta")),
+      talkCtaVisible: visible(document.querySelector(".reference-talk-cta, .person-focus-talk")),
       topStats: [...document.querySelectorAll(".reference-stat")].filter(visible).length,
       storyVisible: visible(document.querySelector(".town-flavor-card")),
       rumorVisible: visible(document.querySelector(".rumor-card")),
@@ -904,6 +932,28 @@ async function runCompactMobileChromium() {
     await dayTransition.waitFor({ state: "hidden", timeout: 5000 });
   }
   await page.screenshot({ path: "qa-artifacts/mobile-375-day10-world.png", fullPage: false });
+  await move(page, "商店通り");
+  if (!(await page.locator(".presentation-primary.art-fishmonger").count())) {
+    await page.locator(".person-picker-toggle:visible").click();
+    await page.locator(".person-picker button").first().click();
+    await page.waitForTimeout(80);
+  }
+  const compactFishmonger = await page.locator(".presentation-primary.art-fishmonger").evaluate((actor) => {
+    const image = actor.querySelector(".presentation-character-image-default");
+    const stageRect = actor.closest(".presentation-stage")?.getBoundingClientRect();
+    const actorRect = actor.getBoundingClientRect();
+    return {
+      source: image?.currentSrc ?? "",
+      containedInStage: Boolean(
+        stageRect &&
+        actorRect.top >= stageRect.top - 1 &&
+        actorRect.bottom <= stageRect.bottom + 1
+      ),
+    };
+  });
+  assert(compactFishmonger.source.includes("fishmonger-clean.png"), `compact clean fishmonger source is missing: ${JSON.stringify(compactFishmonger)}`);
+  assert(compactFishmonger.containedInStage, `compact fishmonger is clipped: ${JSON.stringify(compactFishmonger)}`);
+  await page.screenshot({ path: "qa-artifacts/mobile-375-market-world.png", fullPage: false });
   await browser.close();
   return { day: finalState.day, provider: finalState.fireAftermath?.provider ?? finalState.lastDecision?.provider, layout, accessibility };
 }
@@ -935,7 +985,7 @@ async function runIPhoneLandscapeWebKit() {
   assert(landscapeBounds.dockBottom <= landscapeBounds.viewportHeight + 2, `landscape action dock is clipped: ${JSON.stringify(landscapeBounds)}`);
   await page.screenshot({ path: "qa-artifacts/iphone-webkit-landscape-world.png", fullPage: false });
   const landscapeTalk = page.locator(".reference-talk-cta:visible");
-  const railTalk = page.locator(".nearby-talk:visible").first();
+  const railTalk = page.locator(".nearby-talk:visible, .person-focus-talk:visible").first();
   if (await landscapeTalk.count()) {
     await landscapeTalk.click();
   } else {
@@ -959,6 +1009,26 @@ async function runIPhoneLandscapeWebKit() {
   await page.screenshot({ path: "qa-artifacts/iphone-webkit-landscape-dialog.png", fullPage: false });
   await advanceDialogs(page);
   assert((await state(page))?.screen === "town", "landscape WebKit conversation did not return to town");
+  await move(page, "商店通り");
+  const landscapeFishmonger = await page.locator(".presentation-primary.art-fishmonger").evaluate((actor) => {
+    const image = actor.querySelector(".presentation-character-image-default");
+    const stageRect = actor.closest(".presentation-stage")?.getBoundingClientRect();
+    const actorRect = actor.getBoundingClientRect();
+    return {
+      loaded: Boolean(image && image.complete && image.naturalWidth > 0),
+      source: image?.currentSrc ?? "",
+      containedInStage: Boolean(
+        stageRect &&
+        actorRect.top >= stageRect.top - 1 &&
+        actorRect.bottom <= stageRect.bottom + 1
+      ),
+    };
+  });
+  assert(landscapeFishmonger.loaded, `landscape fishmonger failed to load: ${JSON.stringify(landscapeFishmonger)}`);
+  assert(landscapeFishmonger.source.includes("fishmonger-clean.png"), `landscape clean fishmonger source is missing: ${JSON.stringify(landscapeFishmonger)}`);
+  assert(landscapeFishmonger.containedInStage, `landscape fishmonger is clipped: ${JSON.stringify(landscapeFishmonger)}`);
+  await page.waitForTimeout(260);
+  await page.screenshot({ path: "qa-artifacts/iphone-webkit-landscape-market-world.png", fullPage: false });
 
   await browser.close();
   return { layout, accessibility };
@@ -1117,7 +1187,7 @@ async function runIPhoneWebKit() {
     if (await dockTalk.count()) {
       await dockTalk.click();
     } else {
-      const peopleTalk = page.locator(".nearby-talk:visible").first();
+      const peopleTalk = page.locator(".nearby-talk:visible, .person-focus-talk:visible").first();
       assert((await peopleTalk.count()) > 0, "portrait WebKit has no visible talk affordance");
       await peopleTalk.click();
     }

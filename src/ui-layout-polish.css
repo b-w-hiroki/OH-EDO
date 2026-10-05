@@ -756,16 +756,21 @@
   transform-origin: 37% 18%;
 }
 
-/* The fishmonger source includes unrelated lower-right cast fragments.
-   Present the intact face, fish, raised hand and happi as an intentional waist-up composition. */
+/* The cleaned source is a complete, isolated character. Keep the full figure
+   inside the painted stage instead of cropping it below the waist. */
+.town-presentation.area-market .presentation-primary.art-fishmonger {
+  bottom: 2% !important;
+  height: 94% !important;
+}
+
 .town-presentation .presentation-character.art-fishmonger .presentation-character-image-default {
-  inset: 12% -25% auto -25%;
-  width: 150%;
-  height: 150%;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-  object-position: 50% 0;
-  -webkit-mask-image: linear-gradient(to bottom, #000 0 38%, rgba(0, 0, 0, .94) 42%, transparent 49%);
-  mask-image: linear-gradient(to bottom, #000 0 38%, rgba(0, 0, 0, .94) 42%, transparent 49%);
+  object-position: 50% 100%;
+  -webkit-mask-image: none;
+  mask-image: none;
 }
 
 @media (min-width: 1100px) {
