@@ -10,7 +10,20 @@ export const CHARACTER_ART: Record<"player" | Exclude<NPCId, "kumitori_master">,
   firechief: publicAsset("assets/edo/characters/full/firechief.webp"),
 };
 
+const CHARACTER_PORTRAIT_ART: Partial<Record<NPCId, string>> = {
+  fishmonger: publicAsset("assets/edo/characters/portraits/fishmonger.png"),
+  newsman: publicAsset("assets/edo/characters/portraits/newsman.png"),
+};
+
 export function characterArtPath(id: NPCId | "player"): string | null {
   if (id === "kumitori_master") return null;
   return CHARACTER_ART[id];
+}
+
+export function characterPortraitPath(id: NPCId): string | null {
+  return CHARACTER_PORTRAIT_ART[id] ?? characterArtPath(id);
+}
+
+export function hasDedicatedCharacterPortrait(id: NPCId): boolean {
+  return Boolean(CHARACTER_PORTRAIT_ART[id]);
 }

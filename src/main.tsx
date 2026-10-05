@@ -30,6 +30,7 @@ import "./title-viewport.css";
 import "./proposal-v1.css";
 import "./approved-conversation-live.css";
 import "./ui-layout-polish.css";
+import "./modern-town-interaction.css";
 
 // StrictMode is intentionally omitted: its dev-only double mount/unmount
 // conflicts with the Phaser canvas lifecycle.

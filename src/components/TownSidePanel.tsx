@@ -1,7 +1,11 @@
+import { useEffect, useRef, useState } from "react";
 import type { AreaId, GameState, NPCId, RumorTag } from "../types";
 import { AREAS, NPCS } from "../data";
 import { nextTownEvent, townEventConsequence } from "../events/townEvents";
-import { characterArtPath } from "../characterArt";
+import {
+  characterPortraitPath,
+  hasDedicatedCharacterPortrait,
+} from "../characterArt";
 import {
   actionTagLabel,
   fiveDayHook,
@@ -20,7 +24,7 @@ function areaNpcIds(state: GameState): NPCId[] {
   return ["landlord", "child"];
 }
 
-function sidePanelNpcIds(state: GameState): NPCId[] {
+export function getTownPanelNpcIds(state: GameState): NPCId[] {
   const local = areaNpcIds(state);
   const nearbyByArea: Partial<Record<AreaId, NPCId[]>> = {
     nagaya: ["landlord", "child", "fishmonger", "newsman"],
@@ -116,8 +120,38 @@ export function TownSidePanel({
   onTalk: (npc: NPCId) => void;
   onStartNextDay: () => void;
 }) {
-  const areaNpcIds = sidePanelNpcIds(state);
-  const knownCount = areaNpcIds.filter((npcId) => isNpcKnown(state, npcId)).length;
+  const areaNpcIds = getTownPanelNpcIds(state);
+  const activeNpc = selectedNpc && areaNpcIds.includes(selectedNpc)
+    ? selectedNpc
+    : (areaNpcIds[0] ?? null);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const pickerRef = useRef<HTMLDivElement>(null);
+  const pickerToggleRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    setPickerOpen(false);
+  }, [state.currentArea, state.screen]);
+
+  useEffect(() => {
+    if (!pickerOpen) return;
+    const selectedOption = pickerRef.current?.querySelector<HTMLButtonElement>(
+      '[data-selected="true"]'
+    );
+    const firstOption = pickerRef.current?.querySelector<HTMLButtonElement>("button");
+    (selectedOption ?? firstOption)?.focus();
+  }, [pickerOpen]);
+
+  const closePicker = (restoreFocus = true) => {
+    setPickerOpen(false);
+    if (restoreFocus) {
+      window.requestAnimationFrame(() => pickerToggleRef.current?.focus());
+    }
+  };
+
+  const chooseNpc = (npcId: NPCId) => {
+    onSelect(npcId);
+    closePicker();
+  };
   const totalKnownCount = (Object.keys(state.npcRelations) as NPCId[])
     .filter((npc) => npc !== "kumitori_master")
     .filter((npc) => isNpcKnown(state, npc)).length;
@@ -145,58 +179,107 @@ export function TownSidePanel({
 
   return (
     <aside className="town-side-panel">
-      <section className="side-card">
-        <div className="side-card-title">
-          <span><SideIcon kind="people" /> このあたりの人たち</span>
-          <small className="side-card-more">
-            {knownCount > 0 ? `${knownCount}人が顔なじみ` : "まだ新入り"}
-          </small>
+      <section className="side-card person-focus-card">
+        <div className="person-focus-heading">
+          <div>
+            <small>このあたりの人</small>
+            <strong>話す相手</strong>
+          </div>
+          <button
+            ref={pickerToggleRef}
+            className="person-picker-toggle"
+            type="button"
+            aria-expanded={pickerOpen}
+            aria-controls="town-person-picker"
+            onClick={() => setPickerOpen((open) => !open)}
+          >
+            {pickerOpen ? "閉じる" : `ほかの人 ${Math.max(0, areaNpcIds.length - 1)}人`}
+          </button>
         </div>
-        <div className="nearby-list">
-          {areaNpcIds.map((npcId) => (
-            <div
-              className={`nearby-person ${selectedNpc === npcId ? "selected" : ""}`}
-              key={npcId}
-              role="button"
-              tabIndex={0}
-              onClick={() => onSelect(npcId)}
-              onKeyDown={(event) => {
-                if (event.key === "Enter" || event.key === " ") {
-                  event.preventDefault();
-                  onSelect(npcId);
-                }
-              }}
-            >
-              <span className={`nearby-avatar avatar-${npcId}`}>
-                {characterArtPath(npcId) ? (
-                  <img src={characterArtPath(npcId) ?? undefined} alt="" draggable={false} />
+
+        {pickerOpen && (
+          <div
+            ref={pickerRef}
+            id="town-person-picker"
+            className="person-picker"
+            aria-label="話す人物を選ぶ"
+            onKeyDown={(event) => {
+              const options = Array.from(
+                event.currentTarget.querySelectorAll<HTMLButtonElement>("button")
+              );
+              const currentIndex = options.indexOf(document.activeElement as HTMLButtonElement);
+              let nextIndex = currentIndex;
+              if (event.key === "ArrowDown" || event.key === "ArrowRight") nextIndex += 1;
+              else if (event.key === "ArrowUp" || event.key === "ArrowLeft") nextIndex -= 1;
+              else if (event.key === "Home") nextIndex = 0;
+              else if (event.key === "End") nextIndex = options.length - 1;
+              else if (event.key === "Escape") {
+                event.preventDefault();
+                closePicker();
+                return;
+              } else return;
+              event.preventDefault();
+              options[(nextIndex + options.length) % options.length]?.focus();
+            }}
+          >
+            {areaNpcIds.map((npcId) => (
+              <button
+                key={npcId}
+                type="button"
+                className={activeNpc === npcId ? "selected" : ""}
+                data-selected={activeNpc === npcId}
+                aria-pressed={activeNpc === npcId}
+                onClick={() => chooseNpc(npcId)}
+              >
+                <span>
+                  <strong>{npcDisplayName(npcId)}</strong>
+                  <small>{npcSubtitle(npcId)}</small>
+                </span>
+                <em>{activeNpc === npcId ? "選択中" : relationMemoryLabel(state, npcId)}</em>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {activeNpc && (
+          <>
+            <div className="person-focus-main">
+              <span
+                className={`person-focus-portrait avatar-${activeNpc} ${
+                  hasDedicatedCharacterPortrait(activeNpc) ? "has-dedicated-portrait" : "uses-full-art"
+                }`}
+              >
+                {characterPortraitPath(activeNpc) ? (
+                  <img
+                    src={characterPortraitPath(activeNpc) ?? undefined}
+                    alt={`${npcDisplayName(activeNpc)}の肖像`}
+                    draggable={false}
+                  />
                 ) : (
-                  <span>{NPCS[npcId].name.slice(0, 1)}</span>
+                  <span>{NPCS[activeNpc].name.slice(0, 1)}</span>
                 )}
               </span>
-              <div className="nearby-copy">
-                <strong>{npcDisplayName(npcId)}</strong>
-                <span className="npc-subtitle">{npcSubtitle(npcId)}</span>
-                <span className="npc-memory-line">{npcRailLine(state, npcId)}</span>
-                <span className="npc-relation-meter" aria-label={`関係度 ${relationPercent(state, npcId)}%`}>
-                  <i style={{ width: `${relationPercent(state, npcId)}%` }} />
+              <div className="person-focus-copy">
+                <small>{npcSubtitle(activeNpc)}</small>
+                <strong>{npcDisplayName(activeNpc)}</strong>
+                <span>{relationMemoryLabel(state, activeNpc)}</span>
+                <span className="person-focus-meter" aria-label={`関係度 ${relationPercent(state, activeNpc)}%`}>
+                  <i style={{ width: `${relationPercent(state, activeNpc)}%` }} />
                 </span>
-                <small className={`relation-pill ${isNpcKnown(state, npcId) ? "is-known" : ""}`}>♥ {relationMemoryLabel(state, npcId)}</small>
               </div>
-              <button
-                className="nearby-talk"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  onSelect(npcId);
-                  onTalk(npcId);
-                }}
-                aria-label={`${npcDisplayName(npcId)}と話す`}
-              >
-                {state.screen === "dialog" && selectedNpc === npcId ? "会話中" : "話す"}
-              </button>
             </div>
-          ))}
-        </div>
+            <p className="person-focus-memory">{npcRailLine(state, activeNpc)}</p>
+            <button
+              className="person-focus-talk"
+              type="button"
+              disabled={state.screen !== "town"}
+              onClick={() => onTalk(activeNpc)}
+            >
+              {state.screen === "dialog" ? `${npcDisplayName(activeNpc)}と会話中` : `${npcDisplayName(activeNpc)}と話す`}
+              <span aria-hidden="true">›</span>
+            </button>
+          </>
+        )}
       </section>
 
       {finaleReady && (
