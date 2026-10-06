@@ -215,7 +215,22 @@ async function validateCase(page, viewportLabel, area, selected) {
   await toggle.click();
   const picker = page.locator(".person-picker:visible");
   await picker.waitFor();
+  const pickerBounds = await picker.evaluate((element) => {
+    const r = element.getBoundingClientRect();
+    return { top: r.top, bottom: r.bottom, left: r.left, right: r.right, width: innerWidth, height: innerHeight };
+  });
+  if (pickerBounds.top < -1 || pickerBounds.bottom > pickerBounds.height + 1 ||
+      pickerBounds.left < -1 || pickerBounds.right > pickerBounds.width + 1) {
+    throw new Error(`person picker escapes viewport: ${JSON.stringify(pickerBounds)}`);
+  }
+  await page.screenshot({ path: `${output}/${viewportLabel}-${area}-${selected}-picker.png` });
   await picker.press("End");
+  const finalOptionVisible = await picker.evaluate((element) => {
+    const frame = element.getBoundingClientRect();
+    const focused = document.activeElement?.getBoundingClientRect();
+    return Boolean(focused && focused.top >= frame.top - 1 && focused.bottom <= frame.bottom + 1);
+  });
+  if (!finalOptionVisible) throw new Error("last person option is clipped after End focus");
   const focusedPickerOption = await page.evaluate(() => document.activeElement?.closest(".person-picker") !== null);
   if (!focusedPickerOption) throw new Error("picker End key did not retain option focus");
   await picker.press("Escape");
@@ -317,11 +332,19 @@ for (const [viewportLabel, width, height] of viewports) {
   }
   if (viewportLabel === "390x844") {
     await loadFixture(page, "nagaya", "landlord");
+    await page.locator(".person-picker-toggle").click();
     await page.setViewportSize({ width: 844, height: 390 });
     await page.waitForTimeout(150);
     const rotatedOverflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
     if (rotatedOverflow > 1) throw new Error(`rotation overflow: ${rotatedOverflow}`);
     await page.setViewportSize({ width: 390, height: 844 });
+    await page.waitForTimeout(150);
+    const rotatedPickerFits = await page.locator(".person-picker").evaluate((element) => {
+      const r = element.getBoundingClientRect();
+      return r.top >= 0 && r.bottom <= innerHeight && r.left >= 0 && r.right <= innerWidth;
+    });
+    if (!rotatedPickerFits) throw new Error("open person picker escapes viewport after rotation");
+    await page.locator(".person-picker").press("Escape");
   }
   await page.close();
 }
