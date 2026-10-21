@@ -196,3 +196,30 @@ test("rejects unauthenticated and oversized requests before provider call", asyn
   delete process.env.JEV_API_KEY;
   delete process.env.JEV_PROXY_TOKEN;
 });
+
+
+test("aborts a stalled synthetic provider request", async () => {
+  const priorFetch = globalThis.fetch;
+  const priorTimeout = AbortSignal.timeout;
+  process.env.JEV_API_KEY = "synthetic-key";
+  process.env.JEV_PROXY_TOKEN = "synthetic-token";
+  const signal = new AbortController().signal;
+  AbortSignal.timeout = (ms) => {
+    assert.equal(ms, 8000);
+    return signal;
+  };
+  globalThis.fetch = async (_url, options) => {
+    assert.equal(options.signal, signal);
+    throw Object.assign(new Error("aborted"), { name: "AbortError" });
+  };
+  try {
+    const res = makeRes();
+    await handler({ method: "POST", headers: { authorization: "Bearer synthetic-token" }, body: { context: {} } }, res);
+    assert.equal(res.statusCode, 502);
+  } finally {
+    globalThis.fetch = priorFetch;
+    AbortSignal.timeout = priorTimeout;
+    delete process.env.JEV_API_KEY;
+    delete process.env.JEV_PROXY_TOKEN;
+  }
+});
