@@ -24,6 +24,7 @@ test("maps Jev typed answers into DecisionResult", async () => {
   const previousKey = process.env.JEV_API_KEY;
   const previousFetch = globalThis.fetch;
   process.env.JEV_API_KEY = "test-key";
+  process.env.JEV_PROXY_TOKEN = "synthetic-token";
   globalThis.fetch = async () => ({
     ok: true,
     status: 200,
@@ -49,6 +50,7 @@ test("maps Jev typed answers into DecisionResult", async () => {
   const res = makeRes();
   await handler({
     method: "POST",
+    headers: { authorization: "Bearer synthetic-token" },
     body: {
       context: {
         candidateRumors: ["helpful", "funny"],
@@ -68,6 +70,7 @@ test("maps Jev typed answers into DecisionResult", async () => {
   assert.equal(res.body.specialEvent.shouldTrigger, false);
 
   globalThis.fetch = previousFetch;
+  delete process.env.JEV_PROXY_TOKEN;
   if (previousKey) process.env.JEV_API_KEY = previousKey;
   else delete process.env.JEV_API_KEY;
 });
@@ -77,6 +80,7 @@ test("rejects unknown typed choices from Jev", async () => {
   const previousKey = process.env.JEV_API_KEY;
   const previousFetch = globalThis.fetch;
   process.env.JEV_API_KEY = "test-key";
+  process.env.JEV_PROXY_TOKEN = "synthetic-token";
   globalThis.fetch = async () => ({
     ok: true,
     status: 200,
@@ -101,6 +105,7 @@ test("rejects unknown typed choices from Jev", async () => {
   const res = makeRes();
   await handler({
     method: "POST",
+    headers: { authorization: "Bearer synthetic-token" },
     body: {
       context: {
         candidateRumors: ["helpful", "funny"],
@@ -115,6 +120,7 @@ test("rejects unknown typed choices from Jev", async () => {
   assert.match(res.body.message, /Invalid rumor choice/);
 
   globalThis.fetch = previousFetch;
+  delete process.env.JEV_PROXY_TOKEN;
   if (previousKey) process.env.JEV_API_KEY = previousKey;
   else delete process.env.JEV_API_KEY;
 });
@@ -123,6 +129,7 @@ test("clamps numeric Jev answers to safe ranges", async () => {
   const previousKey = process.env.JEV_API_KEY;
   const previousFetch = globalThis.fetch;
   process.env.JEV_API_KEY = "test-key";
+  process.env.JEV_PROXY_TOKEN = "synthetic-token";
   globalThis.fetch = async () => ({
     ok: true,
     status: 200,
@@ -147,6 +154,7 @@ test("clamps numeric Jev answers to safe ranges", async () => {
   const res = makeRes();
   await handler({
     method: "POST",
+    headers: { authorization: "Bearer synthetic-token" },
     body: {
       context: {
         candidateRumors: ["helpful"],
@@ -165,6 +173,26 @@ test("clamps numeric Jev answers to safe ranges", async () => {
   assert.equal(res.body.specialEvent.triggerProbability, 0);
 
   globalThis.fetch = previousFetch;
+  delete process.env.JEV_PROXY_TOKEN;
   if (previousKey) process.env.JEV_API_KEY = previousKey;
   else delete process.env.JEV_API_KEY;
+});
+
+
+test("rejects unauthenticated and oversized requests before provider call", async () => {
+  process.env.JEV_API_KEY = "synthetic-key";
+  process.env.JEV_PROXY_TOKEN = "synthetic-token";
+  const priorFetch = globalThis.fetch;
+  let calls = 0;
+  globalThis.fetch = async () => { calls++; throw new Error("unexpected provider call"); };
+  const unauthorized = makeRes();
+  await handler({ method: "POST", body: { context: {} } }, unauthorized);
+  assert.equal(unauthorized.statusCode, 401);
+  const oversized = makeRes();
+  await handler({ method: "POST", headers: { authorization: "Bearer synthetic-token" }, body: { context: { text: "x".repeat(17_000) } } }, oversized);
+  assert.equal(oversized.statusCode, 413);
+  assert.equal(calls, 0);
+  globalThis.fetch = priorFetch;
+  delete process.env.JEV_API_KEY;
+  delete process.env.JEV_PROXY_TOKEN;
 });
