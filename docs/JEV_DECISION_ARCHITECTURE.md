@@ -28,3 +28,9 @@ Jev は「どう解釈されるか」「どれだけ広がるか」「誰が反�
 - Decision結果がセーブされる
 - fallback理由をログで追える
 - Day2会話にDecisionで選んだ噂が反映される
+
+## Optional proxy deployment guardrails
+
+GitHub Pages does not execute `api/jev-decision.js`. The free local decision provider remains the default. If deploying the optional server route, set both `JEV_API_KEY` and a separate `JEV_PROXY_TOKEN` in the server environment. Requests must present `Authorization: Bearer <JEV_PROXY_TOKEN>`; never put that token in a public browser bundle. Use a trusted backend or authenticated gateway between the browser and this route. Without that architecture, leave `VITE_JEV_PROXY_URL` unset.
+
+The route fails closed without both settings, limits request bodies to 16 KiB, uses an eight second upstream timeout and a best effort 30 requests per minute counter per process. Distributed deployments need a gateway wide rate limit and abuse monitoring. Choose an identity mechanism and global quota before exposing the paid route publicly.

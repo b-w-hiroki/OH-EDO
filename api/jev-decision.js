@@ -1,4 +1,21 @@
+import { timingSafeEqual } from "node:crypto";
+
 const JEV_URL = "https://www.jevai.org/api/v1/decisions";
+const MAX_BODY_BYTES = 16 * 1024;
+const REQUEST_TIMEOUT_MS = 8000;
+const RATE_WINDOW_MS = 60_000;
+const MAX_REQUESTS_PER_WINDOW = 30;
+let windowStart = 0;
+let requestCount = 0;
+
+function authorized(req, secret) {
+  const token = req.headers?.authorization?.match(/^Bearer (.+)$/i)?.[1];
+  if (!token || !secret) return false;
+  const given = Buffer.from(token);
+  const expected = Buffer.from(secret);
+  return given.length === expected.length && timingSafeEqual(given, expected);
+}
+
 
 const choiceCriteria = {
   quick: "仕事が早い・勢いがあるという解釈が最も自然",
@@ -81,12 +98,31 @@ export default async function handler(req, res) {
   }
 
   const apiKey = process.env.JEV_API_KEY;
-  if (!apiKey) {
-    res.status(503).json({ error: "JEV_API_KEY is not configured" });
+  const accessToken = process.env.JEV_PROXY_TOKEN;
+  if (!apiKey || !accessToken) {
+    res.status(503).json({ error: "Jev proxy is not configured" });
     return;
   }
 
-  const context = req.body?.context;
+  if (!authorized(req, accessToken)) {
+    res.status(401).json({ error: "Unauthorized" });
+    return;
+  }
+  const rawBody = typeof req.body === "string" ? req.body : JSON.stringify(req.body ?? {});
+  if (Buffer.byteLength(rawBody, "utf8") > MAX_BODY_BYTES) {
+    res.status(413).json({ error: "Request too large" });
+    return;
+  }
+  const now = Date.now();
+  if (now - windowStart >= RATE_WINDOW_MS) { windowStart = now; requestCount = 0; }
+  if (++requestCount > MAX_REQUESTS_PER_WINDOW) {
+    res.status(429).json({ error: "Rate limit exceeded" });
+    return;
+  }
+  let requestBody;
+  try { requestBody = typeof req.body === "string" ? JSON.parse(req.body) : req.body; }
+  catch { res.status(400).json({ error: "Invalid JSON" }); return; }
+  const context = requestBody?.context;
   if (!context) {
     res.status(400).json({ error: "context is required" });
     return;
@@ -169,6 +205,7 @@ export default async function handler(req, res) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     });
     const payload = await response.json();
     if (!response.ok || (typeof payload.code === "number" && payload.code !== 0)) {
