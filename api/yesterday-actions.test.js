@@ -1,0 +1,4 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import vm from 'node:vm';import ts from 'typescript';
+const source=fs.readFileSync(new URL('../src/town/yesterdayActions.ts',import.meta.url),'utf8');const compiled=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText;const c={exports:{}};vm.runInNewContext(compiled,c);const {yesterdayActions}=c.exports;
+test('only previous day, newest first, max three, immutable',()=>{const a=[{id:0,day:1},...[1,2,3,4].map(id=>({id,day:2})),{id:5,day:3}];assert.deepEqual(Array.from(yesterdayActions(a,3),x=>x.id),[4,3,2]);assert.equal(a[0].id,0)});
+test('day one and no previous history are empty',()=>{assert.equal(yesterdayActions([{day:1}],1).length,0);assert.equal(yesterdayActions([{day:1}],3).length,0)});
