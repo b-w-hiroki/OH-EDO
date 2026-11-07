@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { AreaId, GameState, NPCId, RumorTag } from "../types";
+import { yesterdayActions } from "../town/yesterdayActions";
 import { AREAS, NPCS } from "../data";
 import { nextTownEvent, townEventConsequence } from "../events/townEvents";
 import {
@@ -190,14 +191,12 @@ export function TownSidePanel({
   const upcomingTownEvent = state.screen === "town" ? nextTownEvent(state) : null;
   const nextChapter = nextChapterLead(state);
   const areaFlavor = AREAS[state.currentArea].flavor;
-  const recentActionItems = state.playerActions
-    .slice(-3)
-    .reverse()
+  const recentActionItems = yesterdayActions(state.playerActions, state.day)
     .map((action) => ({
       label: actionTagLabel(action.tags?.[0]),
-      effect: action.tags?.[0]
+      effect: townEventConsequence(action.type)?.townReaction ?? (action.tags?.[0]
         ? `「${rumorLabel(action.tags[0])}」として町に残った`
-        : "町の人が覚えている",
+        : "町の人が覚えている"),
     }));
 
   const rumorItems = [
