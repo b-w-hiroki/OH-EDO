@@ -1,6 +1,13 @@
 # OH！EDO！ Project Status
 
-最新のUI方針・PR167〜169の状態・未完了項目・再開手順は、[2026-10-06 開発引き継ぎ](development-handoff-2026-10-06.md)を参照。以下の過去記録は当時の履歴として保持しています。
+## 現在の確認状況（2026-11-10）
+
+- main `69e27d85083e5dff3dbd982e9e0636ce28f7a16d` の [GitHub Pages workflow](https://github.com/b-w-hiroki/OH-EDO/actions/runs/42390179483) は成功（2026-11-07実行）。過去の「最終deploy未完了」を現在の障害として扱わない。
+- [Issue #62](https://github.com/b-w-hiroki/OH-EDO/issues/62) は断続的な配信失敗の履歴・再発追跡用で、確認時点ではopen。現行コミットの配信成功と区別する。IssueのcloseやPages設定変更は実施していない。
+- 配信ジョブ成功は、物理iPhone SafariでのDay1→Day10通し確認や初見ユーザーの理解度評価を意味しない。この2項目は引き続き未確認。
+- 最新のUI方針と再開手順は[2026-10-06 開発引き継ぎ](development-handoff-2026-10-06.md)を参照。
+
+以下は過去の実装・リリース記録。日付付き記録内の未完了表記は、その時点の履歴として保持する。
 
 ## 実装済み
 
@@ -38,7 +45,7 @@
 ### GitHub Pages
 
 `.github/workflows/pages.yml` が main push で build/verify/deploy を行う。
-Pages環境がGitHub側で有効になると公開URLへ反映される。
+現行mainの最終deploy成功は上記workflowで確認済み。公開画面の目視と物理端末QAは別項目として検証する。
 
 ## 次フェーズ候補
 
@@ -46,7 +53,7 @@ Pages環境がGitHub側で有効になると公開URLへ反映される。
 
 1. 実物iPhone SafariでDay1→Day10の最終目視
 2. 外部プレイテスト
-3. GitHub Pages最終deploy解消
+3. GitHub Pages配信の継続確認（現行mainは成功、再発時はIssue #62で追跡）
 4. NPC個別エピソードの追加
 5. 音・環境音の本番品質化
 
